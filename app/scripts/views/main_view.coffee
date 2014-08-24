@@ -4,6 +4,7 @@ backbone : Backbone
 lib/uber_router : UberRouter
 vexflow : Vex
 services/midi_service : MidiService
+services/statistic_service : StatisticService
 ###
 
 class MainView extends Backbone.Marionette.ItemView
@@ -22,13 +23,18 @@ class MainView extends Backbone.Marionette.ItemView
     @midiService = new MidiService(=>
       @onSuccess()
     )
+    @statisticService = new StatisticService()
     @initializeRenderer()
     @renderStave()
 
 
   onSuccess : ->
 
-    console.log("success :)")
+    @statisticService.register(
+      success : true
+      keys : @currentNotes[@currentNoteIndex].getKeys()
+      time : new Date() - @startDate
+    )
     @currentNoteIndex++
     @renderStave()
 
@@ -40,6 +46,8 @@ class MainView extends Backbone.Marionette.ItemView
 
 
   renderStave : ->
+
+    @startDate = new Date()
 
     [renderer, ctx] = [@renderer, @ctx]
 
