@@ -1,0 +1,27 @@
+{
+  "name": "boot",
+  "version": "0.0.0",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "dist",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "backbone": "~1.1.2",
+    "lodash": "~2.4.1",
+    "requirejs": "~2.1.14",
+    "almond": "~0.2.9",
+    "jquery": "~2.1.1",
+    "bootstrap": "~3.2.0",
+    "syphon": "scalableminds/syphon#~0.4.1",
+    "font-awesome": "~4.1.0",
+    "marionette": "~2.0.3"
+  },
+  "resolutions": {
+    "jquery": "~2.1.1"
+  }
+}
