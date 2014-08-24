@@ -3,7 +3,7 @@
 
 class MidiService
 
-  constructor : ->
+  constructor : (@successCallback) ->
 
     @promise = navigator.requestMIDIAccess({sysexEnabled: true})
     @promise.then(
@@ -11,51 +11,90 @@ class MidiService
       console.warn.bind(console)
     )
 
-    @currentInputState = {
-      # 21 : false
-      # ...
-      # 108 : false
-    }
+    @initializeInputStates()
+    @initializeKeyMap()
 
-  generatekeyMapping : ->
+
+  initializeInputStates : ->
+
+    # inputState will look like this
+    # {
+    #   21 : false
+    #   ...
+    #   108 : false
+    # }
+
+    @currentInputState = {}
+    @desiredInputState = {}
+
+
+  initializeKeyMap : ->
+
+    # builds a keyMap which looks like this
+    # {
+    #   21 : "a0"
+    #   22 : "a#0"
+    #   ...
+    #   108 : "c8"
+    # }
+
 
     baseScale = [
-      "c"
-      "c#"
-      "d"
-      "d#"
-      "e"
-      "f"
-      "f#"
-      "g"
-      "g#"
-      "a"
-      "a#"
-      "h"
+      "c", "c#", "d", "d#", "e", "f", "f#", "g", "g#", "a", "a#", "b"
     ]
 
-    # a
-    claviature = []
+    claviature = baseScale
+      .slice(-3)
+      .concat(_.flatten(_.times(7, -> baseScale)))
+      .concat([baseScale[0]])
 
 
-    # c
+    keyMap = {}
+
+    for key, index in claviature
+      offsettedIndex = index - 3
+      nr = Math.floor((offsettedIndex + 12) / 12)
+
+      keyMap[index + 21] = key + "/" + nr
+
+    @keyMap = keyMap
 
 
-  setDesiredInputState : ->
+  getNumberForKeyString : (keyString) ->
+
+    _.findKey(@keyMap, (key) -> key == keyString)
+
+
+  setDesiredKeys : (keys) ->
+
+    # clear state
+    @desiredInputState = {}
+
+    keys.map((key) =>
+     number = @getNumberForKeyString(key)
+     @desiredInputState[number] = true
+    )
+
+    console.log("desiredInputState",  @desiredInputState)
 
 
   setNote : (note, intensity) ->
 
     if intensity == 0
       delete @currentInputState[note]
-      return
+    else
+      @currentInputState[note] = true
 
-    @currentInputState[note] = true
+
+    @checkEqual()
+
+  checkEqual: ->
+
+    if _.isEqual(@currentInputState, @desiredInputState)
+      @successCallback()
 
 
   onMidiAccess : (@midi) ->
-
-    console.log("successful")
 
     inputs = @midi.inputs()
     if inputs.length == 0
