@@ -11,8 +11,12 @@ class MainView extends Backbone.Marionette.ItemView
 
 
   template : _.template """
-    <canvas width=700 height=700"></canvas>
+    <div class="Aligner-item">
+      <canvas width=700 height=300"></canvas>
+    </div>
   """
+
+  className : "Aligner"
 
   ui :
     "canvas" : "canvas"
@@ -28,13 +32,21 @@ class MainView extends Backbone.Marionette.ItemView
     @renderStave()
 
 
+  getAllCurrentKeys : ->
+
+    [].concat(
+      @currentNotes["treble"][@currentNoteIndex].getKeys()
+      @currentNotes["bass"][@currentNoteIndex].getKeys()
+    )
+
   onSuccess : ->
 
     @statisticService.register(
       success : true
-      keys : @currentNotes[@currentNoteIndex].getKeys()
+      keys : @getAllCurrentKeys()
       time : new Date() - @startDate
     )
+
     @currentNoteIndex++
     @renderStave()
 
@@ -53,67 +65,80 @@ class MainView extends Backbone.Marionette.ItemView
 
     ctx.clear()
 
-    stave = new Vex.Flow.Stave(10, 0, 500)
-    stave.addClef("treble").setContext(ctx).draw()
+    rightHandStave = new Vex.Flow.Stave(10, 0, 500)
+    rightHandStave.addClef("treble").setContext(ctx).draw()
 
-    if not @currentNotes or @currentNoteIndex >= @currentNotes.length
-      console.log("generating new notes bitch")
-      @currentNotes = @generateNotes()
+    leftHandStave = new Vex.Flow.Stave(10, 80, 500)
+    leftHandStave.addClef("bass").setContext(ctx).draw()
 
+    if not @currentNotes or @currentNoteIndex >= @currentNotes.treble.length
+      @currentNotes =
+        treble : @generateNotes("treble")
+        bass : @generateNotes("bass")
 
     @colorizeKeys()
 
-    Vex.Flow.Formatter.FormatAndDraw(ctx, stave, @currentNotes)
-    @midiService.setDesiredKeys(@currentNotes[@currentNoteIndex].getKeys())
+    [[rightHandStave, "treble"], [leftHandStave, "bass"]].map ([stave, clef]) =>
+      Vex.Flow.Formatter.FormatAndDraw(ctx, stave, @currentNotes[clef])
+
+    @midiService.setDesiredKeys(@getAllCurrentKeys())
 
 
   colorizeKeys : ->
 
-    @currentNotes.forEach((staveNote, index) =>
-      color = if index < @currentNoteIndex then "green" else "black"
-      for index in [0...staveNote.getKeys().length]
-        staveNote.setKeyStyle(index, fillStyle: color)
-    )
+    for own key, clef of @currentNotes
+
+      clef.forEach((staveNote, index) =>
+        color = if index < @currentNoteIndex then "green" else "black"
+        for index in [0...staveNote.getKeys().length]
+          staveNote.setKeyStyle(index, fillStyle: color)
+      )
+
 
   getBaseNotes : ->
 
     return "cdfgab".split("")
 
 
-  generateNotes : ->
+  generateNotes : (clef) ->
+
+    options =
+      notesPerBeat : 4
+      maximumKeysPerNote : 3
+      withModifiers : false
+      levels :
+        bass : [2, 3]
+        treble : [4, 5]
 
     @currentNoteIndex = 0
 
-    notesPerBeat = 4
-    maximumKeysPerNote = 3
-    withModifiers = false
-    baseModifiers = if withModifiers then ["", "b", "#"] else [""]
+    baseModifiers = if options.withModifiers then ["", "b", "#"] else [""]
 
-    generatedNotes = _.range(0, notesPerBeat).map((i) =>
+    generatedNotes = _.range(0, options.notesPerBeat).map((i) =>
 
       baseNotes = @getBaseNotes()
 
       generateRandomKey = ->
-        noteIndex = _.random(0, baseNotes.length - 1)
-        note = baseNotes.splice(noteIndex, 1)[0]
+        randomNoteIndex = _.random(0, baseNotes.length - 1)
+        note = baseNotes.splice(randomNoteIndex, 1)[0]
 
         modifier = _.sample(baseModifiers)
-        console.log("{note, modifier}",  {note, modifier})
         {note, modifier}
 
-      randomKeys = _.times(_.random(1, maximumKeysPerNote), generateRandomKey)
+      randomKeys = _.times(_.random(1, options.maximumKeysPerNote), generateRandomKey)
+      randomLevel = _.sample(options.levels[clef])
 
-      formattedKeys = randomKeys.map( ({note, modifier}) -> note + modifier + "/4" )
+      formattedKeys = randomKeys.map(({note, modifier}) ->
+        note + modifier + "/" + randomLevel
+      )
 
       staveNote = new Vex.Flow.StaveNote(
+        clef : clef
         keys : formattedKeys
-        duration: "#{notesPerBeat}"
+        duration: "#{options.notesPerBeat}"
       )
-      console.log("stavenote",  staveNote)
 
-
-      randomKeys.forEach( ({note, modifier}, index) =>
-
+      randomKeys.forEach(({note, modifier}, index) =>
         if modifier
           staveNote.addAccidental(index, new Vex.Flow.Accidental(modifier))
 
