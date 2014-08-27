@@ -109,6 +109,7 @@ class MainView extends Backbone.Marionette.ItemView
       levels :
         bass : [2, 3]
         treble : [4, 5]
+      maximumInterval : 12
 
     @currentNoteIndex = 0
 
@@ -119,13 +120,30 @@ class MainView extends Backbone.Marionette.ItemView
       baseNotes = @getBaseNotes()
 
       generateRandomKey = ->
+
         randomNoteIndex = _.random(0, baseNotes.length - 1)
         note = baseNotes.splice(randomNoteIndex, 1)[0]
 
         modifier = _.sample(baseModifiers)
         {note, modifier}
 
-      randomKeys = _.times(_.random(1, options.maximumKeysPerNote), generateRandomKey)
+
+      generateRandomKeys = ->
+
+        keys = _.times(_.random(1, options.maximumKeysPerNote), generateRandomKey)
+
+
+      ensureInterval = (keys) =>
+
+        keyNumbers = keys.map((key) => @midiService.getNumberForKeyString())
+        return options.maximumInterval >= _.max(keyNumbers) - _.min(keyNumbers)
+
+
+      randomKeys = generateRandomKeys()
+      while not ensureInterval(randomKeys)
+        randomKeys = generateRandomKeys()
+
+
       randomLevel = _.sample(options.levels[clef])
 
       formattedKeys = randomKeys.map(({note, modifier}) ->
