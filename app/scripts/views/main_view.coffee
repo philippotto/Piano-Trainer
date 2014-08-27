@@ -73,8 +73,8 @@ class MainView extends Backbone.Marionette.ItemView
 
     if not @currentNotes or @currentNoteIndex >= @currentNotes.treble.length
       @currentNotes =
-        treble : @generateNotes("treble")
-        bass : @generateNotes("bass")
+        treble : @generateBar("treble")
+        bass : @generateBar("bass")
 
     @colorizeKeys()
 
@@ -100,11 +100,11 @@ class MainView extends Backbone.Marionette.ItemView
     return "cdfgab".split("")
 
 
-  generateNotes : (clef) ->
+  generateBar : (clef) ->
 
     options =
-      notesPerBeat : 4
-      maximumKeysPerNote : 3
+      notesPerBar : 4
+      maximumKeysPerChord : 3
       withModifiers : false
       levels :
         bass : [2, 3]
@@ -115,11 +115,11 @@ class MainView extends Backbone.Marionette.ItemView
 
     baseModifiers = if options.withModifiers then ["", "b", "#"] else [""]
 
-    generatedNotes = _.range(0, options.notesPerBeat).map((i) =>
+    generatedNotes = _.range(0, options.notesPerBar).map( =>
 
       baseNotes = @getBaseNotes()
 
-      generateRandomKey = ->
+      generateNote = ->
 
         randomNoteIndex = _.random(0, baseNotes.length - 1)
         note = baseNotes.splice(randomNoteIndex, 1)[0]
@@ -128,9 +128,9 @@ class MainView extends Backbone.Marionette.ItemView
         {note, modifier}
 
 
-      generateRandomKeys = ->
+      generateChord = ->
 
-        keys = _.times(_.random(1, options.maximumKeysPerNote), generateRandomKey)
+        keys = _.times(_.random(1, options.maximumKeysPerChord), generateNote)
 
 
       ensureInterval = (keys) =>
@@ -139,9 +139,9 @@ class MainView extends Backbone.Marionette.ItemView
         return options.maximumInterval >= _.max(keyNumbers) - _.min(keyNumbers)
 
 
-      randomKeys = generateRandomKeys()
+      randomKeys = generateChord()
       while not ensureInterval(randomKeys)
-        randomKeys = generateRandomKeys()
+        randomKeys = generateChord()
 
 
       randomLevel = _.sample(options.levels[clef])
@@ -150,20 +150,20 @@ class MainView extends Backbone.Marionette.ItemView
         note + modifier + "/" + randomLevel
       )
 
-      staveNote = new Vex.Flow.StaveNote(
+      staveChord = new Vex.Flow.StaveNote(
         clef : clef
         keys : formattedKeys
-        duration: "#{options.notesPerBeat}"
+        duration: "#{options.notesPerBar}"
       )
 
       randomKeys.forEach(({note, modifier}, index) =>
         if modifier
-          staveNote.addAccidental(index, new Vex.Flow.Accidental(modifier))
+          staveChord.addAccidental(index, new Vex.Flow.Accidental(modifier))
 
-        return staveNote
+        return staveChord
       )
 
-      staveNote
+      staveChord
     )
 
     return generatedNotes
