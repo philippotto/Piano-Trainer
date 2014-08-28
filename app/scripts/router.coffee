@@ -20,5 +20,3 @@ class Router extends UberRouter
     view = new MainView()
     @changeView(view)
 
-    # setInterval(view.render.bind(view), 1000)
-

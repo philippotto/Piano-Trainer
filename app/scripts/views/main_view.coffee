@@ -5,6 +5,7 @@ lib/uber_router : UberRouter
 vexflow : Vex
 services/midi_service : MidiService
 services/statistic_service : StatisticService
+services/key_converter : KeyConverter
 ###
 
 class MainView extends Backbone.Marionette.ItemView
@@ -23,6 +24,8 @@ class MainView extends Backbone.Marionette.ItemView
 
 
   onRender : ->
+
+    @keyConverter = new KeyConverter()
 
     @midiService = new MidiService(=>
       @onSuccess()
@@ -135,7 +138,7 @@ class MainView extends Backbone.Marionette.ItemView
 
       ensureInterval = (keys) =>
 
-        keyNumbers = keys.map((key) => @midiService.getNumberForKeyString())
+        keyNumbers = keys.map((key) => @keyConverter.getNumberForKeyString())
         return options.maximumInterval >= _.max(keyNumbers) - _.min(keyNumbers)
 
 
