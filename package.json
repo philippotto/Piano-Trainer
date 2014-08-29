@@ -1,13 +1,13 @@
 {
   "name": "Piano-Trainer",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "",
   "main": "index.js",
   "repository": {
     "type": "git",
     "url": "git://github.com/philippotto/Piano-Trainer"
   },
-  "author": "Your Name <email@scm.io>",
+  "author": "Philipp Otto <philippotto@live.com>",
   "license": "MIT",
   "homepage": "https://github.com/philippotto/Piano-Trainer",
   "dependencies": {
@@ -31,7 +31,7 @@
   },
   "scripts": {
     "postinstall": "node_modules/.bin/bower install && node_modules/.bin/gulp",
-    "test": "jest"
+    "test": "./node_modules/.bin/karma start --single-run --browsers PhantomJS"
   },
   "devDependencies": {
     "karma": "^0.12.23",
