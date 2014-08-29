@@ -1,15 +1,15 @@
 {
-  "name": "boot",
+  "name": "Piano-Trainer",
   "version": "0.0.0",
   "description": "",
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git://github.com/scalableminds/boot"
+    "url": "git://github.com/philippotto/Piano-Trainer"
   },
   "author": "Your Name <email@scm.io>",
   "license": "MIT",
-  "homepage": "https://github.com/scalableminds/boot",
+  "homepage": "https://github.com/philippotto/Piano-Trainer",
   "dependencies": {
     "amd-optimize": "0.0.6",
     "bower": "^1.3.8",
@@ -30,6 +30,15 @@
     "through2": "^0.5.1"
   },
   "scripts": {
-    "postinstall": "node_modules/.bin/bower install && node_modules/.bin/gulp"
+    "postinstall": "node_modules/.bin/bower install && node_modules/.bin/gulp",
+    "test": "jest"
+  },
+  "devDependencies": {
+    "karma": "^0.12.23",
+    "karma-chrome-launcher": "^0.1.4",
+    "karma-jasmine": "^0.1.5",
+    "requirejs": "^2.1.14",
+    "karma-requirejs": "^0.2.2",
+    "karma-phantomjs-launcher": "^0.1.4"
   }
 }

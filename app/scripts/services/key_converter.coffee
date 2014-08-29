@@ -1,4 +1,5 @@
 ### define
+lodash : _
 ###
 
 class KeyConverter
