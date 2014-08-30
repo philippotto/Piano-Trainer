@@ -13,7 +13,7 @@ class MainView extends Backbone.Marionette.ItemView
 
   template : _.template """
     <div class="Aligner-item">
-      <canvas width=700 height=300"></canvas>
+      <canvas></canvas>
     </div>
   """
 
@@ -38,8 +38,8 @@ class MainView extends Backbone.Marionette.ItemView
   getAllCurrentKeys : ->
 
     [].concat(
-      @currentNotes["treble"][@currentNoteIndex].getKeys()
-      @currentNotes["bass"][@currentNoteIndex].getKeys()
+      @currentNotes["treble"][@currentChordIndex].getKeys()
+      @currentNotes["bass"][@currentChordIndex].getKeys()
     )
 
   onSuccess : ->
@@ -50,7 +50,7 @@ class MainView extends Backbone.Marionette.ItemView
       time : new Date() - @startDate
     )
 
-    @currentNoteIndex++
+    @currentChordIndex++
     @renderStave()
 
 
@@ -58,6 +58,15 @@ class MainView extends Backbone.Marionette.ItemView
 
     @renderer = new Vex.Flow.Renderer(@ui.canvas.get(0), Vex.Flow.Renderer.Backends.CANVAS)
     @ctx = @renderer.getContext()
+
+
+  setCanvasExtent : (width, height) ->
+
+    canvas = @ui.canvas.get(0)
+    canvas.width = width
+    canvas.height = height
+    canvas.style.width = width
+    canvas.style.height = height
 
 
   renderStave : ->
@@ -68,13 +77,16 @@ class MainView extends Backbone.Marionette.ItemView
 
     ctx.clear()
 
-    rightHandStave = new Vex.Flow.Stave(10, 0, 500)
+    [width, height] = [500, 500]
+    @setCanvasExtent(width, height)
+
+    rightHandStave = new Vex.Flow.Stave(10, 0, width)
     rightHandStave.addClef("treble").setContext(ctx).draw()
 
-    leftHandStave = new Vex.Flow.Stave(10, 80, 500)
+    leftHandStave = new Vex.Flow.Stave(10, 80, width)
     leftHandStave.addClef("bass").setContext(ctx).draw()
 
-    if not @currentNotes or @currentNoteIndex >= @currentNotes.treble.length
+    if not @currentNotes or @currentChordIndex >= @currentNotes.treble.length
       @currentNotes =
         treble : @generateBar("treble")
         bass : @generateBar("bass")
@@ -92,7 +104,7 @@ class MainView extends Backbone.Marionette.ItemView
     for own key, clef of @currentNotes
 
       clef.forEach((staveNote, index) =>
-        color = if index < @currentNoteIndex then "green" else "black"
+        color = if index < @currentChordIndex then "green" else "black"
         for index in [0...staveNote.getKeys().length]
           staveNote.setKeyStyle(index, fillStyle: color)
       )
@@ -114,13 +126,14 @@ class MainView extends Backbone.Marionette.ItemView
         treble : [4, 5]
       maximumInterval : 12
 
-    @currentNoteIndex = 0
+    @currentChordIndex = 0
 
     baseModifiers = if options.withModifiers then ["", "b", "#"] else [""]
 
-    generatedNotes = _.range(0, options.notesPerBar).map( =>
+    generatedChords = _.range(0, options.notesPerBar).map( =>
 
       baseNotes = @getBaseNotes()
+      randomLevel = _.sample(options.levels[clef])
 
       generateNote = ->
 
@@ -136,30 +149,29 @@ class MainView extends Backbone.Marionette.ItemView
         keys = _.times(_.random(1, options.maximumKeysPerChord), generateNote)
 
 
+      formatKey = ({note, modifier}) -> note + modifier + "/" + randomLevel
+
+
       ensureInterval = (keys) =>
 
-        keyNumbers = keys.map((key) => @keyConverter.getNumberForKeyString())
+        keyNumbers = keys.map((key) =>
+          @keyConverter.getNumberForKeyString(formatKey(key))
+        )
         return options.maximumInterval >= _.max(keyNumbers) - _.min(keyNumbers)
 
 
-      randomKeys = generateChord()
-      while not ensureInterval(randomKeys)
-        randomKeys = generateChord()
+      randomChord = generateChord()
+      while not ensureInterval(randomChord)
+        randomChord = generateChord()
 
-
-      randomLevel = _.sample(options.levels[clef])
-
-      formattedKeys = randomKeys.map(({note, modifier}) ->
-        note + modifier + "/" + randomLevel
-      )
 
       staveChord = new Vex.Flow.StaveNote(
         clef : clef
-        keys : formattedKeys
+        keys : randomChord.map(formatKey)
         duration: "#{options.notesPerBar}"
       )
 
-      randomKeys.forEach(({note, modifier}, index) =>
+      randomChord.forEach(({note, modifier}, index) =>
         if modifier
           staveChord.addAccidental(index, new Vex.Flow.Accidental(modifier))
 
@@ -169,4 +181,4 @@ class MainView extends Backbone.Marionette.ItemView
       staveChord
     )
 
-    return generatedNotes
+    return generatedChords

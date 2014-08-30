@@ -47,7 +47,7 @@ class KeyConverter
 
       regexp = new RegExp(modifier, "g")
       # ignore the first character because of b notes
-      strippedKey = key[0] + key.slice(1).replace(regexp, "")
+      strippedKey = keyToStrip[0] + keyToStrip.slice(1).replace(regexp, "")
       difference = keyToStrip.length - strippedKey.length
 
       [strippedKey, difference]
