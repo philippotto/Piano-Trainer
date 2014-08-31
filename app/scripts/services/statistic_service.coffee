@@ -31,6 +31,7 @@ class StatisticService
   getLastTenTimes : (n = 10) ->
 
     _(@stats)
+      .filter((el) -> el.success)
       .pluck("time")
       .filter((t) -> t < 15000)
       .last(n)
@@ -48,11 +49,23 @@ class StatisticService
 
     sum / times.length
 
+
   getTotalAmountOfChords : ->
 
-    _.pluck(@stats, "keys").length
+    _.pluck(@stats, "keys")
+      .filter((el) -> el.success)
+      .length
 
 
   getTotalAmountOfNotes : ->
 
-    _(@stats).pluck("keys").flatten().size()
+    _(@stats)
+      .filter((el) -> el.success)
+      .pluck("keys")
+      .flatten()
+      .size()
+
+  getFailureRate : ->
+
+    _.filter(@stats, (el) -> el.success).length / @stats.length
+

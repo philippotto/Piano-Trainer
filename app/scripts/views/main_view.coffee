@@ -33,8 +33,9 @@ class MainView extends Backbone.Marionette.ItemView
 
     @keyConverter = new KeyConverter()
 
-    @midiService = new MidiService(=>
-      @onSuccess()
+    @midiService = new MidiService(
+      => @onSuccess()
+      => @onFailure()
     )
     @initializeRenderer()
     @renderStave()
@@ -59,6 +60,15 @@ class MainView extends Backbone.Marionette.ItemView
     @renderStave()
     @renderStatistics()
 
+  onFailure : ->
+
+    @statisticService.register(
+      success : false
+      keys : @getAllCurrentKeys()
+      time : new Date() - @startDate
+    )
+
+    @renderStatistics()
 
   renderStatistics : ->
 

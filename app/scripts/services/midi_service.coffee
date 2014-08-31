@@ -4,16 +4,24 @@
 
 class MidiService
 
-  constructor : (@successCallback) ->
+  constructor : (@successCallback, @failureCallback, mocked = false) ->
 
     @keyConverter = new KeyConverter()
+    @initializeInputStates()
+
+    # a wrong chord should not result in lots of failure calls
+    # so, remember the last state
+    @justHadSuccess = true
+
+    if mocked
+      return
+
     @promise = navigator.requestMIDIAccess({sysexEnabled: true})
     @promise.then(
       @onMidiAccess.bind(@)
       console.warn.bind(console)
     )
 
-    @initializeInputStates()
 
 
   initializeInputStates : ->
@@ -47,13 +55,27 @@ class MidiService
       @currentInputState[note] = true
 
 
-    @checkEqual()
+    @checkEqual(intensity)
 
 
-  checkEqual: ->
+  checkEqual: (intensity) ->
 
     if _.isEqual(@currentInputState, @desiredInputState)
+      @justHadSuccess = true
       @successCallback()
+      return
+
+    if intensity == 0
+      # lifting a key shouldn't result in a failure
+      return
+
+    for number, state of @currentInputState
+      if state and not @desiredInputState[number]
+        if @justHadSuccess
+          @justHadSuccess = false
+          @failureCallback()
+        return
+
 
 
   onMidiAccess : (@midi) ->
@@ -73,8 +95,6 @@ class MidiService
 
     if msg.data.length == 1 and msg.data[0] == 254
       return
-
-    unknown = msg.data[0]
 
     note = msg.data[1]
     intensity = msg.data[2]
