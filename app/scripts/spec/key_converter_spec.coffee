@@ -7,7 +7,7 @@ describe("KeyConverter", ->
 
   keyConverter = new KeyConverter()
 
-  it("can resolve a simple note", ->
+  it("resolves a simple note", ->
 
     numberA0 = keyConverter.getNumberForKeyString("a/0")
     expect(numberA0).toBe(21)
@@ -17,7 +17,7 @@ describe("KeyConverter", ->
 
   )
 
-  it("can get key strings for a number", ->
+  it("gets key strings for a number", ->
 
     aSharp0 = keyConverter.getKeyStringForNumber("22")
     expect(aSharp0).toBe("a#/0")
@@ -27,7 +27,7 @@ describe("KeyConverter", ->
 
   )
 
-  it("can get scales for a arbitrary base", ->
+  it("gets scales for an arbitrary base", ->
 
     cScale = keyConverter.getScaleForBase("c/4")
     expect(cScale).toEqual(["c/4", "d/4", "e/4", "f/4", "g/4", "a/4", "b/4"])
@@ -41,7 +41,7 @@ describe("KeyConverter", ->
 
   )
 
-  it("can get the canonical form of a key", ->
+  it("gets the canonical form of a key", ->
 
     c4 = keyConverter.getCanonicalForm("c/4")
     expect(c4).toBe("c/4")

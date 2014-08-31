@@ -1,11 +1,11 @@
 ### define
 jquery : $
 backbone : Backbone
-lib/uber_router : UberRouter
 vexflow : Vex
 services/midi_service : MidiService
 services/statistic_service : StatisticService
 services/key_converter : KeyConverter
+./statistics_view : StatisticsView
 ###
 
 class MainView extends Backbone.Marionette.ItemView
@@ -14,6 +14,7 @@ class MainView extends Backbone.Marionette.ItemView
   template : _.template """
     <div class="Aligner-item">
       <canvas></canvas>
+      <div id="statistics"></div>
     </div>
   """
 
@@ -21,16 +22,20 @@ class MainView extends Backbone.Marionette.ItemView
 
   ui :
     "canvas" : "canvas"
+    "statistics" : "#statistics"
 
 
   onRender : ->
+
+    @statisticService = new StatisticService()
+    @statisticsView = new StatisticsView({statisticService : @statisticService})
+    @renderStatistics()
 
     @keyConverter = new KeyConverter()
 
     @midiService = new MidiService(=>
       @onSuccess()
     )
-    @statisticService = new StatisticService()
     @initializeRenderer()
     @renderStave()
 
@@ -52,6 +57,12 @@ class MainView extends Backbone.Marionette.ItemView
 
     @currentChordIndex++
     @renderStave()
+    @renderStatistics()
+
+
+  renderStatistics : ->
+
+    @ui.statistics.html(@statisticsView.render().el)
 
 
   initializeRenderer : ->
@@ -74,10 +85,10 @@ class MainView extends Backbone.Marionette.ItemView
     @startDate = new Date()
 
     [renderer, ctx] = [@renderer, @ctx]
+    [width, height] = [500, 250]
 
     ctx.clear()
 
-    [width, height] = [500, 500]
     @setCanvasExtent(width, height)
 
     rightHandStave = new Vex.Flow.Stave(10, 0, width)
@@ -132,10 +143,9 @@ class MainView extends Backbone.Marionette.ItemView
 
     generatedChords = _.range(0, options.notesPerBar).map( =>
 
-      baseNotes = @getBaseNotes()
       randomLevel = _.sample(options.levels[clef])
 
-      generateNote = ->
+      generateNote = (baseNotes) ->
 
         randomNoteIndex = _.random(0, baseNotes.length - 1)
         note = baseNotes.splice(randomNoteIndex, 1)[0]
@@ -144,9 +154,12 @@ class MainView extends Backbone.Marionette.ItemView
         {note, modifier}
 
 
-      generateChord = ->
+      generateChord = =>
 
-        keys = _.times(_.random(1, options.maximumKeysPerChord), generateNote)
+        baseNotes = @getBaseNotes()
+        keys = _.times(_.random(1, options.maximumKeysPerChord), ->
+          generateNote(baseNotes)
+        )
 
 
       formatKey = ({note, modifier}) -> note + modifier + "/" + randomLevel
