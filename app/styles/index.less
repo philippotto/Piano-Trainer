@@ -1,7 +1,11 @@
 @import "bower_components/bootstrap/less/bootstrap.less";
 @import "bower_components/font-awesome/less/font-awesome.less";
+@import "/bower_components/chartist/libdist/chartist.min.css";
 
 @import "_variables.less";
+
+/* index.less */
+
 
 h1 {
   font-size: 50*2px;
@@ -12,9 +16,27 @@ h1 {
   align-items: center;
   justify-content: center;
   height: 100%;
-  margin-top: 200px;
 }
 
 .Aligner-item {
+  margin-top: 200px;
   max-width: 50%;
+}
+
+/* override chartist color */
+
+.ct-chart .ct-series.ct-series-a .ct-bar, .ct-chart .ct-series.ct-series-a .ct-line, .ct-chart .ct-series.ct-series-a .ct-point, .ct-chart .ct-series.ct-series-a .ct-slice.ct-donut {
+  stroke: #BBBBBB !important;
+}
+
+.semi-transparent {
+  opacity: 0.8;
+}
+
+.ct-chart .ct-line {
+  stroke-width: 1px;
+}
+
+.ct-chart .ct-point {
+  stroke-width: 6px;
 }

@@ -28,7 +28,7 @@ class StatisticService
     localStorage.setItem("pianoTrainerStatistics", JSON.stringify(@stats))
 
 
-  getLastTenTimes : (n = 10) ->
+  getLastTimes : (n = 10) ->
 
     _(@stats)
       .filter((el) -> el.success)
@@ -40,7 +40,7 @@ class StatisticService
 
   getAverageTimeOfLast : (n = 10) ->
 
-    times = @getLastTenTimes(n)
+    times = @getLastTimes(n)
     sum = _.reduce(
       times
       (a, b) -> a + b
@@ -52,9 +52,10 @@ class StatisticService
 
   getTotalAmountOfChords : ->
 
-    _.pluck(@stats, "keys")
+    _(@stats)
       .filter((el) -> el.success)
-      .length
+      .pluck("keys")
+      .size()
 
 
   getTotalAmountOfNotes : ->

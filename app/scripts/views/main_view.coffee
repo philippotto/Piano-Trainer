@@ -12,13 +12,16 @@ class MainView extends Backbone.Marionette.ItemView
 
 
   template : _.template """
-    <div class="Aligner-item">
-      <canvas></canvas>
-      <div id="statistics"></div>
+    <div class="Aligner">
+      <div class="Aligner-item">
+        <canvas></canvas>
+      </div>
+    </div>
+    <div class="Aligner">
+      <div class="col-md-6" id="statistics"></div>
     </div>
   """
 
-  className : "Aligner"
 
   ui :
     "canvas" : "canvas"
@@ -30,6 +33,13 @@ class MainView extends Backbone.Marionette.ItemView
     @statisticService = new StatisticService()
     @statisticsView = new StatisticsView({statisticService : @statisticService})
     @renderStatistics()
+
+    # find a way to remove this dirty work around
+    setTimeout(
+      => @renderStatistics()
+      0
+    )
+
 
     @keyConverter = new KeyConverter()
 
@@ -70,9 +80,11 @@ class MainView extends Backbone.Marionette.ItemView
 
     @renderStatistics()
 
+
   renderStatistics : ->
 
     @ui.statistics.html(@statisticsView.render().el)
+    @statisticsView.renderChart()
 
 
   initializeRenderer : ->

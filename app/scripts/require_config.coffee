@@ -9,6 +9,7 @@ require.config(
     marionette : "../bower_components/marionette/lib/backbone.marionette"
     jquery : "../bower_components/jquery/dist/jquery"
     vexflow : "../scripts/vexflow-min"
+    Chartist : "../bower_components/chartist/libdist/chartist.min"
 
   map :
     backbone :
