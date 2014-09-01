@@ -19,6 +19,12 @@ class StatisticService
     }
     ###
 
+    timeThreshold = 15000
+    if evt.time > timeThreshold
+      # don't save events which took too long
+      # we don't want to drag the statistics down when the user made a break
+      return
+
     evt.date = new Date()
 
     @stats.push(evt)
@@ -27,6 +33,7 @@ class StatisticService
   read : ->
 
     @stats = localStorage.getItem("pianoTrainerStatistics")
+
     if @stats
       @stats = JSON.parse(@stats)
       for el in @stats
@@ -46,20 +53,22 @@ class StatisticService
     _(@stats)
       .filter((el) -> el.success)
       .pluck("time")
-      .filter((t) -> t < 15000)
       .last(n)
       .value()
 
 
-  computeAverage : (array) ->
+  computeSum : (array) ->
 
-    sum = _.reduce(
+    _.reduce(
       array
       (a, b) -> a + b
       0
     )
 
-    sum / array.length
+
+  computeAverage : (array) ->
+
+    @computeSum(array) / array.length
 
 
   getAverageTimeOfLast : (n = 10) ->
@@ -91,19 +100,23 @@ class StatisticService
 
   getLastDays : (n = 10) ->
 
-    res = _(@stats)
-      .filter((el) -> el.success and el.time < 15000)
-      .groupBy((el) ->
-        [
+    _(@stats)
+      .filter((el) -> el.success)
+      .map((el) ->
+        el.formattedDate = [
           el.date.getUTCFullYear()
           el.date.getMonth()
           el.date.getDay()
         ].join("-")
+        el
       )
+      .groupBy("formattedDate")
       .map((aDay) =>
-        @computeAverage(_.pluck(aDay, "time"))
+        dayTimes = _.pluck(aDay, "time")
+        aDay.averageTime = @computeAverage(dayTimes)
+        aDay.totalTime = @computeSum(dayTimes)
+        aDay
       )
+      .sortBy("formattedDate")
+      .reverse()
       .value()
-
-    console.log("res",  res)
-    return res

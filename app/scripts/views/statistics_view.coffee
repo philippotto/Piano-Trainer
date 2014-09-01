@@ -10,24 +10,25 @@ class StatisticsView extends Backbone.Marionette.ItemView
 
   className : "row"
   template : _.template """
-    <div class="col-md-3">
-      <h4>The last 10 chords:</h4>
+    <div class="col-md-1"></div>
+    <div class="col-md-4">
+      <h4>The last days you trained:</h4>
       <ul>
         <% statistics.getLastDays(10).map(function(el){ %>
-          <li><%= (el / 1000).toFixed(2) %> s</li>
+          <li><%= (el.averageTime / 1000).toFixed(2) %> s average
+            (<%= (el.totalTime / 1000 / 60).toFixed(2) %> min)
+          </li>
         <% }) %>
       </ul>
-    </div>
 
-    <div class="col-md-6">
-      <div class="semi-transparent ct-chart ct-perfect-fourth"></div>
-    </div>
-
-    <div class="col-md-3">
       <h4>Average time: <%= (statistics.getAverageTimeOfLast(100) / 1000).toFixed(2) %> s</h4>
       <h4>Played chords: <%= statistics.getTotalAmountOfChords() %></h4>
       <h4>Played notes: <%= statistics.getTotalAmountOfNotes() %></h4>
       <h4>Failure rate: <%= statistics.getFailureRate().toFixed(2) %></h4>
+    </div>
+
+    <div class="col-md-6">
+      <div class="semi-transparent ct-chart ct-perfect-fourth"></div>
     </div>
 
   """
