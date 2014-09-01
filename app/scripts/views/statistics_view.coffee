@@ -13,7 +13,7 @@ class StatisticsView extends Backbone.Marionette.ItemView
     <div class="col-md-3">
       <h4>The last 10 chords:</h4>
       <ul>
-        <% statistics.getLastTimes(10).map(function(el){ %>
+        <% statistics.getLastDays(10).map(function(el){ %>
           <li><%= (el / 1000).toFixed(2) %> s</li>
         <% }) %>
       </ul>

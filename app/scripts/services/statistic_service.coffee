@@ -5,11 +5,8 @@ class StatisticService
 
   constructor : ->
 
-    @stats = localStorage.getItem("pianoTrainerStatistics")
-    if @stats
-      @stats = JSON.parse(@stats)
-    else
-      @stats = []
+    @read()
+    console.log("@stats",  @stats)
 
   register : (evt) ->
 
@@ -22,9 +19,25 @@ class StatisticService
     }
     ###
 
-    event.date = new Date()
+    evt.date = new Date()
 
     @stats.push(evt)
+    @save()
+
+  read : ->
+
+    @stats = localStorage.getItem("pianoTrainerStatistics")
+    if @stats
+      @stats = JSON.parse(@stats)
+      for el in @stats
+        el.date = new Date(el.date)
+    else
+      @stats = []
+
+
+
+  save : ->
+
     localStorage.setItem("pianoTrainerStatistics", JSON.stringify(@stats))
 
 
@@ -38,16 +51,20 @@ class StatisticService
       .value()
 
 
-  getAverageTimeOfLast : (n = 10) ->
+  computeAverage : (array) ->
 
-    times = @getLastTimes(n)
     sum = _.reduce(
-      times
+      array
       (a, b) -> a + b
       0
     )
 
-    sum / times.length
+    sum / array.length
+
+
+  getAverageTimeOfLast : (n = 10) ->
+
+    @computeAverage(@getLastTimes(n))
 
 
   getTotalAmountOfChords : ->
@@ -66,7 +83,27 @@ class StatisticService
       .flatten()
       .size()
 
+
   getFailureRate : ->
 
     _.filter(@stats, (el) -> el.success).length / @stats.length
 
+
+  getLastDays : (n = 10) ->
+
+    res = _(@stats)
+      .filter((el) -> el.success and el.time < 15000)
+      .groupBy((el) ->
+        [
+          el.date.getUTCFullYear()
+          el.date.getMonth()
+          el.date.getDay()
+        ].join("-")
+      )
+      .map((aDay) =>
+        @computeAverage(_.pluck(aDay, "time"))
+      )
+      .value()
+
+    console.log("res",  res)
+    return res
