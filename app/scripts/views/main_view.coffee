@@ -12,14 +12,22 @@ class MainView extends Backbone.Marionette.ItemView
 
 
   template : _.template """
+    <div id="body-background">
+      <img id="image-background" src="images/piano-background.jpg">
+    </div>
+
+    <div class="jumbotron">
+      <h1>Piano Trainer</h1>
+    </div>
+
     <div class="Aligner">
       <div class="Aligner-item">
         <canvas></canvas>
       </div>
     </div>
-    <div class="Aligner">
-      <div class="col-md-6" id="statistics"></div>
-    </div>
+
+    <div id="statistics"></div>
+
   """
 
 

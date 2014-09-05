@@ -4,7 +4,51 @@
 
 @import "_variables.less";
 
+@import url(http://fonts.googleapis.com/css?family=Poiret+One);
+@import url(http://fonts.googleapis.com/css?family=Droid+Sans:400);
+
 /* index.less */
+
+body {
+  font-family: "Droid Sans", sans-serif;
+}
+
+#body-background {
+  position: fixed;
+  width: 200%;
+  height: 200%;
+  z-index: -1;
+}
+
+
+.jumbotron {
+  background-color: rgba(0, 0, 0, 0.7);
+  padding-top: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px rgba(255, 255, 255, 0.7) solid;
+}
+
+.jumbotron > h1 {
+  /*Kozuka Gothic ...*/
+  text-align: center;
+  font-family: 'Poiret One', sans-serif;
+  font-size: 70pt;
+  font-weight: 100;
+  color: white;
+  font-variant: small-caps;
+}
+
+
+#image-background {
+  margin: auto;
+  min-width: 50%;
+  min-height: 50%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  -webkit-transition: all 30s ease-in-out;
+}
 
 
 h1 {
@@ -18,15 +62,48 @@ h1 {
   height: 100%;
 }
 
-.Aligner-item {
-  margin-top: 200px;
-  max-width: 50%;
+
+.box-shadow {
+  -webkit-box-shadow: 0px 0px 117px 0px rgba(0, 0, 0, 1);
+  -moz-box-shadow: 0px 0px 117px 0px rgba(0, 0, 0, 1);
+  box-shadow: 0px 0px 117px 0px rgba(0, 0, 0, 1);
+  background: white;
 }
+
+#text-stats {
+  .box-shadow;
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  padding: 20px;
+  color: #777777;
+}
+
+#graph-stats {
+  .box-shadow;
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  height: 300px;
+}
+
+.Aligner-item {
+  .box-shadow;
+  max-width: 50%;
+  width: 600px;
+  height: 300px;
+
+  padding-left: 50px;
+  padding-top: 50px;
+
+}
+
+
 
 /* override chartist color */
 
 .ct-chart .ct-series.ct-series-a .ct-bar, .ct-chart .ct-series.ct-series-a .ct-line, .ct-chart .ct-series.ct-series-a .ct-point, .ct-chart .ct-series.ct-series-a .ct-slice.ct-donut {
-  stroke: #BBBBBB !important;
+  stroke: #777777 !important;
 }
 
 .semi-transparent {
