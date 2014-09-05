@@ -27,7 +27,7 @@ class MainView extends Backbone.Marionette.ItemView
     </div>
 
     <div id="statistics"></div>
-
+    <audio id="success-player" hidden="true" src="success.mp3" controls preload="auto" autobuffer></audio>
   """
 
 
@@ -77,6 +77,13 @@ class MainView extends Backbone.Marionette.ItemView
     @currentChordIndex++
     @renderStave()
     @renderStatistics()
+    @playSuccessSound()
+
+
+  playSuccessSound : ->
+
+    document.getElementById('success-player').play()
+
 
   onFailure : ->
 
