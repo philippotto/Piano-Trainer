@@ -87,7 +87,7 @@ class MidiService
 
     # TODO: take care of multiple inputs
     input = inputs[0]
-    console.log("Input",  input)
+    console.log("Input", input)
     input.onmidimessage = @onMidiMessage.bind(@)
 
 

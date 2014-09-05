@@ -1,7 +1,7 @@
 {
   "src": {
     "dir": "app",
-    "copy": ["app/index.html"],
+    "copy": ["app/index.html", "app/resources/**/*.*"],
     "scripts": "app/scripts/**/*.{js,coffee}",
     "styles": "app/styles/index.less",
     "images": "app/images/**/*.{jpg,png,gif}"
