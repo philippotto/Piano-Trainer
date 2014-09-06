@@ -4,5 +4,5 @@ module.exports = (gulp, $, options) ->
 
   gulp.task("deploy", (done) ->
     gulp.src(options.dest.dir + "/**/*")
-      .pipe(deploy(push : false))
+      .pipe(deploy())
   )
