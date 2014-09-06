@@ -12,6 +12,7 @@ class Router extends UberRouter
 
   routes :
     "" : "home"
+    "Piano-Trainer/" : "home"
 
   whitelist : []
 
