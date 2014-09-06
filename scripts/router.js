@@ -16,7 +16,8 @@
       Router.prototype.navbarSelector = "#navbar";
 
       Router.prototype.routes = {
-        "": "home"
+        "": "home",
+        "Piano-Trainer/": "home"
       };
 
       Router.prototype.whitelist = [];
