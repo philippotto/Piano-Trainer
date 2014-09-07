@@ -112,6 +112,10 @@
         })(this)).sortBy("formattedDate").reverse().value();
       };
 
+      StatisticService.prototype.getDataCount = function() {
+        return this.stats.length;
+      };
+
       return StatisticService;
 
     })();
