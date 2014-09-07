@@ -62,11 +62,11 @@ class UberRouter extends Backbone.Router
       url = $(evt.currentTarget).attr("href")
       if url == "#"
         return
-        
+
       # allow opening links in new tabs
       if evt.metaKey
         return
-        
+
       # allow target=_blank etc
       if evt.currentTarget.target != ""
         return
@@ -80,7 +80,7 @@ class UberRouter extends Backbone.Router
         if regex.test(urlWithoutSlash)
           evt.preventDefault()
           @navigate(url, trigger : true)
- 
+
           return
 
       return

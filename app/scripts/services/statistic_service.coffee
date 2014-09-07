@@ -120,3 +120,9 @@ class StatisticService
       .sortBy("formattedDate")
       .reverse()
       .value()
+
+
+  getDataCount : ->
+
+    @stats.length
+
