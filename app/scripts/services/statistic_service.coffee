@@ -105,16 +105,17 @@ class StatisticService
       .map((el) ->
         el.formattedDate = [
           el.date.getUTCFullYear()
-          el.date.getMonth()
-          el.date.getDay()
+          ("0" + el.date.getMonth()).slice(-2)
+          ("0" + el.date.getDate()).slice(-2)
         ].join("-")
         el
       )
       .groupBy("formattedDate")
-      .map((aDay) =>
+      .map((aDay, formattedDate) =>
         dayTimes = _.pluck(aDay, "time")
         aDay.averageTime = @computeAverage(dayTimes)
         aDay.totalTime = @computeSum(dayTimes)
+        aDay.formattedDate = formattedDate
         aDay
       )
       .sortBy("formattedDate")

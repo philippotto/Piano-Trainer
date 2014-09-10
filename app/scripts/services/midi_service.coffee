@@ -9,7 +9,13 @@ class MidiService
     unless @errorCallback
       @errorCallback = ->
 
-
+    @receivingMidiMessages = false
+    setTimeout(
+      =>
+        if not @receivingMidiMessages
+          @errorCallback("A MIDI device could be found, but it doesn't send any messages. A browser restart may help.")
+      2000
+    )
     @keyConverter = new KeyConverter()
     @initializeInputStates()
 
@@ -21,7 +27,7 @@ class MidiService
       return
 
     unless navigator.requestMIDIAccess?
-      @errorCallback("Your browser doesn't seem to support Midi Access.")
+      @errorCallback("Your browser doesn't seem to support MIDI Access.")
       return
 
 
@@ -102,6 +108,8 @@ class MidiService
 
 
   onMidiMessage : (msg) ->
+
+    @receivingMidiMessages = true
 
     if msg.data.length == 1 and msg.data[0] == 254
       return
