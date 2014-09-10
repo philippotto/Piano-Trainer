@@ -11,7 +11,7 @@
         return MainView.__super__.constructor.apply(this, arguments);
       }
 
-      MainView.prototype.template = _.template("<img id=\"image-background\" src=\"images/piano-background.jpg\">\n\n<div class=\"jumbotron\">\n  <h1>Piano Trainer</h1>\n  <a href=\"https://github.com/philippotto/Piano-Trainer\">\n    <img id=\"github\" src=\"images/github.png\">\n  </a>\n</div>\n\n<div class=\"Aligner\">\n  <div class=\"Aligner-item\">\n    <canvas></canvas>\n  </div>\n</div>\n\n<div id=\"message-container\" class=\"Aligner hide\">\n  <div class=\"Aligner-item message Aligner\">\n    <div>\n      <h3 id=\"error-message\"></h3>\n      <h4>\n        Have a look into the <a href=\"https://github.com/philippotto/Piano-Trainer#set-up\">Set Up</a> section.\n      </h4>\n    </div>\n  </div>\n</div>\n\n<div id=\"statistics\"></div>\n<audio id=\"success-player\" hidden=\"true\" src=\"success.mp3\" controls preload=\"auto\" autobuffer></audio>");
+      MainView.prototype.template = _.template("<img id=\"image-background\" src=\"images/piano-background.jpg\">\n\n<div class=\"jumbotron\">\n  <h1>Piano Trainer</h1>\n  <a href=\"https://github.com/philippotto/Piano-Trainer\">\n    <img id=\"github\" src=\"images/github.png\">\n  </a>\n</div>\n\n<div class=\"Aligner\">\n  <div class=\"Aligner-item\">\n    <canvas></canvas>\n  </div>\n</div>\n\n<div id=\"message-container\" class=\"Aligner hide\">\n  <div class=\"Aligner-item message Aligner\">\n    <div>\n      <h3 id=\"error-message\"></h3>\n      <h4>\n        Have a look into the <a href=\"https://github.com/philippotto/Piano-Trainer#how-to-use\">Set Up</a> section.\n      </h4>\n    </div>\n  </div>\n</div>\n\n<div id=\"statistics\"></div>\n<audio id=\"success-player\" hidden=\"true\" src=\"success.mp3\" controls preload=\"auto\" autobuffer></audio>");
 
       MainView.prototype.ui = {
         "canvas": "canvas",
@@ -94,8 +94,8 @@
       MainView.prototype.renderStave = function() {
         var ctx, height, leftHandStave, renderer, rightHandStave, width, _ref, _ref1;
         this.startDate = new Date();
-        _ref = [this.renderer, this.ctx], renderer = _ref[0], ctx = _ref[1];
-        _ref1 = [500, 250], width = _ref1[0], height = _ref1[1];
+        _ref = [500, 250], width = _ref[0], height = _ref[1];
+        _ref1 = [this.renderer, this.ctx], renderer = _ref1[0], ctx = _ref1[1];
         ctx.clear();
         this.setCanvasExtent(width, height);
         rightHandStave = new Vex.Flow.Stave(10, 0, width);

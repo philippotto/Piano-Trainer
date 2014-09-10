@@ -99,14 +99,15 @@
         return _(this.stats).filter(function(el) {
           return el.success;
         }).map(function(el) {
-          el.formattedDate = [el.date.getUTCFullYear(), el.date.getMonth(), el.date.getDay()].join("-");
+          el.formattedDate = [el.date.getUTCFullYear(), ("0" + el.date.getMonth()).slice(-2), ("0" + el.date.getDate()).slice(-2)].join("-");
           return el;
         }).groupBy("formattedDate").map((function(_this) {
-          return function(aDay) {
+          return function(aDay, formattedDate) {
             var dayTimes;
             dayTimes = _.pluck(aDay, "time");
             aDay.averageTime = _this.computeAverage(dayTimes);
             aDay.totalTime = _this.computeSum(dayTimes);
+            aDay.formattedDate = formattedDate;
             return aDay;
           };
         })(this)).sortBy("formattedDate").reverse().value();

@@ -12,6 +12,7 @@
         if (!this.errorCallback) {
           this.errorCallback = function() {};
         }
+        this.receivingMidiMessages = false;
         this.keyConverter = new KeyConverter();
         this.initializeInputStates();
         this.justHadSuccess = true;
@@ -19,7 +20,7 @@
           return;
         }
         if (navigator.requestMIDIAccess == null) {
-          this.errorCallback("Your browser doesn't seem to support Midi Access.");
+          this.errorCallback("Your browser doesn't seem to support MIDI Access.");
           return;
         }
         this.promise = navigator.requestMIDIAccess({
@@ -30,6 +31,13 @@
             return _this.errorCallback("There was a problem while requesting MIDI access.", arguments);
           };
         })(this));
+        setTimeout((function(_this) {
+          return function() {
+            if (!_this.receivingMidiMessages) {
+              return _this.errorCallback("A MIDI device could be found, but it doesn't send any messages. A browser restart may help.");
+            }
+          };
+        })(this), 2000);
       }
 
       MidiService.prototype.initializeInputStates = function() {
@@ -95,6 +103,7 @@
 
       MidiService.prototype.onMidiMessage = function(msg) {
         var intensity, note;
+        this.receivingMidiMessages = true;
         if (msg.data.length === 1 && msg.data[0] === 254) {
           return;
         }
