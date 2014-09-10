@@ -12,7 +12,7 @@ describe("MidiService", ->
     successCallback = -> successCounter++
     failureCallback = -> failedCounter++
 
-    midiService = new MidiService(successCallback, failureCallback, true)
+    midiService = new MidiService(successCallback, failureCallback, null, true)
     midiService.setDesiredKeys(["a/0"])
 
     midiService.onMidiMessage(
@@ -34,7 +34,7 @@ describe("MidiService", ->
     successCallback = -> successCounter++
     failureCallback = -> failedCounter++
 
-    midiService = new MidiService(successCallback, failureCallback, true)
+    midiService = new MidiService(successCallback, failureCallback, null, true)
     midiService.setDesiredKeys(["a/0", "c/8"])
 
     midiService.onMidiMessage(
@@ -59,7 +59,7 @@ describe("MidiService", ->
     successCallback = -> successCounter++
     failureCallback = -> failedCounter++
 
-    midiService = new MidiService(successCallback, failureCallback, true)
+    midiService = new MidiService(successCallback, failureCallback, null, true)
     midiService.setDesiredKeys(["a/0", "c/8"])
 
     midiService.onMidiMessage(data : [0, 21, 1])

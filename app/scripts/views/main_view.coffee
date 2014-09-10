@@ -26,6 +26,17 @@ class MainView extends Backbone.Marionette.ItemView
       </div>
     </div>
 
+    <div id="message-container" class="Aligner hide">
+      <div class="Aligner-item message Aligner">
+        <div>
+          <h3 id="error-message"></h3>
+          <h4>
+            Have a look into the <a href="https://github.com/philippotto/Piano-Trainer#set-up">Set Up</a> section.
+          </h4>
+        </div>
+      </div>
+    </div>
+
     <div id="statistics"></div>
     <audio id="success-player" hidden="true" src="success.mp3" controls preload="auto" autobuffer></audio>
   """
@@ -34,6 +45,8 @@ class MainView extends Backbone.Marionette.ItemView
   ui :
     "canvas" : "canvas"
     "statistics" : "#statistics"
+    "errorMessage" : "#error-message"
+    "messageContainer" : "#message-container"
 
 
   onRender : ->
@@ -52,11 +65,19 @@ class MainView extends Backbone.Marionette.ItemView
     @keyConverter = new KeyConverter()
 
     @midiService = new MidiService(
-      => @onSuccess()
-      => @onFailure()
+      @onSuccess.bind(@)
+      @onFailure.bind(@)
+      @onError.bind(@)
     )
     @initializeRenderer()
     @renderStave()
+
+
+  onError : (msg, args) ->
+
+    console.error.apply(console, arguments)
+    @ui.errorMessage.html(msg)
+    @ui.messageContainer.removeClass("hide")
 
 
   getAllCurrentKeys : ->
@@ -65,6 +86,7 @@ class MainView extends Backbone.Marionette.ItemView
       @currentNotes["treble"][@currentChordIndex].getKeys()
       @currentNotes["bass"][@currentChordIndex].getKeys()
     )
+
 
   onSuccess : ->
 

@@ -4,7 +4,11 @@
 
 class MidiService
 
-  constructor : (@successCallback, @failureCallback, mocked = false) ->
+  constructor : (@successCallback, @failureCallback, @errorCallback, mocked = false) ->
+
+    unless @errorCallback
+      @errorCallback = ->
+
 
     @keyConverter = new KeyConverter()
     @initializeInputStates()
@@ -16,10 +20,16 @@ class MidiService
     if mocked
       return
 
+    unless navigator.requestMIDIAccess?
+      @errorCallback("Your browser doesn't seem to support Midi Access.")
+      return
+
+
     @promise = navigator.requestMIDIAccess({sysexEnabled: true})
     @promise.then(
       @onMidiAccess.bind(@)
-      console.warn.bind(console)
+      =>
+        @errorCallback("There was a problem while requesting MIDI access.", arguments)
     )
 
 
@@ -82,7 +92,7 @@ class MidiService
 
     inputs = @midi.inputs()
     if inputs.length == 0
-      console.error("No connected devices :(")
+      @errorCallback("No MIDI device found.")
       return
 
     # TODO: take care of multiple inputs
