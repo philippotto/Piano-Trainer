@@ -16,6 +16,9 @@ class MainView extends Backbone.Marionette.ItemView
 
     <div class="jumbotron">
       <h1>Piano Trainer</h1>
+      <a href="https://github.com/philippotto/Piano-Trainer">
+        <img id="github" src="images/github.png">
+      </a>
     </div>
 
     <div class="Aligner">
