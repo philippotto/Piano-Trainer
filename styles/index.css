@@ -7738,12 +7738,6 @@ button.close {
 body {
   font-family: "Droid Sans", sans-serif;
 }
-#body-background {
-  position: fixed;
-  width: 200%;
-  height: 200%;
-  z-index: -1;
-}
 .jumbotron {
   background-color: rgba(0, 0, 0, 0.7);
   padding-top: 24px;
@@ -7760,17 +7754,51 @@ body {
   font-variant: small-caps;
 }
 #image-background {
-  margin: auto;
-  min-width: 50%;
-  min-height: 50%;
+  min-height: 100%;
+  min-width: 1600px;
+  width: 100%;
+  height: auto;
+  position: fixed;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
-  -webkit-transition: all 30s ease-in-out;
+  z-index: -1;
+}
+#github {
+  position: absolute;
+  top: 10px;
+  right: 10px;
 }
 h1 {
   font-size: 100px;
+}
+.box-shadow {
+  -webkit-box-shadow: 0px 0px 30px 0px #000000;
+  -moz-box-shadow: 0px 0px 30px 0px #000000;
+  box-shadow: 0px 0px 30px 0px #000000;
+}
+#text-stats {
+  -webkit-box-shadow: 0px 0px 30px 0px #000000;
+  -moz-box-shadow: 0px 0px 30px 0px #000000;
+  box-shadow: 0px 0px 30px 0px #000000;
+  background: white;
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  padding: 20px;
+  color: #777777;
+  width: 300px;
+}
+#graph-stats {
+  -webkit-box-shadow: 0px 0px 30px 0px #000000;
+  -moz-box-shadow: 0px 0px 30px 0px #000000;
+  box-shadow: 0px 0px 30px 0px #000000;
+  background: white;
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  height: 320px;
+  width: 420px;
+  padding: 10px;
 }
 .Aligner {
   display: flex;
@@ -7778,43 +7806,23 @@ h1 {
   justify-content: center;
   height: 100%;
 }
-.box-shadow {
-  -webkit-box-shadow: 0px 0px 117px 0px #000000;
-  -moz-box-shadow: 0px 0px 117px 0px #000000;
-  box-shadow: 0px 0px 117px 0px #000000;
-  background: white;
-}
-#text-stats {
-  -webkit-box-shadow: 0px 0px 117px 0px #000000;
-  -moz-box-shadow: 0px 0px 117px 0px #000000;
-  box-shadow: 0px 0px 117px 0px #000000;
-  background: white;
-  position: absolute;
-  left: 10px;
-  bottom: 10px;
-  padding: 20px;
-  color: #777777;
-}
-#graph-stats {
-  -webkit-box-shadow: 0px 0px 117px 0px #000000;
-  -moz-box-shadow: 0px 0px 117px 0px #000000;
-  box-shadow: 0px 0px 117px 0px #000000;
-  background: white;
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  height: 300px;
-}
 .Aligner-item {
-  -webkit-box-shadow: 0px 0px 117px 0px #000000;
-  -moz-box-shadow: 0px 0px 117px 0px #000000;
-  box-shadow: 0px 0px 117px 0px #000000;
+  -webkit-box-shadow: 0px 0px 30px 0px #000000;
+  -moz-box-shadow: 0px 0px 30px 0px #000000;
+  box-shadow: 0px 0px 30px 0px #000000;
   background: white;
   max-width: 50%;
   width: 600px;
   height: 300px;
   padding-left: 50px;
   padding-top: 50px;
+}
+.message {
+  height: 100px;
+  margin-top: 25px;
+  text-align: center;
+  padding-left: 0px;
+  padding-top: 0px;
 }
 /* override chartist color */
 .ct-chart .ct-series.ct-series-a .ct-bar,

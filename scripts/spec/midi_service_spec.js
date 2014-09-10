@@ -10,7 +10,7 @@
         failureCallback = function() {
           return failedCounter++;
         };
-        midiService = new MidiService(successCallback, failureCallback, true);
+        midiService = new MidiService(successCallback, failureCallback, null, true);
         midiService.setDesiredKeys(["a/0"]);
         midiService.onMidiMessage({
           data: [0, 21, 1]
@@ -30,7 +30,7 @@
         failureCallback = function() {
           return failedCounter++;
         };
-        midiService = new MidiService(successCallback, failureCallback, true);
+        midiService = new MidiService(successCallback, failureCallback, null, true);
         midiService.setDesiredKeys(["a/0", "c/8"]);
         midiService.onMidiMessage({
           data: [0, 21, 1]
@@ -53,7 +53,7 @@
         failureCallback = function() {
           return failedCounter++;
         };
-        midiService = new MidiService(successCallback, failureCallback, true);
+        midiService = new MidiService(successCallback, failureCallback, null, true);
         midiService.setDesiredKeys(["a/0", "c/8"]);
         midiService.onMidiMessage({
           data: [0, 21, 1]

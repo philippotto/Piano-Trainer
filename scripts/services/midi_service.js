@@ -2,11 +2,15 @@
   define(["./key_converter"], function(KeyConverter) {
     var MidiService;
     return MidiService = (function() {
-      function MidiService(successCallback, failureCallback, mocked) {
+      function MidiService(successCallback, failureCallback, errorCallback, mocked) {
         this.successCallback = successCallback;
         this.failureCallback = failureCallback;
+        this.errorCallback = errorCallback;
         if (mocked == null) {
           mocked = false;
+        }
+        if (!this.errorCallback) {
+          this.errorCallback = function() {};
         }
         this.keyConverter = new KeyConverter();
         this.initializeInputStates();
@@ -14,10 +18,18 @@
         if (mocked) {
           return;
         }
+        if (navigator.requestMIDIAccess == null) {
+          this.errorCallback("Your browser doesn't seem to support Midi Access.");
+          return;
+        }
         this.promise = navigator.requestMIDIAccess({
           sysexEnabled: true
         });
-        this.promise.then(this.onMidiAccess.bind(this), console.warn.bind(console));
+        this.promise.then(this.onMidiAccess.bind(this), (function(_this) {
+          return function() {
+            return _this.errorCallback("There was a problem while requesting MIDI access.", arguments);
+          };
+        })(this));
       }
 
       MidiService.prototype.initializeInputStates = function() {
@@ -73,7 +85,7 @@
         this.midi = midi;
         inputs = this.midi.inputs();
         if (inputs.length === 0) {
-          console.error("No connected devices :(");
+          this.errorCallback("No MIDI device found.");
           return;
         }
         input = inputs[0];

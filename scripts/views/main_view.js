@@ -11,11 +11,13 @@
         return MainView.__super__.constructor.apply(this, arguments);
       }
 
-      MainView.prototype.template = _.template("<div id=\"body-background\">\n  <img id=\"image-background\" src=\"images/piano-background.jpg\">\n</div>\n\n<div class=\"jumbotron\">\n  <h1>Piano Trainer</h1>\n</div>\n\n<div class=\"Aligner\">\n  <div class=\"Aligner-item\">\n    <canvas></canvas>\n  </div>\n</div>\n\n<div id=\"statistics\"></div>\n<audio id=\"success-player\" hidden=\"true\" src=\"success.mp3\" controls preload=\"auto\" autobuffer></audio>");
+      MainView.prototype.template = _.template("<img id=\"image-background\" src=\"images/piano-background.jpg\">\n\n<div class=\"jumbotron\">\n  <h1>Piano Trainer</h1>\n  <a href=\"https://github.com/philippotto/Piano-Trainer\">\n    <img id=\"github\" src=\"images/github.png\">\n  </a>\n</div>\n\n<div class=\"Aligner\">\n  <div class=\"Aligner-item\">\n    <canvas></canvas>\n  </div>\n</div>\n\n<div id=\"message-container\" class=\"Aligner hide\">\n  <div class=\"Aligner-item message Aligner\">\n    <div>\n      <h3 id=\"error-message\"></h3>\n      <h4>\n        Have a look into the <a href=\"https://github.com/philippotto/Piano-Trainer#set-up\">Set Up</a> section.\n      </h4>\n    </div>\n  </div>\n</div>\n\n<div id=\"statistics\"></div>\n<audio id=\"success-player\" hidden=\"true\" src=\"success.mp3\" controls preload=\"auto\" autobuffer></audio>");
 
       MainView.prototype.ui = {
         "canvas": "canvas",
-        "statistics": "#statistics"
+        "statistics": "#statistics",
+        "errorMessage": "#error-message",
+        "messageContainer": "#message-container"
       };
 
       MainView.prototype.onRender = function() {
@@ -30,17 +32,15 @@
           };
         })(this), 0);
         this.keyConverter = new KeyConverter();
-        this.midiService = new MidiService((function(_this) {
-          return function() {
-            return _this.onSuccess();
-          };
-        })(this), (function(_this) {
-          return function() {
-            return _this.onFailure();
-          };
-        })(this));
+        this.midiService = new MidiService(this.onSuccess.bind(this), this.onFailure.bind(this), this.onError.bind(this));
         this.initializeRenderer();
         return this.renderStave();
+      };
+
+      MainView.prototype.onError = function(msg, args) {
+        console.error.apply(console, arguments);
+        this.ui.errorMessage.html(msg);
+        return this.ui.messageContainer.removeClass("hide");
       };
 
       MainView.prototype.getAllCurrentKeys = function() {
