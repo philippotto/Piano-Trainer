@@ -13,7 +13,7 @@ class StatisticsView extends Backbone.Marionette.ItemView
 
     <% if(statistics.getDataCount() > 0) { %>
 
-      <div id="text-stats" class="col-md-2">
+      <div id="text-stats">
         <h4>The last days you trained:</h4>
         <ul>
           <% statistics.getLastDays(10).map(function(el){ %>
@@ -29,7 +29,7 @@ class StatisticsView extends Backbone.Marionette.ItemView
         <h4>Failure rate: <%= statistics.getFailureRate().toFixed(2) %></h4>
       </div>
 
-      <div id="graph-stats" class="col-md-3">
+      <div id="graph-stats">
         <div class="semi-transparent ct-chart ct-perfect-fourth"></div>
       </div>
 

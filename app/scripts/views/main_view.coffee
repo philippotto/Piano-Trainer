@@ -12,9 +12,7 @@ class MainView extends Backbone.Marionette.ItemView
 
 
   template : _.template """
-    <div id="body-background">
-      <img id="image-background" src="images/piano-background.jpg">
-    </div>
+    <img id="image-background" src="images/piano-background.jpg">
 
     <div class="jumbotron">
       <h1>Piano Trainer</h1>

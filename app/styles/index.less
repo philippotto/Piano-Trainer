@@ -13,14 +13,6 @@ body {
   font-family: "Droid Sans", sans-serif;
 }
 
-#body-background {
-  position: fixed;
-  width: 200%;
-  height: 200%;
-  z-index: -1;
-}
-
-
 .jumbotron {
   background-color: rgba(0, 0, 0, 0.7);
   padding-top: 24px;
@@ -40,14 +32,14 @@ body {
 
 
 #image-background {
-  margin: auto;
-  min-width: 50%;
-  min-height: 50%;
+  min-height: 100%;
+  min-width: 1600px;
+  width: 100%;
+  height: auto;
+  position: fixed;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
-  -webkit-transition: all 30s ease-in-out;
+  z-index: -1;
 }
 
 
@@ -69,6 +61,7 @@ h1 {
   bottom: 10px;
   padding: 20px;
   color: #777777;
+  width: 300px;
 }
 
 #graph-stats {
@@ -76,7 +69,9 @@ h1 {
   position: absolute;
   bottom: 10px;
   right: 10px;
-  height: 300px;
+  height: 320px;
+  width: 420px;
+  padding: 10px;
 }
 
 .Aligner {
