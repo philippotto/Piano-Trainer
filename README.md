@@ -10,8 +10,18 @@ Instead you must read the correct notes.
 Learn piano the hard way!
 
 
-Currently, the Web MIDI API has very limited browser support.
-Try Chrome 37 and [activate](chrome://flags/#enable-web-midi) the experimental ```enable-web-midi``` flag.
-
 Piano-Trainer is written in CoffeeScript, uses Vex for rendering the sheets and Chartist for rendering the graphs.
 The tests are executed with Jasmine/Karma on Travis.
+
+
+## Set Up
+
+Currently, the Web MIDI API has very limited browser support. Try Chrome 37 and [activate](chrome://flags/#enable-web-midi) the experimental ```enable-web-midi``` flag.
+After connecting your MIDI device to your computer, it may be necessary to restart Chrome.
+Additionally, make sure that no other software is reading from the device.
+
+
+
+## License
+
+MIT © Philipp Otto 2014
