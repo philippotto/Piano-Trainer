@@ -1,4 +1,6 @@
 path = require("path")
+requireSugar = require("require-sugar")
+
 module.exports = (gulp, $, options) ->
 
   gulp.task("scripts", ->
@@ -9,6 +11,7 @@ module.exports = (gulp, $, options) ->
         extension : ".js"
       ))
       # .pipe($.sourcemaps.init())
+      .pipe(requireSugar())
       .pipe($.if(
         (file) ->
           return path.extname(file.path) == ".coffee"
