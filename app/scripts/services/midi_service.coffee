@@ -10,12 +10,6 @@ class MidiService
       @errorCallback = ->
 
     @receivingMidiMessages = false
-    setTimeout(
-      =>
-        if not @receivingMidiMessages
-          @errorCallback("A MIDI device could be found, but it doesn't send any messages. A browser restart may help.")
-      2000
-    )
     @keyConverter = new KeyConverter()
     @initializeInputStates()
 
@@ -37,7 +31,13 @@ class MidiService
       =>
         @errorCallback("There was a problem while requesting MIDI access.", arguments)
     )
-
+    
+    setTimeout(
+      =>
+        if not @receivingMidiMessages
+          @errorCallback("A MIDI device could be found, but it doesn't send any messages. A browser restart may help.")
+      2000
+    )
 
 
   initializeInputStates : ->
