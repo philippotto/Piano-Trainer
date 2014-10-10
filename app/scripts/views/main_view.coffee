@@ -144,8 +144,8 @@ class MainView extends Backbone.Marionette.ItemView
 
     @startDate = new Date()
 
-    [renderer, ctx] = [@renderer, @ctx]
     [width, height] = [500, 250]
+    [renderer, ctx] = [@renderer, @ctx]
 
     ctx.clear()
 
