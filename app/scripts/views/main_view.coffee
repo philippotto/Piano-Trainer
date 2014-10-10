@@ -32,7 +32,7 @@ class MainView extends Backbone.Marionette.ItemView
         <div>
           <h3 id="error-message"></h3>
           <h4>
-            Have a look into the <a href="https://github.com/philippotto/Piano-Trainer#set-up">Set Up</a> section.
+            Have a look into the <a href="https://github.com/philippotto/Piano-Trainer#how-to-use">Set Up</a> section.
           </h4>
         </div>
       </div>
