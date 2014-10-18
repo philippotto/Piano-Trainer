@@ -16,7 +16,7 @@ The tests are executed with Jasmine/Karma on Travis.
 
 ## How to use
 
-Currently, the Web MIDI API has very limited browser support. Try Chrome 37 and [activate](chrome://flags/#enable-web-midi) the experimental ```enable-web-midi``` flag.
+Currently, the Web MIDI API has very limited browser support. Try Chrome 37 and activate the experimental ```enable-web-midi``` flag (```chrome://flags/#enable-web-midi```).
 After connecting your MIDI device to your computer, it may be necessary to restart Chrome.
 Additionally, make sure that no other software is reading from the device.
 Finally: Just visit the GitHub hosted [Piano-Trainer](http://philippotto.github.io/Piano-Trainer/).
