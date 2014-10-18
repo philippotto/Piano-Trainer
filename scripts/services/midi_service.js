@@ -31,13 +31,6 @@
             return _this.errorCallback("There was a problem while requesting MIDI access.", arguments);
           };
         })(this));
-        setTimeout((function(_this) {
-          return function() {
-            if (!_this.receivingMidiMessages) {
-              return _this.errorCallback("A MIDI device could be found, but it doesn't send any messages. A browser restart may help.");
-            }
-          };
-        })(this), 2000);
       }
 
       MidiService.prototype.initializeInputStates = function() {
@@ -98,7 +91,14 @@
         }
         input = inputs[0];
         console.log("Input", input);
-        return input.onmidimessage = this.onMidiMessage.bind(this);
+        input.onmidimessage = this.onMidiMessage.bind(this);
+        return setTimeout((function(_this) {
+          return function() {
+            if (!_this.receivingMidiMessages) {
+              return _this.errorCallback("A MIDI device could be found, but it doesn't send any messages. A browser restart may help.");
+            }
+          };
+        })(this), 2000);
       };
 
       MidiService.prototype.onMidiMessage = function(msg) {
