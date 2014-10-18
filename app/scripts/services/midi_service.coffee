@@ -31,13 +31,6 @@ class MidiService
       =>
         @errorCallback("There was a problem while requesting MIDI access.", arguments)
     )
-    
-    setTimeout(
-      =>
-        if not @receivingMidiMessages
-          @errorCallback("A MIDI device could be found, but it doesn't send any messages. A browser restart may help.")
-      2000
-    )
 
 
   initializeInputStates : ->
@@ -105,6 +98,13 @@ class MidiService
     input = inputs[0]
     console.log("Input", input)
     input.onmidimessage = @onMidiMessage.bind(@)
+
+    setTimeout(
+      =>
+        if not @receivingMidiMessages
+          @errorCallback("A MIDI device could be found, but it doesn't send any messages. A browser restart may help.")
+      2000
+    )
 
 
   onMidiMessage : (msg) ->
