@@ -10,7 +10,7 @@ Instead you must read the correct notes.
 Learn piano the hard way!
 
 
-Piano-Trainer is written in CoffeeScript, uses Vex for rendering the sheets and Chartist for rendering the graphs.
+Piano-Trainer is written in CoffeeScript, uses [Vex](https://github.com/0xfe/vexflow) for rendering the sheets and [Chartist](https://github.com/gionkunz/chartist-js) for rendering the graphs.
 The tests are executed with Jasmine/Karma on Travis.
 
 
@@ -21,8 +21,8 @@ After connecting your MIDI device to your computer, it may be necessary to resta
 Additionally, make sure that no other software is reading from the device.
 Finally: Just visit the GitHub hosted [Piano-Trainer](http://philippotto.github.io/Piano-Trainer/).
 
-If you want to run Piano-Trainer locally, just checkout the repository and execute npm install and gulp watch.
+If you want to run Piano-Trainer locally, checkout the repository and execute npm install and gulp watch within the folder.
 
 ## License
 
-MIT © Philipp Otto 2014
+MIT © Philipp Otto
