@@ -89,13 +89,13 @@ class MidiService
 
   onMidiAccess : (@midi) ->
 
-    inputs = @midi.inputs()
-    if inputs.length == 0
+    inputs = @midi.inputs
+    if inputs.size == 0
       @errorCallback("No MIDI device found.")
       return
 
     # TODO: take care of multiple inputs
-    input = inputs[0]
+    input = inputs.get(0)
     console.log("Input", input)
     input.onmidimessage = @onMidiMessage.bind(@)
 
@@ -113,6 +113,8 @@ class MidiService
 
     if msg.data.length == 1 and msg.data[0] == 254
       return
+
+    console.log(msg)
 
     note = msg.data[1]
     intensity = msg.data[2]
