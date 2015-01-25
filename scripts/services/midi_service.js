@@ -89,7 +89,7 @@
           this.errorCallback("No MIDI device found.");
           return;
         }
-        input = inputs.get(0);
+        input = inputs.values().next().value;
         console.log("Input", input);
         input.onmidimessage = this.onMidiMessage.bind(this);
         return setTimeout((function(_this) {
