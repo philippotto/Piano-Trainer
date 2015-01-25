@@ -95,7 +95,9 @@ class MidiService
       return
 
     # TODO: take care of multiple inputs
-    input = inputs.get(0)
+    # weird workaround because inputs.get(0) doesn't always work?
+    input = inputs.values().next().value
+
     console.log("Input", input)
     input.onmidimessage = @onMidiMessage.bind(@)
 
