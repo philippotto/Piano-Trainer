@@ -21,25 +21,36 @@ class MainView extends Backbone.Marionette.ItemView
       </a>
     </div>
 
-    <div class="Aligner">
-      <div class="Aligner-item">
-        <canvas></canvas>
+    <div class="too-small">
+      <div class="message">
+        <p>
+          This page is meant to be viewed on a sufficiently large screen with a MIDI enabled device connected.
+          If you are interested to learn more about Piano-Trainer, view <a href="http://github.com/philippotto/Piano-Trainer">this page.</a>
+        </p>
       </div>
     </div>
 
-    <div id="message-container" class="Aligner hide">
-      <div class="Aligner-item message Aligner">
-        <div>
-          <h3 id="error-message"></h3>
-          <h4>
-            Have a look into the <a href="https://github.com/philippotto/Piano-Trainer#how-to-use">Set Up</a> section.
-          </h4>
+    <div class="trainer">
+      <div class="Aligner">
+        <div class="Aligner-item">
+          <canvas></canvas>
         </div>
       </div>
-    </div>
 
-    <div id="statistics"></div>
-    <audio id="success-player" hidden="true" src="success.mp3" controls preload="auto" autobuffer></audio>
+      <div id="message-container" class="Aligner hide">
+        <div class="Aligner-item message Aligner">
+          <div>
+            <h3 id="error-message"></h3>
+            <h4>
+              Have a look into the <a href="https://github.com/philippotto/Piano-Trainer#how-to-use">Set Up</a> section.
+            </h4>
+          </div>
+        </div>
+      </div>
+
+      <div id="statistics"></div>
+      <audio id="success-player" hidden="true" src="success.mp3" controls preload="auto" autobuffer></audio>
+    </div>
   """
 
 

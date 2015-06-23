@@ -13,6 +13,28 @@ body {
   font-family: "Droid Sans", sans-serif;
 }
 
+.too-small {
+
+  margin-bottom: 25px;
+  div {
+    padding: 10px;
+  }
+  font-size: 14px;
+  background: white;
+
+  @media screen and (min-width: 980px) {
+    display: none !important;
+  }
+}
+
+.trainer {
+  @media screen and (max-width: 980px) {
+    display: none !important;
+  }
+}
+
+
+
 .jumbotron {
   background-color: rgba(0, 0, 0, 0.7);
   padding-top: 24px;
@@ -123,3 +145,4 @@ h1 {
 .ct-chart .ct-point {
   stroke-width: 6px;
 }
+
