@@ -8,6 +8,7 @@ class StatisticService
     @read()
     console.log("@stats",  @stats)
 
+
   register : (evt) ->
 
     ###
@@ -18,12 +19,6 @@ class StatisticService
       time : 0.5
     }
     ###
-
-    timeThreshold = 15000
-    if evt.time > timeThreshold
-      # don't save events which took too long
-      # we don't want to drag the statistics down when the user made a break
-      return
 
     evt.date = new Date()
 
@@ -47,6 +42,13 @@ class StatisticService
 
     localStorage.setItem("pianoTrainerStatistics", JSON.stringify(@stats))
 
+  getSuccessCount : ->
+
+    _(@stats)
+      .filter((el) -> el.success)
+      .value()
+      .length
+
 
   getLastTimes : (n = 10) ->
 
@@ -68,7 +70,7 @@ class StatisticService
 
   computeAverage : (array) ->
 
-    @computeSum(array) / array.length
+    @computeSum(array) / (array.length || 1)
 
 
   getAverageTimeOfLast : (n = 10) ->

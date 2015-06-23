@@ -4,10 +4,10 @@
 
 class MidiService
 
-  constructor : (@successCallback, @failureCallback, @errorCallback, mocked = false) ->
+  constructor : (@successCallback, @failureCallback, @errorCallback, @errorResolveCallback, mocked = false) ->
 
-    unless @errorCallback
-      @errorCallback = ->
+    @errorCallback ||= ->
+    @errorResolveCallback ||= ->
 
     @receivingMidiMessages = false
     @keyConverter = new KeyConverter()
@@ -16,6 +16,7 @@ class MidiService
     # a wrong chord should not result in lots of failure calls
     # so, remember the last state
     @justHadSuccess = true
+    @errorCallbackFired = false
 
     if mocked
       return
@@ -86,7 +87,6 @@ class MidiService
         return
 
 
-
   onMidiAccess : (@midi) ->
 
     inputs = @midi.inputs
@@ -98,13 +98,17 @@ class MidiService
     # weird workaround because inputs.get(0) doesn't always work?
     input = inputs.values().next().value
 
-    console.log("Input", input)
+    console.log("Midi access received. Available inputs", inputs, "Chosen input:", input)
     input.onmidimessage = @onMidiMessage.bind(@)
 
     setTimeout(
       =>
-        if not @receivingMidiMessages
-          @errorCallback("A MIDI device could be found, but it doesn't send any messages. A browser restart may help.")
+        if @receivingMidiMessages
+          console.log("Receiving events...")
+        else
+          console.warn("Firing error callback")
+          @errorCallback("A MIDI device could be found, but it doesn't send any messages. Did you press a key, yet? A browser restart could help.")
+          @errorCallbackFired = true
       2000
     )
 
@@ -113,7 +117,11 @@ class MidiService
 
     @receivingMidiMessages = true
 
-    if msg.data.length == 1 and msg.data[0] == 254
+    if @errorCallbackFired
+      @errorResolveCallback()
+
+    if msg.data[0] == 254
+      # ignore "active sensing" event
       return
 
     console.log(msg)

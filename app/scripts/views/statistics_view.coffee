@@ -10,9 +10,7 @@ class StatisticsView extends Backbone.Marionette.ItemView
 
   className : "row"
   template : _.template """
-
-    <% if(statistics.getDataCount() > 0) { %>
-
+    <div id="stats">
       <div id="text-stats">
         <h4>The last days you trained:</h4>
         <ul>
@@ -32,12 +30,11 @@ class StatisticsView extends Backbone.Marionette.ItemView
       <div id="graph-stats">
         <div class="semi-transparent ct-chart ct-perfect-fourth"></div>
       </div>
-
-    <% } %>
+    </div>
   """
 
   ui :
-    "canvas" : "canvas"
+    "stats" : "#stats"
     "chart" : ".ct-chart"
 
 
@@ -51,9 +48,6 @@ class StatisticsView extends Backbone.Marionette.ItemView
     # TODO: find a better way to trigger the rendering
 
     statistics = @model.get("statistics")
-
-    if statistics.getDataCount() == 0
-      return
 
     data =
       labels: []
@@ -70,4 +64,8 @@ class StatisticsView extends Backbone.Marionette.ItemView
       width: 400
       height: 300
 
-    Chartist.Line(@ui.chart.get(0), data, options)
+    if (statistics.getSuccessCount() > 1)
+      Chartist.Line(@ui.chart.get(0), data, options)
+      @ui.stats.show()
+    else
+      @ui.stats.hide()

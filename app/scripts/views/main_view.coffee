@@ -68,7 +68,8 @@ class MainView extends Backbone.Marionette.ItemView
     @midiService = new MidiService(
       @onSuccess.bind(@)
       @onFailure.bind(@)
-      @onError.bind(@)
+      @onError.bind(@),
+      @onErrorResolve.bind(@)
     )
     @initializeRenderer()
     @renderStave()
@@ -81,6 +82,11 @@ class MainView extends Backbone.Marionette.ItemView
     @ui.messageContainer.removeClass("hide")
 
 
+  onErrorResolve : ->
+
+    @ui.messageContainer.addClass("hide")
+
+
   getAllCurrentKeys : ->
 
     [].concat(
@@ -91,11 +97,20 @@ class MainView extends Backbone.Marionette.ItemView
 
   onSuccess : ->
 
-    @statisticService.register(
+    event =
       success : true
       keys : @getAllCurrentKeys()
       time : new Date() - @startDate
-    )
+
+    timeThreshold = 30000
+
+    if event.time <= timeThreshold
+      @statisticService.register(event)
+      @onErrorResolve()
+    else
+      # don't save events which took too long
+      # we don't want to drag the statistics down when the user made a break
+      @onError("Since you took more than " + timeThreshold/1000 + " seconds, we ignored this event to avoid dragging down your statistics. Hopefully, you just made a break in between :)")
 
     @currentChordIndex++
     @renderStave()
