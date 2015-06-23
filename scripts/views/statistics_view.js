@@ -13,10 +13,10 @@
 
       StatisticsView.prototype.className = "row";
 
-      StatisticsView.prototype.template = _.template("\n<% if(statistics.getDataCount() > 0) { %>\n\n  <div id=\"text-stats\">\n    <h4>The last days you trained:</h4>\n    <ul>\n      <% statistics.getLastDays(10).map(function(el){ %>\n        <li><%= (el.averageTime / 1000).toFixed(2) %>s average\n          (<%= (el.totalTime / 1000 / 60).toFixed(2) %> min)\n        </li>\n      <% }) %>\n    </ul>\n\n    <h4>Average time: <%= (statistics.getAverageTimeOfLast(100) / 1000).toFixed(2) %>s</h4>\n    <h4>Played chords: <%= statistics.getTotalAmountOfChords() %></h4>\n    <h4>Played notes: <%= statistics.getTotalAmountOfNotes() %></h4>\n    <h4>Failure rate: <%= statistics.getFailureRate().toFixed(2) %></h4>\n  </div>\n\n  <div id=\"graph-stats\">\n    <div class=\"semi-transparent ct-chart ct-perfect-fourth\"></div>\n  </div>\n\n<% } %>");
+      StatisticsView.prototype.template = _.template("<div id=\"stats\">\n  <div id=\"text-stats\">\n    <h4>The last days you trained:</h4>\n    <ul>\n      <% statistics.getLastDays(10).map(function(el){ %>\n        <li><%= (el.averageTime / 1000).toFixed(2) %>s average\n          (<%= (el.totalTime / 1000 / 60).toFixed(2) %> min)\n        </li>\n      <% }) %>\n    </ul>\n\n    <h4>Average time: <%= (statistics.getAverageTimeOfLast(100) / 1000).toFixed(2) %>s</h4>\n    <h4>Played chords: <%= statistics.getTotalAmountOfChords() %></h4>\n    <h4>Played notes: <%= statistics.getTotalAmountOfNotes() %></h4>\n    <h4>Failure rate: <%= statistics.getFailureRate().toFixed(2) %></h4>\n  </div>\n\n  <div id=\"graph-stats\">\n    <div class=\"semi-transparent ct-chart ct-perfect-fourth\"></div>\n  </div>\n</div>");
 
       StatisticsView.prototype.ui = {
-        "canvas": "canvas",
+        "stats": "#stats",
         "chart": ".ct-chart"
       };
 
@@ -28,9 +28,6 @@
       StatisticsView.prototype.renderChart = function() {
         var data, options, statistics;
         statistics = this.model.get("statistics");
-        if (statistics.getDataCount() === 0) {
-          return;
-        }
         data = {
           labels: [],
           series: [statistics.getLastTimes(100)]
@@ -45,7 +42,12 @@
           width: 400,
           height: 300
         };
-        return Chartist.Line(this.ui.chart.get(0), data, options);
+        if (statistics.getSuccessCount() > 1) {
+          Chartist.Line(this.ui.chart.get(0), data, options);
+          return this.ui.stats.show();
+        } else {
+          return this.ui.stats.hide();
+        }
       };
 
       return StatisticsView;

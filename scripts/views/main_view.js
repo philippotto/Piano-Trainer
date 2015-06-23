@@ -11,7 +11,7 @@
         return MainView.__super__.constructor.apply(this, arguments);
       }
 
-      MainView.prototype.template = _.template("<img id=\"image-background\" src=\"images/piano-background.jpg\">\n\n<div class=\"jumbotron\">\n  <h1>Piano Trainer</h1>\n  <a href=\"https://github.com/philippotto/Piano-Trainer\">\n    <img id=\"github\" src=\"images/github.png\">\n  </a>\n</div>\n\n<div class=\"Aligner\">\n  <div class=\"Aligner-item\">\n    <canvas></canvas>\n  </div>\n</div>\n\n<div id=\"message-container\" class=\"Aligner hide\">\n  <div class=\"Aligner-item message Aligner\">\n    <div>\n      <h3 id=\"error-message\"></h3>\n      <h4>\n        Have a look into the <a href=\"https://github.com/philippotto/Piano-Trainer#how-to-use\">Set Up</a> section.\n      </h4>\n    </div>\n  </div>\n</div>\n\n<div id=\"statistics\"></div>\n<audio id=\"success-player\" hidden=\"true\" src=\"success.mp3\" controls preload=\"auto\" autobuffer></audio>");
+      MainView.prototype.template = _.template("<img id=\"image-background\" src=\"images/piano-background.jpg\">\n\n<div class=\"jumbotron\">\n  <h1>Piano Trainer</h1>\n  <a href=\"https://github.com/philippotto/Piano-Trainer\">\n    <img id=\"github\" src=\"images/github.png\">\n  </a>\n</div>\n\n<div class=\"too-small\">\n  <div class=\"message\">\n    <p>\n      This page is meant to be viewed on a sufficiently large screen with a MIDI enabled device connected.\n      If you are interested to learn more about Piano-Trainer, view <a href=\"http://github.com/philippotto/Piano-Trainer\">this page.</a>\n    </p>\n  </div>\n</div>\n\n<div class=\"trainer\">\n  <div class=\"Aligner\">\n    <div class=\"Aligner-item\">\n      <canvas></canvas>\n    </div>\n  </div>\n\n  <div id=\"message-container\" class=\"Aligner hide\">\n    <div class=\"Aligner-item message Aligner\">\n      <div>\n        <h3 id=\"error-message\"></h3>\n        <h4>\n          Have a look into the <a href=\"https://github.com/philippotto/Piano-Trainer#how-to-use\">Set Up</a> section.\n        </h4>\n      </div>\n    </div>\n  </div>\n\n  <div id=\"statistics\"></div>\n  <audio id=\"success-player\" hidden=\"true\" src=\"success.mp3\" controls preload=\"auto\" autobuffer></audio>\n</div>");
 
       MainView.prototype.ui = {
         "canvas": "canvas",
@@ -32,7 +32,7 @@
           };
         })(this), 0);
         this.keyConverter = new KeyConverter();
-        this.midiService = new MidiService(this.onSuccess.bind(this), this.onFailure.bind(this), this.onError.bind(this));
+        this.midiService = new MidiService(this.onSuccess.bind(this), this.onFailure.bind(this), this.onError.bind(this), this.onErrorResolve.bind(this));
         this.initializeRenderer();
         return this.renderStave();
       };
@@ -43,16 +43,28 @@
         return this.ui.messageContainer.removeClass("hide");
       };
 
+      MainView.prototype.onErrorResolve = function() {
+        return this.ui.messageContainer.addClass("hide");
+      };
+
       MainView.prototype.getAllCurrentKeys = function() {
         return [].concat(this.currentNotes["treble"][this.currentChordIndex].getKeys(), this.currentNotes["bass"][this.currentChordIndex].getKeys());
       };
 
       MainView.prototype.onSuccess = function() {
-        this.statisticService.register({
+        var event, timeThreshold;
+        event = {
           success: true,
           keys: this.getAllCurrentKeys(),
           time: new Date() - this.startDate
-        });
+        };
+        timeThreshold = 30000;
+        if (event.time <= timeThreshold) {
+          this.statisticService.register(event);
+          this.onErrorResolve();
+        } else {
+          this.onError("Since you took more than " + timeThreshold / 1000 + " seconds, we ignored this event to avoid dragging down your statistics. Hopefully, you just made a break in between :)");
+        }
         this.currentChordIndex++;
         this.renderStave();
         this.renderStatistics();

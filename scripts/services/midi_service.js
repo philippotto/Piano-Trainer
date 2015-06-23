@@ -2,20 +2,21 @@
   define(["./key_converter"], function(KeyConverter) {
     var MidiService;
     return MidiService = (function() {
-      function MidiService(successCallback, failureCallback, errorCallback, mocked) {
+      function MidiService(successCallback, failureCallback, errorCallback, errorResolveCallback, mocked) {
         this.successCallback = successCallback;
         this.failureCallback = failureCallback;
         this.errorCallback = errorCallback;
+        this.errorResolveCallback = errorResolveCallback;
         if (mocked == null) {
           mocked = false;
         }
-        if (!this.errorCallback) {
-          this.errorCallback = function() {};
-        }
+        this.errorCallback || (this.errorCallback = function() {});
+        this.errorResolveCallback || (this.errorResolveCallback = function() {});
         this.receivingMidiMessages = false;
         this.keyConverter = new KeyConverter();
         this.initializeInputStates();
         this.justHadSuccess = true;
+        this.errorCallbackFired = false;
         if (mocked) {
           return;
         }
@@ -90,12 +91,16 @@
           return;
         }
         input = inputs.values().next().value;
-        console.log("Input", input);
+        console.log("Midi access received. Available inputs", inputs, "Chosen input:", input);
         input.onmidimessage = this.onMidiMessage.bind(this);
         return setTimeout((function(_this) {
           return function() {
-            if (!_this.receivingMidiMessages) {
-              return _this.errorCallback("A MIDI device could be found, but it doesn't send any messages. A browser restart may help.");
+            if (_this.receivingMidiMessages) {
+              return console.log("Receiving events...");
+            } else {
+              console.warn("Firing error callback");
+              _this.errorCallback("A MIDI device could be found, but it doesn't send any messages. Did you press a key, yet? A browser restart could help.");
+              return _this.errorCallbackFired = true;
             }
           };
         })(this), 2000);
@@ -104,7 +109,10 @@
       MidiService.prototype.onMidiMessage = function(msg) {
         var intensity, note;
         this.receivingMidiMessages = true;
-        if (msg.data.length === 1 && msg.data[0] === 254) {
+        if (this.errorCallbackFired) {
+          this.errorResolveCallback();
+        }
+        if (msg.data[0] === 254) {
           return;
         }
         console.log(msg);
