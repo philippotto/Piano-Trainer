@@ -120,14 +120,19 @@ class MidiService
     if @errorCallbackFired
       @errorResolveCallback()
 
-    if msg.data[0] == 254
+    [status, note, intensity] = msg.data
+
+    if status == 254
       # ignore "active sensing" event
       return
 
     console.log(msg)
 
-    note = msg.data[1]
-    intensity = msg.data[2]
+    if status <= 143
+      # off event
+      intensity = 0
 
-    @setNote(note, intensity)
+    if status <= 159
+      # on or off event
+      @setNote(note, intensity)
 
