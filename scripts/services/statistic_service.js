@@ -1,4 +1,6 @@
 (function() {
+  var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+
   define([], function() {
     var StatisticService;
     return StatisticService = (function() {
@@ -23,20 +25,26 @@
       };
 
       StatisticService.prototype.read = function() {
-        var el, _i, _len, _ref, _results;
+        var el, leftKeys, leftRightPartition, output, rightKeys, _i, _len, _ref;
         this.stats = localStorage.getItem("pianoTrainerStatistics");
+        output = ["success, time, date, formattedDate, leftKeyLength, rightKeyLength"];
         if (this.stats) {
           this.stats = JSON.parse(this.stats);
           _ref = this.stats;
-          _results = [];
           for (_i = 0, _len = _ref.length; _i < _len; _i++) {
             el = _ref[_i];
-            _results.push(el.date = new Date(el.date));
+            el.date = new Date(el.date);
+            leftRightPartition = _.groupBy(el.keys, function(note) {
+              return (__indexOf.call(note, "2") >= 0) || (__indexOf.call(note, "3") >= 0);
+            });
+            leftKeys = leftRightPartition[true];
+            rightKeys = leftRightPartition[false];
+            output.push([el.success, el.time, el.date, el.formattedDate, leftKeys.length, rightKeys.length].join(";"));
           }
-          return _results;
         } else {
-          return this.stats = [];
+          this.stats = [];
         }
+        return console.log(output.join("\n"));
       };
 
       StatisticService.prototype.save = function() {

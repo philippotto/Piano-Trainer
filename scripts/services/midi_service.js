@@ -107,18 +107,22 @@
       };
 
       MidiService.prototype.onMidiMessage = function(msg) {
-        var intensity, note;
+        var intensity, note, status, _ref;
         this.receivingMidiMessages = true;
         if (this.errorCallbackFired) {
           this.errorResolveCallback();
         }
-        if (msg.data[0] === 254) {
+        _ref = msg.data, status = _ref[0], note = _ref[1], intensity = _ref[2];
+        if (status === 254) {
           return;
         }
         console.log(msg);
-        note = msg.data[1];
-        intensity = msg.data[2];
-        return this.setNote(note, intensity);
+        if (status <= 143) {
+          intensity = 0;
+        }
+        if (status <= 159) {
+          return this.setNote(note, intensity);
+        }
       };
 
       return MidiService;
