@@ -4,6 +4,10 @@
 
 class MidiService
 
+  @onKeyStatus = 159
+  @offKeyStatus = 143
+  @activeSensingStatus = 254
+
   constructor : (@successCallback, @failureCallback, @errorCallback, @errorResolveCallback, mocked = false) ->
 
     @errorCallback ||= ->
@@ -122,17 +126,17 @@ class MidiService
 
     [status, note, intensity] = msg.data
 
-    if status == 254
+    if status == MidiService.activeSensingStatus
       # ignore "active sensing" event
       return
 
     console.log(msg)
 
-    if status <= 143
+    if status <= MidiService.offKeyStatus
       # off event
       intensity = 0
 
-    if status <= 159
+    if status <= MidiService.onKeyStatus
       # on or off event
       @setNote(note, intensity)
 
