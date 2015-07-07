@@ -9,6 +9,9 @@ So, you can't rely on intuition or experience.
 Instead you must read the correct notes.
 Learn piano the hard way!
 
+Read more in this [blog post](http://scm.io/blog/hack/2015/07/piano-trainer/).
+
+
 [![Piano Trainer Screenshot](./piano-trainer-screenshot.jpg)](http://philippotto.github.io/Piano-Trainer/)
 
 Piano-Trainer is written in CoffeeScript, uses [Vex](https://github.com/0xfe/vexflow) for rendering the sheets and [Chartist](https://github.com/gionkunz/chartist-js) for rendering the graphs.
