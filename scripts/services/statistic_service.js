@@ -1,6 +1,4 @@
 (function() {
-  var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
-
   define([], function() {
     var StatisticService;
     return StatisticService = (function() {
@@ -19,42 +17,35 @@
           time : 0.5
         }
          */
+        var timeThreshold;
+        timeThreshold = 15000;
+        if (evt.time > timeThreshold) {
+          return;
+        }
         evt.date = new Date();
         this.stats.push(evt);
         return this.save();
       };
 
       StatisticService.prototype.read = function() {
-        var el, leftKeys, leftRightPartition, output, rightKeys, _i, _len, _ref;
+        var el, _i, _len, _ref, _results;
         this.stats = localStorage.getItem("pianoTrainerStatistics");
-        output = ["success, time, date, formattedDate, leftKeyLength, rightKeyLength"];
         if (this.stats) {
           this.stats = JSON.parse(this.stats);
           _ref = this.stats;
+          _results = [];
           for (_i = 0, _len = _ref.length; _i < _len; _i++) {
             el = _ref[_i];
-            el.date = new Date(el.date);
-            leftRightPartition = _.groupBy(el.keys, function(note) {
-              return (__indexOf.call(note, "2") >= 0) || (__indexOf.call(note, "3") >= 0);
-            });
-            leftKeys = leftRightPartition[true];
-            rightKeys = leftRightPartition[false];
-            output.push([el.success, el.time, el.date, el.formattedDate, leftKeys.length, rightKeys.length].join(";"));
+            _results.push(el.date = new Date(el.date));
           }
+          return _results;
         } else {
-          this.stats = [];
+          return this.stats = [];
         }
-        return console.log(output.join("\n"));
       };
 
       StatisticService.prototype.save = function() {
         return localStorage.setItem("pianoTrainerStatistics", JSON.stringify(this.stats));
-      };
-
-      StatisticService.prototype.getSuccessCount = function() {
-        return _(this.stats).filter(function(el) {
-          return el.success;
-        }).value().length;
       };
 
       StatisticService.prototype.getLastTimes = function(n) {
@@ -73,7 +64,7 @@
       };
 
       StatisticService.prototype.computeAverage = function(array) {
-        return this.computeSum(array) / (array.length || 1);
+        return this.computeSum(array) / array.length;
       };
 
       StatisticService.prototype.getAverageTimeOfLast = function(n) {

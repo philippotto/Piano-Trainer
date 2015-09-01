@@ -7733,23 +7733,11 @@ button.close {
 .fa-bomb:before {
   content: "\f1e2";
 }
-/* Chartist.js 0.1.10
+/* Chartist.js 0.1.15
  * Copyright © 2014 Gion Kunz
  * Free to use under the WTFPL license.
  * http://www.wtfpl.net/
  */
-[data-icon]:before {
-  content: attr(data-icon);
-  display: inline-block;
-  vertical-align: baseline;
-  font-family: FontAwesome;
-  font-style: normal;
-  font-weight: 400;
-  font-size: 1em;
-  line-height: 1;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
 .ct-chart .ct-label {
   fill: rgba(0, 0, 0, 0.4);
   font-size: 0.75rem;
@@ -7767,6 +7755,10 @@ button.close {
   fill: none;
   stroke-width: 4px;
 }
+.ct-chart .ct-area {
+  stroke: none;
+  fill-opacity: 0.1;
+}
 .ct-chart .ct-bar {
   fill: none;
   stroke-width: 10px;
@@ -7781,6 +7773,7 @@ button.close {
 .ct-chart .ct-series.ct-series-a .ct-slice.ct-donut {
   stroke: #d70206;
 }
+.ct-chart .ct-series.ct-series-a .ct-area,
 .ct-chart .ct-series.ct-series-a .ct-slice:not(.ct-donut) {
   fill: #d70206;
 }
@@ -7790,6 +7783,7 @@ button.close {
 .ct-chart .ct-series.ct-series-b .ct-slice.ct-donut {
   stroke: #f05b4f;
 }
+.ct-chart .ct-series.ct-series-b .ct-area,
 .ct-chart .ct-series.ct-series-b .ct-slice:not(.ct-donut) {
   fill: #f05b4f;
 }
@@ -7799,6 +7793,7 @@ button.close {
 .ct-chart .ct-series.ct-series-c .ct-slice.ct-donut {
   stroke: #f4c63d;
 }
+.ct-chart .ct-series.ct-series-c .ct-area,
 .ct-chart .ct-series.ct-series-c .ct-slice:not(.ct-donut) {
   fill: #f4c63d;
 }
@@ -7808,8 +7803,139 @@ button.close {
 .ct-chart .ct-series.ct-series-d .ct-slice.ct-donut {
   stroke: #453d3f;
 }
+.ct-chart .ct-series.ct-series-d .ct-area,
 .ct-chart .ct-series.ct-series-d .ct-slice:not(.ct-donut) {
   fill: #453d3f;
+}
+.ct-chart.ct-square {
+  display: block;
+  position: relative;
+  width: 100%;
+}
+.ct-chart.ct-square:before {
+  display: block;
+  float: left;
+  content: "";
+  width: 0;
+  height: 0;
+  padding-bottom: 100%;
+}
+.ct-chart.ct-square:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+.ct-chart.ct-square > svg {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.ct-chart.ct-minor-second {
+  display: block;
+  position: relative;
+  width: 100%;
+}
+.ct-chart.ct-minor-second:before {
+  display: block;
+  float: left;
+  content: "";
+  width: 0;
+  height: 0;
+  padding-bottom: 93.75%;
+}
+.ct-chart.ct-minor-second:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+.ct-chart.ct-minor-second > svg {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.ct-chart.ct-major-second {
+  display: block;
+  position: relative;
+  width: 100%;
+}
+.ct-chart.ct-major-second:before {
+  display: block;
+  float: left;
+  content: "";
+  width: 0;
+  height: 0;
+  padding-bottom: 88.88889%;
+}
+.ct-chart.ct-major-second:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+.ct-chart.ct-major-second > svg {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.ct-chart.ct-minor-third {
+  display: block;
+  position: relative;
+  width: 100%;
+}
+.ct-chart.ct-minor-third:before {
+  display: block;
+  float: left;
+  content: "";
+  width: 0;
+  height: 0;
+  padding-bottom: 83.33333%;
+}
+.ct-chart.ct-minor-third:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+.ct-chart.ct-minor-third > svg {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.ct-chart.ct-major-third {
+  display: block;
+  position: relative;
+  width: 100%;
+}
+.ct-chart.ct-major-third:before {
+  display: block;
+  float: left;
+  content: "";
+  width: 0;
+  height: 0;
+  padding-bottom: 80%;
+}
+.ct-chart.ct-major-third:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+.ct-chart.ct-major-third > svg {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 .ct-chart.ct-perfect-fourth {
   display: block;
@@ -7830,6 +7956,58 @@ button.close {
   clear: both;
 }
 .ct-chart.ct-perfect-fourth > svg {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.ct-chart.ct-perfect-fifth {
+  display: block;
+  position: relative;
+  width: 100%;
+}
+.ct-chart.ct-perfect-fifth:before {
+  display: block;
+  float: left;
+  content: "";
+  width: 0;
+  height: 0;
+  padding-bottom: 66.66667%;
+}
+.ct-chart.ct-perfect-fifth:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+.ct-chart.ct-perfect-fifth > svg {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.ct-chart.ct-minor-sixth {
+  display: block;
+  position: relative;
+  width: 100%;
+}
+.ct-chart.ct-minor-sixth:before {
+  display: block;
+  float: left;
+  content: "";
+  width: 0;
+  height: 0;
+  padding-bottom: 62.5%;
+}
+.ct-chart.ct-minor-sixth:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+.ct-chart.ct-minor-sixth > svg {
   display: block;
   position: absolute;
   top: 0;
@@ -7863,6 +8041,32 @@ button.close {
   width: 100%;
   height: 100%;
 }
+.ct-chart.ct-major-sixth {
+  display: block;
+  position: relative;
+  width: 100%;
+}
+.ct-chart.ct-major-sixth:before {
+  display: block;
+  float: left;
+  content: "";
+  width: 0;
+  height: 0;
+  padding-bottom: 60%;
+}
+.ct-chart.ct-major-sixth:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+.ct-chart.ct-major-sixth > svg {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
 .ct-chart.ct-minor-seventh {
   display: block;
   position: relative;
@@ -7889,25 +8093,25 @@ button.close {
   width: 100%;
   height: 100%;
 }
-.ct-chart.ct-square {
+.ct-chart.ct-major-seventh {
   display: block;
   position: relative;
   width: 100%;
 }
-.ct-chart.ct-square:before {
+.ct-chart.ct-major-seventh:before {
   display: block;
   float: left;
   content: "";
   width: 0;
   height: 0;
-  padding-bottom: 100%;
+  padding-bottom: 53.33333%;
 }
-.ct-chart.ct-square:after {
+.ct-chart.ct-major-seventh:after {
   content: "";
   display: table;
   clear: both;
 }
-.ct-chart.ct-square > svg {
+.ct-chart.ct-major-seventh > svg {
   display: block;
   position: absolute;
   top: 0;
@@ -7934,6 +8138,58 @@ button.close {
   clear: both;
 }
 .ct-chart.ct-octave > svg {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.ct-chart.ct-major-tenth {
+  display: block;
+  position: relative;
+  width: 100%;
+}
+.ct-chart.ct-major-tenth:before {
+  display: block;
+  float: left;
+  content: "";
+  width: 0;
+  height: 0;
+  padding-bottom: 40%;
+}
+.ct-chart.ct-major-tenth:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+.ct-chart.ct-major-tenth > svg {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.ct-chart.ct-major-eleventh {
+  display: block;
+  position: relative;
+  width: 100%;
+}
+.ct-chart.ct-major-eleventh:before {
+  display: block;
+  float: left;
+  content: "";
+  width: 0;
+  height: 0;
+  padding-bottom: 37.5%;
+}
+.ct-chart.ct-major-eleventh:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+.ct-chart.ct-major-eleventh > svg {
   display: block;
   position: absolute;
   top: 0;
@@ -7997,24 +8253,6 @@ button.close {
 body {
   font-family: "Droid Sans", sans-serif;
 }
-.too-small {
-  margin-bottom: 25px;
-  font-size: 14px;
-  background: white;
-}
-.too-small div {
-  padding: 10px;
-}
-@media screen and (min-width: 980px) {
-  .too-small {
-    display: none !important;
-  }
-}
-@media screen and (max-width: 980px) {
-  .trainer {
-    display: none !important;
-  }
-}
 .jumbotron {
   background-color: rgba(0, 0, 0, 0.7);
   padding-top: 24px;
@@ -8057,7 +8295,7 @@ h1 {
   -webkit-box-shadow: 0px 0px 30px 0px #000000;
   -moz-box-shadow: 0px 0px 30px 0px #000000;
   box-shadow: 0px 0px 30px 0px #000000;
-  background: white;
+  background: rgba(0, 0, 0, 0.79);
   position: absolute;
   left: 10px;
   bottom: 10px;
@@ -8069,7 +8307,7 @@ h1 {
   -webkit-box-shadow: 0px 0px 30px 0px #000000;
   -moz-box-shadow: 0px 0px 30px 0px #000000;
   box-shadow: 0px 0px 30px 0px #000000;
-  background: white;
+  background: rgba(0, 0, 0, 0.79);
   position: absolute;
   bottom: 10px;
   right: 10px;
@@ -8087,13 +8325,15 @@ h1 {
   -webkit-box-shadow: 0px 0px 30px 0px #000000;
   -moz-box-shadow: 0px 0px 30px 0px #000000;
   box-shadow: 0px 0px 30px 0px #000000;
-  background: white;
+  background: rgba(255, 255, 255, 0.95);
   max-width: 50%;
   width: 600px;
+  height: 300px;
   padding-left: 50px;
   padding-top: 50px;
 }
 .message {
+  height: 100px;
   margin-top: 25px;
   text-align: center;
   padding-left: 0px;
