@@ -17,11 +17,6 @@
           time : 0.5
         }
          */
-        var timeThreshold;
-        timeThreshold = 15000;
-        if (evt.time > timeThreshold) {
-          return;
-        }
         evt.date = new Date();
         this.stats.push(evt);
         return this.save();
@@ -48,6 +43,12 @@
         return localStorage.setItem("pianoTrainerStatistics", JSON.stringify(this.stats));
       };
 
+      StatisticService.prototype.getSuccessCount = function() {
+        return _(this.stats).filter(function(el) {
+          return el.success;
+        }).value().length;
+      };
+
       StatisticService.prototype.getLastTimes = function(n) {
         if (n == null) {
           n = 10;
@@ -64,7 +65,7 @@
       };
 
       StatisticService.prototype.computeAverage = function(array) {
-        return this.computeSum(array) / array.length;
+        return this.computeSum(array) / (array.length || 1);
       };
 
       StatisticService.prototype.getAverageTimeOfLast = function(n) {

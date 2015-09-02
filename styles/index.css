@@ -8253,6 +8253,24 @@ button.close {
 body {
   font-family: "Droid Sans", sans-serif;
 }
+.too-small {
+  margin-bottom: 25px;
+  font-size: 14px;
+  background: white;
+}
+.too-small div {
+  padding: 10px;
+}
+@media screen and (min-width: 980px) {
+  .too-small {
+    display: none !important;
+  }
+}
+@media screen and (max-width: 980px) {
+  .trainer {
+    display: none !important;
+  }
+}
 .jumbotron {
   background-color: rgba(0, 0, 0, 0.7);
   padding-top: 24px;
@@ -8295,7 +8313,7 @@ h1 {
   -webkit-box-shadow: 0px 0px 30px 0px #000000;
   -moz-box-shadow: 0px 0px 30px 0px #000000;
   box-shadow: 0px 0px 30px 0px #000000;
-  background: rgba(0, 0, 0, 0.79);
+  background: white;
   position: absolute;
   left: 10px;
   bottom: 10px;
@@ -8307,7 +8325,7 @@ h1 {
   -webkit-box-shadow: 0px 0px 30px 0px #000000;
   -moz-box-shadow: 0px 0px 30px 0px #000000;
   box-shadow: 0px 0px 30px 0px #000000;
-  background: rgba(0, 0, 0, 0.79);
+  background: white;
   position: absolute;
   bottom: 10px;
   right: 10px;
@@ -8325,15 +8343,13 @@ h1 {
   -webkit-box-shadow: 0px 0px 30px 0px #000000;
   -moz-box-shadow: 0px 0px 30px 0px #000000;
   box-shadow: 0px 0px 30px 0px #000000;
-  background: rgba(255, 255, 255, 0.95);
+  background: white;
   max-width: 50%;
   width: 600px;
-  height: 300px;
   padding-left: 50px;
   padding-top: 50px;
 }
 .message {
-  height: 100px;
   margin-top: 25px;
   text-align: center;
   padding-left: 0px;

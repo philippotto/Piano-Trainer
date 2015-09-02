@@ -2,20 +2,27 @@
   define(["./key_converter"], function(KeyConverter) {
     var MidiService;
     return MidiService = (function() {
-      function MidiService(successCallback, failureCallback, errorCallback, mocked) {
+      MidiService.onKeyStatus = 159;
+
+      MidiService.offKeyStatus = 143;
+
+      MidiService.activeSensingStatus = 254;
+
+      function MidiService(successCallback, failureCallback, errorCallback, errorResolveCallback, mocked) {
         this.successCallback = successCallback;
         this.failureCallback = failureCallback;
         this.errorCallback = errorCallback;
+        this.errorResolveCallback = errorResolveCallback;
         if (mocked == null) {
           mocked = false;
         }
-        if (!this.errorCallback) {
-          this.errorCallback = function() {};
-        }
+        this.errorCallback || (this.errorCallback = function() {});
+        this.errorResolveCallback || (this.errorResolveCallback = function() {});
         this.receivingMidiMessages = false;
         this.keyConverter = new KeyConverter();
         this.initializeInputStates();
         this.justHadSuccess = true;
+        this.errorCallbackFired = false;
         if (mocked) {
           return;
         }
@@ -90,27 +97,38 @@
           return;
         }
         input = inputs.values().next().value;
-        console.log("Input", input);
+        console.log("Midi access received. Available inputs", inputs, "Chosen input:", input);
         input.onmidimessage = this.onMidiMessage.bind(this);
         return setTimeout((function(_this) {
           return function() {
-            if (!_this.receivingMidiMessages) {
-              return _this.errorCallback("A MIDI device could be found, but it doesn't send any messages. A browser restart may help.");
+            if (_this.receivingMidiMessages) {
+              return console.log("Receiving events...");
+            } else {
+              console.warn("Firing error callback");
+              _this.errorCallback("A MIDI device could be found, but it doesn't send any messages. Did you press a key, yet? A browser restart could help.");
+              return _this.errorCallbackFired = true;
             }
           };
         })(this), 2000);
       };
 
       MidiService.prototype.onMidiMessage = function(msg) {
-        var intensity, note;
+        var intensity, note, status, _ref;
         this.receivingMidiMessages = true;
-        if (msg.data.length === 1 && msg.data[0] === 254) {
+        if (this.errorCallbackFired) {
+          this.errorResolveCallback();
+        }
+        _ref = msg.data, status = _ref[0], note = _ref[1], intensity = _ref[2];
+        if (status === MidiService.activeSensingStatus) {
           return;
         }
         console.log(msg);
-        note = msg.data[1];
-        intensity = msg.data[2];
-        return this.setNote(note, intensity);
+        if (status <= MidiService.offKeyStatus) {
+          intensity = 0;
+        }
+        if (status <= MidiService.onKeyStatus) {
+          return this.setNote(note, intensity);
+        }
       };
 
       return MidiService;
