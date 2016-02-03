@@ -156,7 +156,7 @@
       };
 
       MainView.prototype.getBaseNotes = function() {
-        return "cdfgab".split("");
+        return "cdefgab".split("");
       };
 
       MainView.prototype.generateBar = function(clef) {
