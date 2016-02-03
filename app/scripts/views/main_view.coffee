@@ -209,7 +209,7 @@ class MainView extends Backbone.Marionette.ItemView
 
   getBaseNotes : ->
 
-    return "cdfgab".split("")
+    return "cdefgab".split("")
 
 
   generateBar : (clef) ->
