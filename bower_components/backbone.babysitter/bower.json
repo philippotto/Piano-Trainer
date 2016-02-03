@@ -1,6 +1,6 @@
 {
   "name": "backbone.babysitter",
-  "version": "0.1.5",
+  "version": "0.1.4",
   "homepage": "https://github.com/marionettejs/backbone.babysitter",
   "authors": [
     "Derick Bailey <derickbailey@gmail.com>"
@@ -16,10 +16,6 @@
     "client",
     "browser"
   ],
-  "dependencies": {
-    "backbone": ">=0.9.9 <=1.1.2",
-    "underscore": ">=1.4.0 <=1.6.0"
-  },
   "license": "MIT",
   "ignore": [
     "**/.*",

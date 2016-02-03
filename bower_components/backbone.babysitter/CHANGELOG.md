@@ -1,9 +1,5 @@
 # Change log
 
-### v0.1.5
-
-* Minor updates to bower.json
-
 ### v0.1.4
 
 * Update UMD Wrapper and build process
