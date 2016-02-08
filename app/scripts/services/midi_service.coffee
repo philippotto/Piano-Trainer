@@ -8,7 +8,7 @@ class MidiService
   @offKeyStatus = 143
   @activeSensingStatus = 254
 
-  constructor : (@successCallback, @failureCallback, @errorCallback, @errorResolveCallback, mocked = false) ->
+  constructor : (@successCallback, @failureCallback, @errorCallback, @errorResolveCallback, @addInputDevicesCallback, mocked = false) ->
 
     @errorCallback ||= ->
     @errorResolveCallback ||= ->
@@ -21,6 +21,8 @@ class MidiService
     # so, remember the last state
     @justHadSuccess = true
     @errorCallbackFired = false
+
+    @activeInputDevice = null
 
     if mocked
       return
@@ -72,6 +74,30 @@ class MidiService
     @checkEqual(intensity)
 
 
+  setSelectedInputDeviceById : (deviceId) ->
+    inputs = @midi.inputs
+    if inputs.size == 0
+      @errorCallback("No MIDI device found.")
+      return
+
+    myInputs = @inputMapToArray(inputs)
+    inputDevice = _.find(myInputs, (input) -> input.id == deviceId)
+    @setSelectedInputDevice(inputDevice)
+
+
+  setSelectedInputDevice : (inputDevice) ->
+    console.log("Old input", @activeInputDevice, "New input:", inputDevice)
+
+    if @activeInputDevice
+      @activeInputDevice.onmidimessage = null;
+
+    if inputDevice
+      @errorResolveCallback()
+      @activeInputDevice = inputDevice
+      inputDevice.onmidimessage = @onMidiMessage.bind(@)
+    else
+      @errorCallback("Selected MIDI device is not found.")
+
   checkEqual: (intensity) ->
 
     if _.isEqual(@currentInputState, @desiredInputState)
@@ -91,6 +117,17 @@ class MidiService
         return
 
 
+  # that map needs weird handling, so just converting to an array
+  inputMapToArray : (inputs) ->
+    midiInputMap = inputs.values();
+    midiInput = midiInputMap.next()
+    myInputs = []
+    while midiInput and !midiInput.done
+      input = midiInput.value
+      myInputs.push(input)
+      midiInput = midiInputMap.next()
+    return myInputs
+
   onMidiAccess : (@midi) ->
 
     inputs = @midi.inputs
@@ -98,12 +135,14 @@ class MidiService
       @errorCallback("No MIDI device found.")
       return
 
+    myInputs = @inputMapToArray(inputs)
+    @addInputDevicesCallback(myInputs)
+
     # TODO: take care of multiple inputs
     # weird workaround because inputs.get(0) doesn't always work?
     input = inputs.values().next().value
-
     console.log("Midi access received. Available inputs", inputs, "Chosen input:", input)
-    input.onmidimessage = @onMidiMessage.bind(@)
+    @setSelectedInputDevice(input)
 
     setTimeout(
       =>

@@ -15,6 +15,8 @@ class MainView extends Backbone.Marionette.ItemView
     <img id="image-background" src="images/piano-background.jpg">
 
     <div class="jumbotron">
+      <select id="input-devices"></select>
+
       <h1>Piano Trainer</h1>
       <a href="https://github.com/philippotto/Piano-Trainer">
         <img id="github" src="images/github.png">
@@ -59,6 +61,7 @@ class MainView extends Backbone.Marionette.ItemView
     "statistics" : "#statistics"
     "errorMessage" : "#error-message"
     "messageContainer" : "#message-container"
+    "inputDevicesSelect" : "#input-devices"
 
 
   onRender : ->
@@ -81,7 +84,9 @@ class MainView extends Backbone.Marionette.ItemView
       @onFailure.bind(@)
       @onError.bind(@),
       @onErrorResolve.bind(@)
+      @onAddInputDevices.bind(@)
     )
+    @addViewListeners()
     @initializeRenderer()
     @renderStave()
 
@@ -96,6 +101,13 @@ class MainView extends Backbone.Marionette.ItemView
   onErrorResolve : ->
 
     @ui.messageContainer.addClass("hide")
+
+  onAddInputDevices : (inputDevices) ->
+    devices = @ui.inputDevicesSelect
+
+    for inputDevice in inputDevices
+      do (inputDevice) ->
+        devices.append(new Option(inputDevice.name, inputDevice.id))
 
 
   getAllCurrentKeys : ->
@@ -143,6 +155,12 @@ class MainView extends Backbone.Marionette.ItemView
     )
 
     @renderStatistics()
+
+  addViewListeners : ->
+    midiService = @midiService
+    @ui.inputDevicesSelect.change(
+      () -> midiService.setSelectedInputDeviceById(this.value)
+    )
 
 
   renderStatistics : ->
