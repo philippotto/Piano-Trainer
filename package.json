@@ -32,7 +32,7 @@
   },
   "scripts": {
     "postinstall": "node_modules/.bin/bower install && node_modules/.bin/gulp",
-    "test": "node_modules/.bin/karma start --single-run --browsers PhantomJS"
+    "test": "node_modules/karma/bin/karma start --single-run --browsers PhantomJS"
   },
   "devDependencies": {
     "karma": "^0.12.23",
