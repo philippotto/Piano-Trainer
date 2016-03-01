@@ -43,7 +43,7 @@ var webpack = require('webpack');
 var path = require('path');
 
 module.exports = {
-  entry: './scripts/index',
+  entry: './app/scripts/index',
   output: {
     path: path.join(__dirname, 'dist'),
     filename: 'bundle.js',
@@ -51,6 +51,9 @@ module.exports = {
   },
   resolve: {
     extensions: ['', '.js']
+  },
+  resolveLoader: {
+    root: path.join(__dirname, 'node_modules')
   },
   devtool: 'source-map',
   plugins: [
@@ -71,7 +74,7 @@ module.exports = {
       {
         test: /\.jsx?$/,
         loaders: ['babel'],
-        include: path.join(__dirname, 'scripts')
+        include: path.join(__dirname, 'app', 'scripts')
       }
     ]
   }

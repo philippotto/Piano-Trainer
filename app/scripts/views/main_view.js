@@ -1,84 +1,18 @@
-// ### define
-// jquery : $
-// backbone : Backbone
-// vexflow : Vex
-// services/midi_service : MidiService
-// services/statistic_service : StatisticService
-// services/key_converter : KeyConverter
-// ./statistics_view : StatisticsView
-// ###
+import Vex from 'vexflow';
+import React, {Component} from 'react';
+import StatisticsView from '../views/statistics_view.js';
+import MidiService from '../services/midi_service.js';
+import KeyConverter from '../services/key_converter.js';
 
-export default class MainView extends Backbone.Marionette.ItemView {
+const successMp3Url = require("file!../../resources/success.mp3");
 
+export default class App extends Component {
 
-  template() {
-    return _.template(`
-      <img id="image-background" src="images/piano-background.jpg">
-
-      <div class="jumbotron">
-        <h1>Piano Trainer</h1>
-        <a href="https://github.com/philippotto/Piano-Trainer">
-          <img id="github" src="images/github.png">
-        </a>
-      </div>
-
-      <div class="too-small">
-        <div class="message">
-          <p>
-            This page is meant to be viewed on a sufficiently large screen with a MIDI enabled device connected.
-            If you are interested to learn more about Piano-Trainer, view <a href="http://github.com/philippotto/Piano-Trainer">this page.</a>
-          </p>
-        </div>
-      </div>
-
-      <div class="trainer">
-        <div class="Aligner">
-          <div class="Aligner-item">
-            <canvas></canvas>
-          </div>
-        </div>
-
-        <div id="message-container" class="Aligner hide">
-          <div class="Aligner-item message Aligner">
-            <div>
-              <h3 id="error-message"></h3>
-              <h4>
-                Have a look into the <a href="https://github.com/philippotto/Piano-Trainer#how-to-use">Set Up</a> section.
-              </h4>
-            </div>
-          </div>
-        </div>
-
-        <div id="statistics"></div>
-        <audio id="success-player" hidden="true" src="success.mp3" controls preload="auto" autobuffer></audio>
-      </div>
-    `);
+  propTypes: {
+    statisticService: React.PropTypes.object.isRequired
   }
 
-
-  ui() {
-    return {
-      "canvas" : "canvas",
-      "statistics" : "#statistics",
-      "errorMessage" : "#error-message",
-      "messageContainer" : "#message-container"
-    };
-  }
-
-
-  onRender() {
-
-    this.statisticService = new StatisticService();
-    this.statisticsView = new StatisticsView({statisticService : this.statisticService});
-    this.renderStatistics();
-
-    // find a way to remove this dirty work around
-    setTimeout(
-      () => this.renderStatistics(),
-      0
-    );
-
-
+  componentDidMount() {
     this.keyConverter = new KeyConverter();
 
     this.midiService = new MidiService(
@@ -91,6 +25,60 @@ export default class MainView extends Backbone.Marionette.ItemView {
     return this.renderStave();
   }
 
+  render() {
+    return (
+      <div>
+        <img id="image-background" src="images/piano-background.jpg" />
+
+        <div className="jumbotron">
+          <h1>Piano Trainer</h1>
+          <a href="https://github.com/philippotto/Piano-Trainer">
+            <img id="github" src="images/github.png" />
+          </a>
+        </div>
+
+        <div className="too-small">
+          <div className="message">
+            <p>
+              This page is meant to be viewed on a sufficiently large screen with a MIDI enabled device connected.
+              If you are interested to learn more about Piano-Trainer, view <a href="http://github.com/philippotto/Piano-Trainer">this page.</a>
+            </p>
+          </div>
+        </div>
+
+        <div className="trainer">
+          <div className="Aligner">
+            <div className="Aligner-item">
+              <canvas ref="canvas"></canvas>
+            </div>
+          </div>
+
+          <div id="message-container" className="Aligner hide">
+            <div className="Aligner-item message Aligner">
+              <div>
+                <h3 id="error-message"></h3>
+                <h4>
+                  Have a look into the <a href="https://github.com/philippotto/Piano-Trainer#how-to-use">Set Up</a> section.
+                </h4>
+              </div>
+            </div>
+          </div>
+          <StatisticsView statisticService={this.props.statisticService} />
+          <audio id="success-player" hidden="true" src={successMp3Url} controls preload="auto" autobuffer></audio>
+        </div>
+      </div>
+
+    );
+  }
+
+//   ui() {
+//     return {
+//       "canvas" : "canvas",
+//       "statistics" : "#statistics",
+//       "errorMessage" : "#error-message",
+//       "messageContainer" : "#message-container"
+//     };
+//   }
 
   onError(msg, args) {
 
@@ -136,7 +124,6 @@ export default class MainView extends Backbone.Marionette.ItemView {
 
     this.currentChordIndex++;
     this.renderStave();
-    this.renderStatistics();
     return this.playSuccessSound();
   }
 
@@ -159,23 +146,16 @@ export default class MainView extends Backbone.Marionette.ItemView {
   }
 
 
-  renderStatistics() {
-
-    this.ui.statistics.html(this.statisticsView.render().el);
-    return this.statisticsView.renderChart();
-  }
-
-
   initializeRenderer() {
 
-    this.renderer = new Vex.Flow.Renderer(this.ui.canvas.get(0), Vex.Flow.Renderer.Backends.CANVAS);
+    this.renderer = new Vex.Flow.Renderer(this.refs.canvas, Vex.Flow.Renderer.Backends.CANVAS);
     return this.ctx = this.renderer.getContext();
   }
 
 
   setCanvasExtent(width, height) {
 
-    var canvas = this.ui.canvas.get(0);
+    var canvas = this.refs.canvas;
     canvas.width = width;
     canvas.height = height;
     canvas.style.width = width;
@@ -218,52 +198,40 @@ export default class MainView extends Backbone.Marionette.ItemView {
 
 
   colorizeKeys() {
-
-    return Objec.keys(this.currentNotes).map((key) => {
+    return Object.keys(this.currentNotes).map((key) => {
       var clef = this.currentNotes[key];
       return clef.forEach((staveNote, index) => {
         var color = index < this.currentChordIndex ? "green" : "black";
         return _.range(staveNote.getKeys().length).map((index) => {
           return staveNote.setKeyStyle(index, {fillStyle: color});
-        }
-        );
-      }
-
-      );
+        });
+      });
     }
     );
   }
 
-
   getBaseNotes() {
-
     return "cdefgab".split("");
   }
 
-
   generateBar(clef) {
-
-    var options =
-      {notesPerBar : 4,
+    var options = {
+      notesPerBar : 4,
       maximumKeysPerChord : 3,
       withModifiers : false,
-      levels :
-        {bass : [2, 3],
+      levels : {
+        bass : [2, 3],
         treble : [4, 5]
-        },
+      },
       maximumInterval : 12
-      };
+    };
 
     this.currentChordIndex = 0;
-
     var baseModifiers = options.withModifiers ? ["", "b", "#"] : [""];
-
     var generatedChords = _.range(0, options.notesPerBar).map( () => {
-
       var randomLevel = _.sample(options.levels[clef]);
 
       var generateNote = function(baseNotes) {
-
         var randomNoteIndex = _.random(0, baseNotes.length - 1);
         var note = baseNotes.splice(randomNoteIndex, 1)[0];
 
@@ -271,42 +239,33 @@ export default class MainView extends Backbone.Marionette.ItemView {
         return {note, modifier};
       };
 
-
       var generateChord = () => {
-
         var keys;
         var baseNotes = this.getBaseNotes();
-        return keys = _.times(_.random(1, options.maximumKeysPerChord), function() {
+        return keys = _.times(_.random(1, options.maximumKeysPerChord), () => {
           return generateNote(baseNotes);
-        }
-        );
+        });
       };
 
-
-      var formatKey = function({note, modifier}) { return note + modifier + "/" + randomLevel; };
-
+      var formatKey = ({note, modifier}) => note + modifier + "/" + randomLevel;
 
       var ensureInterval = (keys) => {
-
         var keyNumbers = keys.map((key) => {
           return this.keyConverter.getNumberForKeyString(formatKey(key));
-        }
-        );
+        });
         return options.maximumInterval >= _.max(keyNumbers) - _.min(keyNumbers);
       };
-
 
       var randomChord = generateChord();
       while (!ensureInterval(randomChord)) {
         randomChord = generateChord();
       }
 
-
-      var staveChord = new Vex.Flow.StaveNote(
-        {clef : clef,
+      var staveChord = new Vex.Flow.StaveNote({
+        clef : clef,
         keys : randomChord.map(formatKey),
-        duration: `//{options.notesPerBar}`}
-      );
+        duration: `${options.notesPerBar}`
+      });
 
       randomChord.forEach(({note, modifier}, index) => {
         if (modifier) {
@@ -314,12 +273,10 @@ export default class MainView extends Backbone.Marionette.ItemView {
         }
 
         return staveChord;
-      }
-      );
+      });
 
       return staveChord;
-    }
-    );
+    });
 
     return generatedChords;
   }

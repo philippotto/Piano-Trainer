@@ -1,6 +1,4 @@
-// ### define
-// lodash : _
-// ###
+import _ from 'lodash';
 
 export default class KeyConverter {
 
@@ -36,7 +34,7 @@ export default class KeyConverter {
 
     baseKey = parseInt(baseKey, 10);
 
-    var lastNote = baseKey;
+    let lastNote = baseKey;
 
     return _.times(7, (index) => {
       lastNote = lastNote + this.scaleIntervals[index];
@@ -49,12 +47,12 @@ export default class KeyConverter {
 
   getCanonicalForm(key) {
 
-    var stripKey = function(keyToStrip, modifier) {
+    const stripKey = function(keyToStrip, modifier) {
 
-      var regexp = new RegExp(modifier, "g");
+      const regexp = new RegExp(modifier, "g");
       // ignore the first character because of b notes
-      var strippedKey = keyToStrip[0] + keyToStrip.slice(1).replace(regexp, "");
-      var difference = keyToStrip.length - strippedKey.length;
+      const strippedKey = keyToStrip[0] + keyToStrip.slice(1).replace(regexp, "");
+      const difference = keyToStrip.length - strippedKey.length;
 
       return [strippedKey, difference];
     };
@@ -85,7 +83,6 @@ export default class KeyConverter {
     //   ...
     //   108 : "c/8"
     // }
-
 
     var baseScale = [
       "c", "c#", "d", "d#", "e", "f", "f#", "g", "g#", "a", "a#", "b"

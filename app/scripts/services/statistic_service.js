@@ -1,10 +1,8 @@
-/* define
- */
+import _ from 'lodash';
 
 export default class StatisticService {
 
   constructor() {
-
     this.read();
     console.log("@stats",  this.stats);
   }
@@ -12,13 +10,12 @@ export default class StatisticService {
 
   register(evt) {
 
-    /*
-    an event could like
-    {
-      success : true
-      keys : ["c#/4", "d#/4"]
-      time : 0.5
-    }
+    /* an event could be something like
+      {
+        success : true
+        keys : ["c#/4", "d#/4"]
+        time : 0.5
+      }
     */
 
     evt.date = new Date();
@@ -37,7 +34,7 @@ export default class StatisticService {
         el.date = new Date(el.date)
       }
     } else {
-      return this.stats = [];
+      this.stats = [];
     }
   }
 
@@ -56,7 +53,11 @@ export default class StatisticService {
 
   getLastTimes(n = 10) {
 
-    return _(this.stats).filter(function(el) { return el.success; }).pluck("time").last(n).value();
+    return _(this.stats)
+      .filter((el) => el.success)
+      .map((el) => el.time)
+      .slice(-n)
+      .value();
   }
 
 
@@ -64,7 +65,7 @@ export default class StatisticService {
 
     return _.reduce(
       array,
-      function(a, b) { return a + b; },
+      (a, b) => a + b,
       0
     );
   }
@@ -84,19 +85,26 @@ export default class StatisticService {
 
   getTotalAmountOfChords() {
 
-    return _(this.stats).filter(function(el) { return el.success; }).pluck("keys").size();
+    return _(this.stats)
+      .filter((el) => el.success)
+      .map((el) => el.keys)
+      .size();
   }
 
 
   getTotalAmountOfNotes() {
 
-    return _(this.stats).filter(function(el) { return el.success; }).pluck("keys").flatten().size();
+    return _(this.stats)
+      .filter((el) => el.success)
+      .map((el) => el.keys)
+      .flatten()
+      .size();
   }
 
 
   getFailureRate() {
 
-    return _.filter(this.stats, function(el) { return el.success; }).length / this.stats.length;
+    return _.filter(this.stats, (el) => el.success).length / this.stats.length;
   }
 
 
@@ -111,7 +119,7 @@ export default class StatisticService {
       return el;
     }
     ).groupBy("formattedDate").map((aDay, formattedDate) => {
-      var dayTimes = _.pluck(aDay, "time");
+      var dayTimes = _aDay.map((el) => el.time);
       aDay.averageTime = this.computeAverage(dayTimes);
       aDay.totalTime = this.computeSum(dayTimes);
       aDay.formattedDate = formattedDate;

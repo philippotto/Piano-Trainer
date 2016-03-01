@@ -48,15 +48,18 @@ module.exports = {
   entry: [
     'webpack-dev-server/client?http://localhost:5000',
     'webpack/hot/dev-server',
-    './scripts/index'
+    './app/scripts/index.js'
   ],
   output: {
-    path: __dirname,
+    path: path.resolve(__dirname, "build"),
     filename: 'bundle.js',
     publicPath: '/static/'
   },
   resolve: {
     extensions: ['', '.js']
+  },
+  resolveLoader: {
+    root: path.join(__dirname, 'node_modules')
   },
   devtool: 'eval-source-map',
   plugins: [
@@ -68,7 +71,11 @@ module.exports = {
       {
         test: /\.jsx?$/,
         loaders: ['babel'],
-        include: path.join(__dirname, 'scripts')
+        include: path.join(__dirname, 'app', 'scripts')
+      },
+      {
+        test: /\.less$/,
+        loader: "style!css!less",
       }
     ]
   }

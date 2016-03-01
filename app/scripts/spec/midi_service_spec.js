@@ -1,7 +1,5 @@
-// ### define
-// ../services/midi_service : MidiService
-// lodash : _
-// ###
+import KeyConverter from '../services/key_converter.js';
+import _ from 'lodash';
 
 describe("MidiService", function() {
 

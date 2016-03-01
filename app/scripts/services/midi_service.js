@@ -1,6 +1,4 @@
-// ### define
-// ./key_converter : KeyConverter
-// ###
+import KeyConverter from '../services/key_converter.js';
 
 export default class MidiService {
 
@@ -58,7 +56,7 @@ export default class MidiService {
     this.desiredInputState = {};
 
     keys.map((key) => {
-     number = this.keyConverter.getNumberForKeyString(key);
+     const number = this.keyConverter.getNumberForKeyString(key);
      this.desiredInputState[number] = true;
     });
   }

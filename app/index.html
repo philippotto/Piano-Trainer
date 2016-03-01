@@ -12,18 +12,12 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon-precomposed" href="images/apple-icon-ipad.png" />
 
-    <link rel="stylesheet" type="text/css" href="styles/index.css" />
+    <!-- <link rel="stylesheet" type="text/css" href="styles/index.css" /> -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
     <link rel="shortcut icon" href="images/favicon.png" />
   </head>
   <body>
-
-    <div id="main">
-      <!-- Dynamic html injection -->
-    </div>
-
-    <script type="text/javascript" src="bower_components/requirejs/require.js"></script>
-    <script type="text/javascript" src="scripts/require_config.js"></script>
-    <script type="text/javascript" src="scripts/index.js"></script>
-
+    <div id='root'></div>
+    <script src="/static/bundle.js"></script>
   </body>
 </html>

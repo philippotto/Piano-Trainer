@@ -1,28 +1,8 @@
-define( "app", ["marionette"], function(Marionette) { return new Marionette.Application(); } );
+import React from 'react';
+import {render} from 'react-dom';
+import App from './App';
 
-require( [
-  "jquery",
-  "lodash",
-  "app",
-  "./router"
-], function($, _, app, Router) {
-
-  window.app = app;
-
-  app.addInitializer( function() {
-    return app.router = new Router();
-  }
-  );
-
-  app.on("start", function() {
-    return Backbone.history.start(
-      {pushState: true}
-    );
-  }
-  );
-
-  return $(function() {
-    return app.start();
-  });
-}
+render(
+  <App />,
+  document.getElementById('root')
 );
