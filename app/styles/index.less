@@ -1,9 +1,5 @@
 // @import "../../node_modules/bootstrap/less/bootstrap.less";
-// @import "../../font-awesome/less/font-awesome.less";
 @import (less) "../../node_modules/chartist/dist/chartist.min.css";
-
-
-@import "_variables.less";
 
 @import url(http://fonts.googleapis.com/css?family=Poiret+One);
 @import url(http://fonts.googleapis.com/css?family=Droid+Sans:400);
@@ -80,9 +76,10 @@ h1 {
   -webkit-box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 1);
   -moz-box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 1);
   box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 1);
+  border-radius: 4px;
 }
 
-#text-stats {
+#settings {
   .box-shadow;
   background: white;
   position: absolute;
@@ -93,13 +90,21 @@ h1 {
   width: 300px;
 }
 
+.stat-detail {
+  margin-left: 60px;
+
+  i {
+    margin-right: 5px;
+  }
+}
+
 #graph-stats {
   .box-shadow;
   background: white;
   position: absolute;
   bottom: 10px;
   right: 10px;
-  height: 320px;
+  height: 340px;
   width: 420px;
   padding: 10px;
 }
