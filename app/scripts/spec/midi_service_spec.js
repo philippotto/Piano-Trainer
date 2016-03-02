@@ -1,6 +1,4 @@
-import KeyConverter from "../services/key_converter.js";
 import MidiService from "../services/midi_service.js";
-import _ from "lodash";
 
 describe("MidiService", function () {
 

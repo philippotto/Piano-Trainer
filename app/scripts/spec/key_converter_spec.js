@@ -1,5 +1,4 @@
 import KeyConverter from "../services/key_converter.js";
-import _ from "lodash";
 
 describe("KeyConverter", function () {
 

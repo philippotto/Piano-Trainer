@@ -97,13 +97,15 @@ export default class MidiService {
     }
 
     for (const number in this.currentInputState) {
-      const state = this.currentInputState[number];
-      if (state && !this.desiredInputState[number]) {
-        if (this.justHadSuccess) {
-          this.justHadSuccess = false;
-          this.failureCallback();
+      if (this.currentInputState.hasOwnProperty(number)) {
+        const state = this.currentInputState[number];
+        if (state && !this.desiredInputState[number]) {
+          if (this.justHadSuccess) {
+            this.justHadSuccess = false;
+            this.failureCallback();
+          }
+          return;
         }
-        return;
       }
     }
   }

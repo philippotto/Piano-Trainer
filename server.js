@@ -2,7 +2,8 @@
 var webpack = require('webpack');
 var WebpackDevServer = require('webpack-dev-server');
 var config = require('./webpack.config');
-var port = 1234;
+var port = config.port;
+
 new WebpackDevServer(webpack(config), {
   publicPath: config.output.publicPath,
   contentBase: "./app/",

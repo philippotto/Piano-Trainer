@@ -43,10 +43,12 @@
 /* eslint-disable no-var */
 var webpack = require('webpack');
 var path = require('path');
+var port = 1234;
 
 module.exports = {
+  port: port,
   entry: [
-    'webpack-dev-server/client?http://localhost:5000',
+    'webpack-dev-server/client?http://localhost:' + port,
     'webpack/hot/dev-server',
     './app/scripts/index.js'
   ],

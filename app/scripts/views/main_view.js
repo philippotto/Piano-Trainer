@@ -24,7 +24,7 @@ export default class MainView extends Component {
       this.onErrorResolve.bind(this)
     );
     this.initializeRenderer();
-    return this.renderStave();
+    this.renderStave();
   }
 
   constructor() {
@@ -76,11 +76,11 @@ export default class MainView extends Component {
               <div>
                 <h3 id="error-message"></h3>
                 <h4>
-                  Have a look into the
+                  {"Have a look into the "}
                   <a href="https://github.com/philippotto/Piano-Trainer#how-to-use">
                     Set Up
                   </a>
-                  section.
+                  {" section."}
                 </h4>
               </div>
             </div>
@@ -101,7 +101,7 @@ export default class MainView extends Component {
 //     };
 //   }
 
-  onError(msg, args) {
+  onError(msg) {
     console.error.apply(console, arguments);
     this.setState({errorMessage: msg});
   }
@@ -132,8 +132,6 @@ export default class MainView extends Component {
       this.props.statisticService.register(event);
       this.onErrorResolve();
     } else {
-      // don't save events which took too long
-      // we don't want to drag the statistics down when the user made a break
       this.onError("Since you took more than " + timeThreshold / 1000 +
         ` seconds, we ignored this event to avoid dragging down your statistics.
          Hopefully, you just made a break in between :)`
@@ -142,12 +140,12 @@ export default class MainView extends Component {
 
     this.currentChordIndex++;
     this.renderStave();
-    return this.playSuccessSound();
+    this.playSuccessSound();
   }
 
 
   playSuccessSound() {
-    return document.getElementById("success-player").play();
+    document.getElementById("success-player").play();
   }
 
 
@@ -179,7 +177,7 @@ export default class MainView extends Component {
     this.startDate = new Date();
 
     const [width, height] = [500, 250];
-    const [renderer, ctx] = [this.renderer, this.ctx];
+    const ctx = this.ctx;
 
     ctx.clear();
 
@@ -201,20 +199,20 @@ export default class MainView extends Component {
     this.colorizeKeys();
 
     [[rightHandStave, "treble"], [leftHandStave, "bass"]].map(([stave, clef]) => {
-      return Vex.Flow.Formatter.FormatAndDraw(ctx, stave, this.currentNotes[clef]);
+      Vex.Flow.Formatter.FormatAndDraw(ctx, stave, this.currentNotes[clef]);
     });
 
-    return this.midiService.setDesiredKeys(this.getAllCurrentKeys());
+    this.midiService.setDesiredKeys(this.getAllCurrentKeys());
   }
 
 
   colorizeKeys() {
-    return Object.keys(this.currentNotes).map((key) => {
+    Object.keys(this.currentNotes).map((key) => {
       const clef = this.currentNotes[key];
-      return clef.forEach((staveNote, index) => {
+      clef.forEach((staveNote, index) => {
         const color = index < this.currentChordIndex ? "green" : "black";
-        return _.range(staveNote.getKeys().length).map((noteIndex) => {
-          return staveNote.setKeyStyle(noteIndex, {fillStyle: color});
+        _.range(staveNote.getKeys().length).map((noteIndex) => {
+          staveNote.setKeyStyle(noteIndex, {fillStyle: color});
         });
       });
     }

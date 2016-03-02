@@ -92,13 +92,13 @@ export default class StatisticService {
   }
 
 
-  getFailureRate() {
+  getSuccessRate() {
     return _.filter(this.stats, (el) => el.success).length / this.stats.length;
   }
 
 
-  getLastDays(n = 10) {
-    return _(this.stats).filter(function (el) { return el.success; }).map(function (el) {
+  getLastDays() {
+    return _(this.stats).filter((el) => el.success).map(function (el) {
       el.formattedDate = [
         el.date.getUTCFullYear(),
         ("0" + el.date.getMonth()).slice(-2),
