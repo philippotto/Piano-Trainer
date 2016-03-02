@@ -14,6 +14,7 @@
     "babel-runtime": "^6.3.19",
     "bootstrap": "^3.3.6",
     "chartist": "^0.9.7",
+    "classnames": "^2.2.3",
     "file-loader": "^0.8.5",
     "font-awesome": "^4.5.0",
     "lodash": "^4.5.1",

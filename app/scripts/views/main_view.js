@@ -3,10 +3,11 @@ import React, {Component} from 'react';
 import StatisticsView from '../views/statistics_view.js';
 import MidiService from '../services/midi_service.js';
 import KeyConverter from '../services/key_converter.js';
+import classNames from 'classnames';
 
-const successMp3Url = require("file!../../resources/success.mp3");
+const successMp3Url = require('file!../../resources/success.mp3');
 
-export default class App extends Component {
+export default class MainView extends Component {
 
   propTypes: {
     statisticService: React.PropTypes.object.isRequired
@@ -25,7 +26,19 @@ export default class App extends Component {
     return this.renderStave();
   }
 
+  constructor() {
+    super();
+    this.state = {
+      errorMessage : null
+    };
+  }
+
   render() {
+    const messageContainerStyle = classNames({
+      "Aligner" : true,
+      "hide" : this.state.errorMessage === null
+    });
+
     return (
       <div>
         <img id="image-background" src="images/piano-background.jpg" />
@@ -53,7 +66,7 @@ export default class App extends Component {
             </div>
           </div>
 
-          <div id="message-container" className="Aligner hide">
+          <div id="message-container" className={messageContainerStyle}>
             <div className="Aligner-item message Aligner">
               <div>
                 <h3 id="error-message"></h3>
@@ -67,7 +80,6 @@ export default class App extends Component {
           <audio id="success-player" hidden="true" src={successMp3Url} controls preload="auto" autobuffer></audio>
         </div>
       </div>
-
     );
   }
 
@@ -81,21 +93,17 @@ export default class App extends Component {
 //   }
 
   onError(msg, args) {
-
     console.error.apply(console, arguments);
-    this.ui.errorMessage.html(msg);
-    return this.ui.messageContainer.removeClass("hide");
+    this.setState({errorMessage : msg});
   }
 
 
   onErrorResolve() {
-
-    return this.ui.messageContainer.addClass("hide");
+    this.setState({errorMessage : null});
   }
 
 
   getAllCurrentKeys() {
-
     return [].concat(
       this.currentNotes["treble"][this.currentChordIndex].getKeys(),
       this.currentNotes["bass"][this.currentChordIndex].getKeys()
@@ -104,17 +112,16 @@ export default class App extends Component {
 
 
   onSuccess() {
-
-    var event =
-      {success : true,
+    var event = {
+      success : true,
       keys : this.getAllCurrentKeys(),
       time : new Date() - this.startDate
-      };
+    };
 
     var timeThreshold = 30000;
 
     if (event.time <= timeThreshold) {
-      this.statisticService.register(event);
+      this.props.statisticService.register(event);
       this.onErrorResolve();
     } else {
       // don't save events which took too long
@@ -129,32 +136,26 @@ export default class App extends Component {
 
 
   playSuccessSound() {
-
     return document.getElementById('success-player').play();
   }
 
 
   onFailure() {
-
-    this.statisticService.register(
-      {success : false,
+    this.props.statisticService.register({
+      success : false,
       keys : this.getAllCurrentKeys(),
-      time : new Date() - this.startDate}
-    );
-
-    return this.renderStatistics();
+      time : new Date() - this.startDate
+    });
   }
 
 
   initializeRenderer() {
-
     this.renderer = new Vex.Flow.Renderer(this.refs.canvas, Vex.Flow.Renderer.Backends.CANVAS);
     return this.ctx = this.renderer.getContext();
   }
 
 
   setCanvasExtent(width, height) {
-
     var canvas = this.refs.canvas;
     canvas.width = width;
     canvas.height = height;
@@ -164,7 +165,6 @@ export default class App extends Component {
 
 
   renderStave() {
-
     this.startDate = new Date();
 
     var [width, height] = [500, 250];
@@ -210,9 +210,11 @@ export default class App extends Component {
     );
   }
 
+
   getBaseNotes() {
     return "cdefgab".split("");
   }
+
 
   generateBar(clef) {
     var options = {

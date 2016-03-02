@@ -9,6 +9,7 @@ export default class StatisticsView extends Component {
     statisticService: React.PropTypes.object.isRequired
   }
 
+
   render() {
     const statistics = this.props.statisticService;
     return <div id="stats">
@@ -36,6 +37,7 @@ export default class StatisticsView extends Component {
       </div>
     </div>;
   }
+
 
   ui() {
     return {

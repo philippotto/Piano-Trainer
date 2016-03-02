@@ -4,22 +4,23 @@ export default class MidiService {
 
   constructor(successCallback, failureCallback, errorCallback, errorResolveCallback, mocked = false) {
 
-    this.successCallback = successCallback
-    this.failureCallback = failureCallback
-    this.errorCallback = errorCallback || (() => {})
-    this.errorResolveCallback = errorResolveCallback || (() => {})
+    this.successCallback = successCallback;
+    this.failureCallback = failureCallback;
+    this.errorCallback = errorCallback || (() => {});
+    this.errorResolveCallback = errorResolveCallback || (() => {});
 
-    this.receivingMidiMessages = false
-    this.keyConverter = new KeyConverter()
-    this.initializeInputStates()
+    this.receivingMidiMessages = false;
+    this.keyConverter = new KeyConverter();
+    this.initializeInputStates();
 
     // a wrong chord should not result in lots of failure calls
     // so, remember the last state
-    this.justHadSuccess = true
-    this.errorCallbackFired = false
+    this.justHadSuccess = true;
+    this.errorCallbackFired = false;
 
-    if (mocked)
+    if (mocked) {
       return;
+    }
 
     if (!navigator.requestMIDIAccess) {
       this.errorCallback("Your browser doesn't seem to support MIDI Access.");
@@ -34,6 +35,19 @@ export default class MidiService {
         this.errorCallback("There was a problem while requesting MIDI access.", arguments)
       }
     );
+
+    const debugMode = true;
+    if (debugMode) {
+      document.addEventListener('keyup', (event) => {
+        const trueKeyCode = 84;
+        const falseKeyCode = 70;
+        if (event.keyCode === trueKeyCode) {
+          this.successCallback();
+        } else if (event.keyCode === falseKeyCode) {
+          this.failureCallback();
+        }
+      });
+    }
 
   }
 
@@ -99,9 +113,7 @@ export default class MidiService {
   }
 
   onMidiAccess(midi) {
-    this.midi = midi;
-
-    inputs = this.midi.inputs;
+    inputs = midi.inputs;
     if (inputs.size == 0) {
       this.errorCallback("No MIDI device found.");
       return;
@@ -137,7 +149,7 @@ export default class MidiService {
 
     [status, note, intensity] = msg.data;
 
-    if (status == MidiService.activeSensingStatus) {
+    if (status === MidiService.activeSensingStatus) {
       // ignore "active sensing" event
       return;
     }
