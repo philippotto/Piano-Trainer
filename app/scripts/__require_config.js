@@ -22,9 +22,9 @@ require.config(
 
   shim :
     {"jquery.easie" :
-      {deps : [ "jquery" ]},
+      {deps : ["jquery"]},
     "jquery.transit" :
-      {deps : [ "jquery" ]},
+      {deps : ["jquery"]},
     "inflate" :
       {exports : "Zlib"},
     "vendor/analytics" :

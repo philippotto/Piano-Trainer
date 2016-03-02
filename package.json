@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "babel-core": "^6.3.21",
-    "babel-eslint": "^5.0.0-beta6",
+    "babel-eslint": "^5.0.0",
     "babel-loader": "^6.2.0",
     "babel-plugin-react-transform": "^2.0.0-beta1",
     "babel-plugin-transform-runtime": "^6.3.13",
@@ -33,7 +33,7 @@
     "babel-preset-stage-0": "^6.3.13",
     "css-loader": "^0.23.1",
     "eslint": "^2.2.0",
-    "eslint-plugin-react": "^2.3.0",
+    "eslint-plugin-react": "^4.1.0",
     "karma": "^0.12.23",
     "karma-beep-reporter": "^0.1.4",
     "karma-chrome-launcher": "^0.1.4",

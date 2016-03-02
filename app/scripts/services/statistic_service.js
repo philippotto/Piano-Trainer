@@ -4,7 +4,7 @@ export default class StatisticService {
 
   constructor() {
     this.read();
-    console.log("@stats",  this.stats);
+    console.log("@stats", this.stats);
   }
 
 
@@ -41,8 +41,9 @@ export default class StatisticService {
     return localStorage.setItem("pianoTrainerStatistics", JSON.stringify(this.stats));
   }
 
+
   getSuccessCount() {
-    return _(this.stats).filter(function (el) { return el.success; }).value().length;
+    return _(this.stats).filter((el) => el.success).value().length;
   }
 
 
@@ -105,7 +106,7 @@ export default class StatisticService {
       ].join("-");
       return el;
     }).groupBy("formattedDate").map((aDay, formattedDate) => {
-      var dayTimes = aDay.map((el) => el.time);
+      const dayTimes = aDay.map((el) => el.time);
       aDay.averageTime = this.computeAverage(dayTimes);
       aDay.totalTime = this.computeSum(dayTimes);
       aDay.formattedDate = formattedDate;

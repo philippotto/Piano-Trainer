@@ -4,6 +4,7 @@ import StatisticsView from "../views/statistics_view.js";
 import MidiService from "../services/midi_service.js";
 import KeyConverter from "../services/key_converter.js";
 import classNames from "classnames";
+import _ from "lodash";
 
 const successMp3Url = require("file!../../resources/success.mp3");
 
@@ -29,14 +30,14 @@ export default class MainView extends Component {
   constructor() {
     super();
     this.state = {
-      errorMessage : null
+      errorMessage: null
     };
   }
 
   render() {
     const messageContainerStyle = classNames({
-      "Aligner" : true,
-      "hide" : this.state.errorMessage === null
+      Aligner: true,
+      hide: this.state.errorMessage === null
     });
 
     return (
@@ -53,8 +54,12 @@ export default class MainView extends Component {
         <div className="too-small">
           <div className="message">
             <p>
-              This page is meant to be viewed on a sufficiently large screen with a MIDI enabled device connected.
-              If you are interested to learn more about Piano-Trainer, view <a href="http://github.com/philippotto/Piano-Trainer">this page.</a>
+              {`
+                This page is meant to be viewed on a sufficiently large screen
+                with a MIDI enabled device connected.
+              `}
+              {"If you are interested to learn more about Piano-Trainer, view"}
+              <a href="http://github.com/philippotto/Piano-Trainer">this page.</a>
             </p>
           </div>
         </div>
@@ -71,7 +76,11 @@ export default class MainView extends Component {
               <div>
                 <h3 id="error-message"></h3>
                 <h4>
-                  Have a look into the <a href="https://github.com/philippotto/Piano-Trainer#how-to-use">Set Up</a> section.
+                  Have a look into the
+                  <a href="https://github.com/philippotto/Piano-Trainer#how-to-use">
+                    Set Up
+                  </a>
+                  section.
                 </h4>
               </div>
             </div>
@@ -85,40 +94,39 @@ export default class MainView extends Component {
 
 //   ui() {
 //     return {
-//       "canvas" : "canvas",
-//       "statistics" : "#statistics",
-//       "errorMessage" : "#error-message",
-//       "messageContainer" : "#message-container"
+//       "canvas": "canvas",
+//       "statistics": "#statistics",
+//       "errorMessage": "#error-message",
+//       "messageContainer": "#message-container"
 //     };
 //   }
 
   onError(msg, args) {
     console.error.apply(console, arguments);
-    this.setState({errorMessage : msg});
+    this.setState({errorMessage: msg});
   }
 
 
   onErrorResolve() {
-    this.setState({errorMessage : null});
+    this.setState({errorMessage: null});
   }
 
 
   getAllCurrentKeys() {
-    return [].concat(
-      this.currentNotes["treble"][this.currentChordIndex].getKeys(),
-      this.currentNotes["bass"][this.currentChordIndex].getKeys()
-    );
+    return _.flatten(["treble", "bass"].map((clef) =>
+      this.currentNotes[clef][this.currentChordIndex].getKeys()
+    ));
   }
 
 
   onSuccess() {
-    var event = {
-      success : true,
-      keys : this.getAllCurrentKeys(),
-      time : new Date() - this.startDate
+    const event = {
+      success: true,
+      keys: this.getAllCurrentKeys(),
+      time: new Date() - this.startDate
     };
 
-    var timeThreshold = 30000;
+    const timeThreshold = 30000;
 
     if (event.time <= timeThreshold) {
       this.props.statisticService.register(event);
@@ -126,7 +134,10 @@ export default class MainView extends Component {
     } else {
       // don't save events which took too long
       // we don't want to drag the statistics down when the user made a break
-      this.onError("Since you took more than " + timeThreshold/1000 + " seconds, we ignored this event to avoid dragging down your statistics. Hopefully, you just made a break in between :)");
+      this.onError("Since you took more than " + timeThreshold / 1000 +
+        ` seconds, we ignored this event to avoid dragging down your statistics.
+         Hopefully, you just made a break in between :)`
+      );
     }
 
     this.currentChordIndex++;
@@ -142,48 +153,48 @@ export default class MainView extends Component {
 
   onFailure() {
     this.props.statisticService.register({
-      success : false,
-      keys : this.getAllCurrentKeys(),
-      time : new Date() - this.startDate
+      success: false,
+      keys: this.getAllCurrentKeys(),
+      time: new Date() - this.startDate
     });
   }
 
 
   initializeRenderer() {
     this.renderer = new Vex.Flow.Renderer(this.refs.canvas, Vex.Flow.Renderer.Backends.CANVAS);
-    return this.ctx = this.renderer.getContext();
+    this.ctx = this.renderer.getContext();
   }
 
 
   setCanvasExtent(width, height) {
-    var canvas = this.refs.canvas;
+    const canvas = this.refs.canvas;
     canvas.width = width;
     canvas.height = height;
     canvas.style.width = width;
-    return canvas.style.height = height;
+    canvas.style.height = height;
   }
 
 
   renderStave() {
     this.startDate = new Date();
 
-    var [width, height] = [500, 250];
-    var [renderer, ctx] = [this.renderer, this.ctx];
+    const [width, height] = [500, 250];
+    const [renderer, ctx] = [this.renderer, this.ctx];
 
     ctx.clear();
 
     this.setCanvasExtent(width, height);
 
-    var rightHandStave = new Vex.Flow.Stave(10, 0, width);
+    const rightHandStave = new Vex.Flow.Stave(10, 0, width);
     rightHandStave.addClef("treble").setContext(ctx).draw();
 
-    var leftHandStave = new Vex.Flow.Stave(10, 80, width);
+    const leftHandStave = new Vex.Flow.Stave(10, 80, width);
     leftHandStave.addClef("bass").setContext(ctx).draw();
 
     if (!this.currentNotes || this.currentChordIndex >= this.currentNotes.treble.length) {
       this.currentNotes =
-        {treble : this.generateBar("treble"),
-        bass : this.generateBar("bass")
+        {treble: this.generateBar("treble"),
+        bass: this.generateBar("bass")
         };
     }
 
@@ -199,11 +210,11 @@ export default class MainView extends Component {
 
   colorizeKeys() {
     return Object.keys(this.currentNotes).map((key) => {
-      var clef = this.currentNotes[key];
+      const clef = this.currentNotes[key];
       return clef.forEach((staveNote, index) => {
-        var color = index < this.currentChordIndex ? "green" : "black";
-        return _.range(staveNote.getKeys().length).map((index) => {
-          return staveNote.setKeyStyle(index, {fillStyle: color});
+        const color = index < this.currentChordIndex ? "green" : "black";
+        return _.range(staveNote.getKeys().length).map((noteIndex) => {
+          return staveNote.setKeyStyle(noteIndex, {fillStyle: color});
         });
       });
     }
@@ -217,55 +228,57 @@ export default class MainView extends Component {
 
 
   generateBar(clef) {
-    var options = {
-      notesPerBar : 4,
-      maximumKeysPerChord : 3,
-      withModifiers : false,
-      levels : {
-        bass : [2, 3],
-        treble : [4, 5]
+    const options = {
+      notesPerBar: 4,
+      maximumKeysPerChord: 3,
+      withModifiers: false,
+      levels: {
+        bass: [2, 3],
+        treble: [4, 5]
       },
-      maximumInterval : 12
+      maximumInterval: 12
     };
 
     this.currentChordIndex = 0;
-    var baseModifiers = options.withModifiers ? ["", "b", "#"] : [""];
-    var generatedChords = _.range(0, options.notesPerBar).map( () => {
-      var randomLevel = _.sample(options.levels[clef]);
+    const baseModifiers = options.withModifiers ? ["", "b", "#"] : [""];
+    const generatedChords = _.range(0, options.notesPerBar).map(() => {
+      const randomLevel = _.sample(options.levels[clef]);
 
-      var generateNote = function (baseNotes) {
-        var randomNoteIndex = _.random(0, baseNotes.length - 1);
-        var note = baseNotes.splice(randomNoteIndex, 1)[0];
+      const generateNote = function (baseNotes) {
+        const randomNoteIndex = _.random(0, baseNotes.length - 1);
+        const note = baseNotes.splice(randomNoteIndex, 1)[0];
 
-        var modifier = _.sample(baseModifiers);
+        const modifier = _.sample(baseModifiers);
         return {note, modifier};
       };
 
-      var generateChord = () => {
-        var keys;
-        var baseNotes = this.getBaseNotes();
-        return keys = _.times(_.random(1, options.maximumKeysPerChord), () => {
+      const generateChord = () => {
+        const baseNotes = this.getBaseNotes();
+        return _.times(_.random(1, options.maximumKeysPerChord), () => {
           return generateNote(baseNotes);
         });
       };
 
-      var formatKey = ({note, modifier}) => note + modifier + "/" + randomLevel;
+      const formatKey = ({note, modifier}) => note + modifier + "/" + randomLevel;
 
-      var ensureInterval = (keys) => {
-        var keyNumbers = keys.map((key) => {
+      const ensureInterval = (keys) => {
+        const keyNumbers = keys.map((key) => {
           return this.keyConverter.getNumberForKeyString(formatKey(key));
         });
         return options.maximumInterval >= _.max(keyNumbers) - _.min(keyNumbers);
       };
 
-      var randomChord = generateChord();
+      let randomChord = generateChord();
       while (!ensureInterval(randomChord)) {
         randomChord = generateChord();
       }
 
-      var staveChord = new Vex.Flow.StaveNote({
-        clef : clef,
-        keys : randomChord.map(formatKey),
+      const staveChord = new Vex.Flow.StaveNote({
+        clef: clef,
+        keys: randomChord.map(formatKey).sort((keyA, keyB) => {
+          return this.keyConverter.getNumberForKeyString(keyA) -
+            this.keyConverter.getNumberForKeyString(keyB);
+        }),
         duration: `${options.notesPerBar}`
       });
 

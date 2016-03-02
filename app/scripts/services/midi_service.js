@@ -1,9 +1,9 @@
 import KeyConverter from "../services/key_converter.js";
+import _ from "lodash";
 
 export default class MidiService {
 
   constructor(successCallback, failureCallback, errorCallback, errorResolveCallback, mocked = false) {
-
     this.successCallback = successCallback;
     this.failureCallback = failureCallback;
     this.errorCallback = errorCallback || (() => {});
@@ -32,7 +32,7 @@ export default class MidiService {
     this.promise.then(
       this.onMidiAccess.bind(this),
       () => {
-        this.errorCallback("There was a problem while requesting MIDI access.", arguments)
+        this.errorCallback("There was a problem while requesting MIDI access.", arguments);
       }
     );
 
@@ -52,7 +52,6 @@ export default class MidiService {
   }
 
   initializeInputStates() {
-
     // an inputState looks like this
     // {
     //   21 : false
@@ -66,36 +65,33 @@ export default class MidiService {
 
 
   setDesiredKeys(keys) {
-
     this.desiredInputState = {};
 
     keys.map((key) => {
-     const number = this.keyConverter.getNumberForKeyString(key);
-     this.desiredInputState[number] = true;
+      const number = this.keyConverter.getNumberForKeyString(key);
+      this.desiredInputState[number] = true;
     });
   }
 
   setNote(note, intensity) {
-
-    if (intensity == 0)
+    if (intensity === 0) {
       delete this.currentInputState[note];
-    else
+    } else {
       this.currentInputState[note] = true;
-
+    }
 
     this.checkEqual(intensity);
   }
 
 
   checkEqual(intensity) {
-
     if (_.isEqual(this.currentInputState, this.desiredInputState)) {
       this.justHadSuccess = true;
       this.successCallback();
       return;
     }
 
-    if (intensity == 0) {
+    if (intensity === 0) {
       // lifting a key shouldn't result in a failure
       return;
     }
@@ -113,15 +109,15 @@ export default class MidiService {
   }
 
   onMidiAccess(midi) {
-    inputs = midi.inputs;
-    if (inputs.size == 0) {
+    let inputs = midi.inputs;
+    if (inputs.size === 0) {
       this.errorCallback("No MIDI device found.");
       return;
     }
 
     // TODO: take care of multiple inputs
     // weird workaround because inputs.get(0) doesn't always work?
-    input = inputs.values().next().value;
+    let input = inputs.values().next().value;
 
     console.log("Midi access received. Available inputs", inputs, "Chosen input:", input);
     input.onmidimessage = this.onMidiMessage.bind(this);
@@ -132,7 +128,10 @@ export default class MidiService {
           console.log("Receiving events...");
         } else {
           console.warn("Firing error callback");
-          this.errorCallback("A MIDI device could be found, but it doesn't send any messages. Did you press a key, yet? A browser restart could help.");
+          this.errorCallback(`
+            A MIDI device could be found, but it doesn't send any messages.
+            Did you press a key, yet? A browser restart could help.
+          `);
           this.errorCallbackFired = true;
         }
       }, 2000
@@ -140,14 +139,13 @@ export default class MidiService {
   }
 
   onMidiMessage(msg) {
-
     this.receivingMidiMessages = true;
 
     if (this.errorCallbackFired) {
       this.errorResolveCallback();
     }
 
-    [status, note, intensity] = msg.data;
+    let [status, note, intensity] = msg.data;
 
     if (status === MidiService.activeSensingStatus) {
       // ignore "active sensing" event
@@ -166,7 +164,6 @@ export default class MidiService {
       this.setNote(note, intensity);
     }
   }
-
 }
 
 // todo: extract to constants or sth similar
