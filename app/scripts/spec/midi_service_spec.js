@@ -9,7 +9,7 @@ describe("MidiService", function () {
 
   it("notifies about a simple desired key state (midi implementation 1)", function () {
 
-    const [successCounter, failedCounter] = [0, 0];
+    let [successCounter, failedCounter] = [0, 0];
     const successCallback = () => successCounter++;
     const failureCallback = () => failedCounter++;
 
@@ -32,7 +32,7 @@ describe("MidiService", function () {
 
   it("notifies about a simple desired key state (midi implementation 2)", function () {
 
-    const [successCounter, failedCounter] = [0, 0];
+    let [successCounter, failedCounter] = [0, 0];
     const successCallback = () => successCounter++;
     const failureCallback = () => failedCounter++;
 
@@ -55,7 +55,7 @@ describe("MidiService", function () {
 
   it("notifies about a complex desired key state", function () {
 
-    const [successCounter, failedCounter] = [0, 0];
+    let [successCounter, failedCounter] = [0, 0];
     const successCallback = () => successCounter++;
     const failureCallback = () => failedCounter++;
 
@@ -80,7 +80,7 @@ describe("MidiService", function () {
 
   return it("notifies once about a wrong desired key state", function () {
 
-    const [successCounter, failedCounter] = [0, 0];
+    let [successCounter, failedCounter] = [0, 0];
     const successCallback = () => successCounter++;
     const failureCallback = () => failedCounter++;
 

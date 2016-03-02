@@ -1,24 +1,25 @@
 // Karma configuration
-// Generated on Fri Aug 29 2014 17:35:53 GMT+0200 (Mitteleuropäische Sommerzeit)
+
+var webpackConfig = require("./webpack.config");
 
 module.exports = function(config) {
   config.set({
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
-    basePath: 'dist',
+    basePath: 'app',
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['requirejs', 'jasmine'],
+    frameworks: ['jasmine'],
 
 
     // list of files / patterns to load in the browser
     files: [
-      'scripts/test_config.js',
-      {pattern: 'scripts/**/*.js', included: false},
-      {pattern: 'bower_components/**/*.js', included: false},
-      {pattern: 'scripts/spec/*spec.js', included: false},
-
+      'scripts/spec/*.js'
+      // 'scripts/test_config.js',
+      // {pattern: 'scripts/**/*.js', included: false},
+      // {pattern: 'bower_components/**/*.js', included: false},
+      // {pattern: 'scripts/spec/*spec.js', included: false},
     ],
 
 
@@ -31,8 +32,17 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
+      // add webpack as preprocessor
+      'scripts/spec/*.js': ['webpack']
     },
 
+    webpack: webpackConfig,
+
+    webpackMiddleware: {
+        // webpack-dev-middleware configuration
+        // i. e.
+        noInfo: true
+    },
 
     // test results reporter to use
     // possible values: 'dots', 'progress'

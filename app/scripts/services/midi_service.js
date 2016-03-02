@@ -96,7 +96,7 @@ export default class MidiService {
       return;
     }
 
-    for (const number of this.currentInputState) {
+    for (const number in this.currentInputState) {
       const state = this.currentInputState[number];
       if (state && !this.desiredInputState[number]) {
         if (this.justHadSuccess) {
