@@ -1,4 +1,4 @@
-import KeyConverter from '../services/key_converter.js';
+import KeyConverter from "../services/key_converter.js";
 
 export default class MidiService {
 
@@ -38,7 +38,7 @@ export default class MidiService {
 
     const debugMode = true;
     if (debugMode) {
-      document.addEventListener('keyup', (event) => {
+      document.addEventListener("keyup", (event) => {
         const trueKeyCode = 84;
         const falseKeyCode = 70;
         if (event.keyCode === trueKeyCode) {

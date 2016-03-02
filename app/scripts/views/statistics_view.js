@@ -1,7 +1,7 @@
-import Chartist from 'Chartist';
-import React, {Component} from 'react';
-import StatisticService from '../services/statistic_service.js';
-import KeyConverter from '../services/key_converter.js';
+import Chartist from "Chartist";
+import React, {Component} from "react";
+import StatisticService from "../services/statistic_service.js";
+import KeyConverter from "../services/key_converter.js";
 
 export default class StatisticsView extends Component {
 
@@ -17,7 +17,7 @@ export default class StatisticsView extends Component {
         <h4>The last days you trained:</h4>
         <ul>
         {
-            statistics.getLastDays(10).map(function(el){
+            statistics.getLastDays(10).map(function (el){
             <li>
               { (el.averageTime / 1000).toFixed(2) }s average
               ({ (el.totalTime / 1000 / 60).toFixed(2) } min)

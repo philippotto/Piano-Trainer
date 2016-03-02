@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import _ from "lodash";
 
 export default class KeyConverter {
 
@@ -11,7 +11,7 @@ export default class KeyConverter {
 
   getNumberForCanonicalKeyString(keyString) {
 
-    return parseInt(_.findKey(this.keyMap, function(key) { return key === keyString; }), 10);
+    return parseInt(_.findKey(this.keyMap, function (key) { return key === keyString; }), 10);
   }
 
 
@@ -47,7 +47,7 @@ export default class KeyConverter {
 
   getCanonicalForm(key) {
 
-    const stripKey = function(keyToStrip, modifier) {
+    const stripKey = function (keyToStrip, modifier) {
 
       const regexp = new RegExp(modifier, "g");
       // ignore the first character because of b notes
@@ -88,7 +88,7 @@ export default class KeyConverter {
       "c", "c#", "d", "d#", "e", "f", "f#", "g", "g#", "a", "a#", "b"
     ];
 
-    var claviature = baseScale.slice(-3).concat(_.flatten(_.times(7, function() { return baseScale; }))).concat([baseScale[0]]);
+    var claviature = baseScale.slice(-3).concat(_.flatten(_.times(7, function () { return baseScale; }))).concat([baseScale[0]]);
 
 
     var keyMap = {};

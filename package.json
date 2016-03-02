@@ -32,7 +32,7 @@
     "babel-preset-react": "^6.3.13",
     "babel-preset-stage-0": "^6.3.13",
     "css-loader": "^0.23.1",
-    "eslint": "^0.21.2",
+    "eslint": "^2.2.0",
     "eslint-plugin-react": "^2.3.0",
     "karma": "^0.12.23",
     "karma-beep-reporter": "^0.1.4",

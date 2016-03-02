@@ -1,11 +1,11 @@
-import Vex from 'vexflow';
-import React, {Component} from 'react';
-import StatisticsView from '../views/statistics_view.js';
-import MidiService from '../services/midi_service.js';
-import KeyConverter from '../services/key_converter.js';
-import classNames from 'classnames';
+import Vex from "vexflow";
+import React, {Component} from "react";
+import StatisticsView from "../views/statistics_view.js";
+import MidiService from "../services/midi_service.js";
+import KeyConverter from "../services/key_converter.js";
+import classNames from "classnames";
 
-const successMp3Url = require('file!../../resources/success.mp3');
+const successMp3Url = require("file!../../resources/success.mp3");
 
 export default class MainView extends Component {
 
@@ -136,7 +136,7 @@ export default class MainView extends Component {
 
 
   playSuccessSound() {
-    return document.getElementById('success-player').play();
+    return document.getElementById("success-player").play();
   }
 
 
@@ -233,7 +233,7 @@ export default class MainView extends Component {
     var generatedChords = _.range(0, options.notesPerBar).map( () => {
       var randomLevel = _.sample(options.levels[clef]);
 
-      var generateNote = function(baseNotes) {
+      var generateNote = function (baseNotes) {
         var randomNoteIndex = _.random(0, baseNotes.length - 1);
         var note = baseNotes.splice(randomNoteIndex, 1)[0];
 

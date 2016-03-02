@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import _ from "lodash";
 
 export default class StatisticService {
 
@@ -42,7 +42,7 @@ export default class StatisticService {
   }
 
   getSuccessCount() {
-    return _(this.stats).filter(function(el) { return el.success; }).value().length;
+    return _(this.stats).filter(function (el) { return el.success; }).value().length;
   }
 
 
@@ -97,7 +97,7 @@ export default class StatisticService {
 
 
   getLastDays(n = 10) {
-    return _(this.stats).filter(function(el) { return el.success; }).map(function(el) {
+    return _(this.stats).filter(function (el) { return el.success; }).map(function (el) {
       el.formattedDate = [
         el.date.getUTCFullYear(),
         ("0" + el.date.getMonth()).slice(-2),

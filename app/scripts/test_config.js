@@ -3,7 +3,7 @@ for (var file in window.__karma__.files) {
     if (/spec\.js$/.test(file)) {
       // remove absolute path elements so that all dependencies
       // will be fetched with file extension
-      file = file.replace(/^\/base\/|\.js$/g,'');
+      file = file.replace(/^\/base\/|\.js$/g,"");
       tests.push(file);
     }
 }
@@ -13,9 +13,9 @@ requirejs.config({
     // baseUrl: '/base',
 
     // ask Require.js to load the application Require.js configuration
-    deps: ['base/scripts/require_config'],
+    deps: ["base/scripts/require_config"],
 
-    callback: function() {
+    callback: function () {
       // overwrite the baseUrl (was set by require_config.js)
       require.config({baseUrl : "/base"});
 
