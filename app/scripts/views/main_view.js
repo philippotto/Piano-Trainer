@@ -1,6 +1,7 @@
 import Vex from "vexflow";
 import React, {Component} from "react";
 import StatisticsView from "../views/statistics_view.js";
+import SettingsView from "../views/settings_view.js";
 import MidiService from "../services/midi_service.js";
 import KeyConverter from "../services/key_converter.js";
 import classNames from "classnames";
@@ -27,8 +28,8 @@ export default class MainView extends Component {
     this.renderStave();
   }
 
-  constructor() {
-    super();
+  constructor(props, context) {
+    super(props, context);
     this.state = {
       errorMessage: null
     };
@@ -85,7 +86,10 @@ export default class MainView extends Component {
               </div>
             </div>
           </div>
-          <StatisticsView statisticService={this.props.statisticService} />
+          <div ref="stats">
+            <SettingsView />
+            <StatisticsView statisticService={this.props.statisticService} />
+          </div>
           <audio id="success-player" hidden="true" src={successMp3Url} controls preload="auto" autobuffer></audio>
         </div>
       </div>

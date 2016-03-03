@@ -4,7 +4,6 @@ export default class StatisticService {
 
   constructor() {
     this.read();
-    console.log("@stats", this.stats);
   }
 
 

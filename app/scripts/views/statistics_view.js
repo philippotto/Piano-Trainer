@@ -15,34 +15,28 @@ export default class StatisticsView extends Component {
     }
 
     return (
-      <div ref="stats">
-        <div id="settings">
-          Settings
-        </div>
+      <div id="graph-stats">
+        <div ref="chart" className="semi-transparent ct-chart ct-perfect-fourth"></div>
 
-        <div id="graph-stats">
-          <div ref="chart" className="semi-transparent ct-chart ct-perfect-fourth"></div>
-
-          <div>
-            <OverlayTrigger placement="top" overlay={<Tooltip>Average time</Tooltip>}>
-              <span className="stat-detail">
-                  <i className="fa fa-clock-o"></i>
-                  { (statistics.getAverageTimeOfLast(100) / 1000).toFixed(2) }s
-              </span>
-            </OverlayTrigger>
-            <OverlayTrigger placement="top" overlay={<Tooltip>Played chords / played notes</Tooltip>}>
-              <span className="stat-detail">
-                <i className="fa fa-music"></i>
-                { statistics.getTotalAmountOfChords() } / { statistics.getTotalAmountOfNotes() }
-              </span>
-            </OverlayTrigger>
-            <OverlayTrigger placement="top" overlay={<Tooltip>Success rate</Tooltip>}>
-              <span className="stat-detail">
-                <i className="fa fa-trophy"></i>
-                { statistics.getSuccessRate().toFixed(2) * 100 } %
-              </span>
-            </OverlayTrigger>
-          </div>
+        <div>
+          <OverlayTrigger placement="top" overlay={<Tooltip id="avgTime">Average time</Tooltip>}>
+            <span className="stat-detail">
+                <i className="fa fa-clock-o"></i>
+                { (statistics.getAverageTimeOfLast(100) / 1000).toFixed(2) }s
+            </span>
+          </OverlayTrigger>
+          <OverlayTrigger placement="top" overlay={<Tooltip id="playedChordsAndNotes">Played chords / played notes</Tooltip>}>
+            <span className="stat-detail">
+              <i className="fa fa-music"></i>
+              { statistics.getTotalAmountOfChords() } / { statistics.getTotalAmountOfNotes() }
+            </span>
+          </OverlayTrigger>
+          <OverlayTrigger placement="top" overlay={<Tooltip id="successRate">Success rate</Tooltip>}>
+            <span className="stat-detail">
+              <i className="fa fa-trophy"></i>
+              { statistics.getSuccessRate().toFixed(2) * 100 } %
+            </span>
+          </OverlayTrigger>
         </div>
       </div>
     );

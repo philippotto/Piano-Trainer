@@ -100,4 +100,9 @@ export default class KeyConverter {
 
     this.keyMap = keyMap;
   }
+
+  keySignatureValueToString(value) {
+    const keySignatures = ["C#", "F#", "B", "E", "A", "D", "G", "C", "F", "Bb", "Eb", "Ab", "Db", "Gb", "Cb"];
+    return keySignatures[value];
+  }
 }
