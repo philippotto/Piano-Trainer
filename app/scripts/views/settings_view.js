@@ -7,19 +7,14 @@ export default class SettingsView extends Component {
 
   constructor(props, context) {
     super(props, context);
-    this.state = {
-      violinValues: [1, 3],
-      bassValues: [1, 3],
-      keySignature: [7, 7]
-    };
   }
 
   buildStateChanger(stateKey) {
     return (newValue) => {
-      this.setState({
-        [stateKey]: newValue
-      });
-    }
+      const keys = stateKey.split(".");
+      const keyToChange = _.reduce(keys, (acc, key) => acc[key], this.props.settings);
+      keyToChange.reset(newValue);
+    };
   }
 
   render() {
@@ -28,7 +23,7 @@ export default class SettingsView extends Component {
       width: "30%",
       display: "inline-block",
       marginRight: "10",
-      marginBottom: -"2",
+      marginBottom: -2,
     };
 
     const keyConverter = new KeyConverter();
@@ -39,21 +34,21 @@ export default class SettingsView extends Component {
         <RangeSettingComponent
           rangeMin={1}
           rangeMax={5}
-          values={this.state.violinValues}
-          onChange={this.buildStateChanger("violinValues")}
-          label={"violin notes/chord"}
+          values={this.props.settings.chordSizeRanges.treble}
+          onChange={this.buildStateChanger("chordSizeRanges.treble")}
+          label={"treble notes/chord"}
         />
         <RangeSettingComponent
           rangeMin={1}
           rangeMax={5}
-          values={this.state.bassValues}
-          onChange={this.buildStateChanger("bassValues")}
+          values={this.props.settings.chordSizeRanges.bass}
+          onChange={this.buildStateChanger("chordSizeRanges.bass")}
           label={"bass notes/chord"}
         />
         <RangeSettingComponent
           rangeMin={0}
           rangeMax={14}
-          values={this.state.keySignature}
+          values={this.props.settings.keySignature}
           onChange={this.buildStateChanger("keySignature")}
           valueToString={keyConverter.keySignatureValueToString}
           label={"signature"}

@@ -33,7 +33,6 @@ export default class SettingsView extends Component {
 
   componentWillReceiveProps(newProps) {
     this.receiveValueAsProps(newProps);
-    console.log("componentWillReceiveProps");
   }
 
   onChange(event, index, values) {

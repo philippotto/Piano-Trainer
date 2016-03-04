@@ -36,6 +36,12 @@ export default class MainView extends Component {
   }
 
   render() {
+    // todo
+    setTimeout(
+      () => this.renderStave(),
+      0
+    );
+
     const messageContainerStyle = classNames({
       Aligner: true,
       hide: this.state.errorMessage === null
@@ -68,7 +74,7 @@ export default class MainView extends Component {
         <div className="trainer">
           <div className="Aligner">
             <div className="Aligner-item">
-              <canvas ref="canvas"></canvas>
+              <canvas ref="canvas" />
             </div>
           </div>
 
@@ -87,7 +93,7 @@ export default class MainView extends Component {
             </div>
           </div>
           <div ref="stats">
-            <SettingsView />
+            <SettingsView settings={this.props.settings} />
             <StatisticsView statisticService={this.props.statisticService} />
           </div>
           <audio id="success-player" hidden="true" src={successMp3Url} controls preload="auto" autobuffer></audio>
@@ -192,12 +198,12 @@ export default class MainView extends Component {
 
     const leftHandStave = new Vex.Flow.Stave(10, 80, width);
     leftHandStave.addClef("bass").setContext(ctx).draw();
-
-    if (!this.currentNotes || this.currentChordIndex >= this.currentNotes.treble.length) {
-      this.currentNotes =
-        {treble: this.generateBar("treble"),
+    // todo
+    if (true || !this.currentNotes || this.currentChordIndex >= this.currentNotes.treble.length) {
+      this.currentNotes = {
+        treble: this.generateBar("treble"),
         bass: this.generateBar("bass")
-        };
+      };
     }
 
     this.colorizeKeys();
@@ -219,8 +225,7 @@ export default class MainView extends Component {
           staveNote.setKeyStyle(noteIndex, {fillStyle: color});
         });
       });
-    }
-    );
+    });
   }
 
 
@@ -232,7 +237,6 @@ export default class MainView extends Component {
   generateBar(clef) {
     const options = {
       notesPerBar: 4,
-      maximumKeysPerChord: 3,
       withModifiers: false,
       levels: {
         bass: [2, 3],
@@ -256,7 +260,7 @@ export default class MainView extends Component {
 
       const generateChord = () => {
         const baseNotes = this.getBaseNotes();
-        return _.times(_.random(1, options.maximumKeysPerChord), () => {
+        return _.times(_.random.apply(_, this.props.settings.chordSizeRanges[clef]), () => {
           return generateNote(baseNotes);
         });
       };
@@ -288,8 +292,6 @@ export default class MainView extends Component {
         if (modifier) {
           staveChord.addAccidental(index, new Vex.Flow.Accidental(modifier));
         }
-
-        return staveChord;
       });
 
       return staveChord;
