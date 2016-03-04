@@ -1,47 +1,71 @@
-import Vex from "vexflow";
 import React, {Component} from "react";
+import classNames from "classnames";
+import _ from "lodash";
+
 import StatisticsView from "../views/statistics_view.js";
 import SettingsView from "../views/settings_view.js";
 import MidiService from "../services/midi_service.js";
-import KeyConverter from "../services/key_converter.js";
-import classNames from "classnames";
-import _ from "lodash";
+import BarGenerator from "../services/bar_generator.js";
+import StaveRenderer from "./stave_renderer.js";
 
 const successMp3Url = require("file!../../resources/success.mp3");
 
 export default class MainView extends Component {
 
   propTypes: {
-    statisticService: React.PropTypes.object.isRequired
+    statisticService: React.PropTypes.object.isRequired,
+    settings: React.PropTypes.object.isRequired,
   }
 
   componentDidMount() {
-    this.keyConverter = new KeyConverter();
-
     this.midiService = new MidiService(
       this.onSuccess.bind(this),
       this.onFailure.bind(this),
       this.onError.bind(this),
       this.onErrorResolve.bind(this)
     );
-    this.initializeRenderer();
-    this.renderStave();
+    this.startDate = new Date();
+    this.midiService.setDesiredKeys(this.getAllCurrentKeys());
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.settings !== this.props.settings) {
+      const nextChordSizeRanges = nextProps.settings.chordSizeRanges;
+      const chordSizeRanges = this.props.settings.chordSizeRanges;
+
+      let treble = this.state.currentNotes.treble;
+      let bass = this.state.currentNotes.bass;
+
+      if (nextChordSizeRanges.treble !== chordSizeRanges.treble) {
+        treble = BarGenerator.generateBar("treble", nextChordSizeRanges);
+      }
+      if (nextChordSizeRanges.bass !== chordSizeRanges.bass) {
+        bass = BarGenerator.generateBar("bass", nextChordSizeRanges);
+      }
+
+      this.setState({
+        currentChordIndex: 0,
+        currentNotes: {treble, bass}
+      });
+    }
+  }
+
+  generateNewBarState() {
+    return {
+      currentChordIndex: 0,
+      currentNotes: BarGenerator.generateBars(this.props.settings.chordSizeRanges),
+    };
   }
 
   constructor(props, context) {
     super(props, context);
     this.state = {
-      errorMessage: null
+      errorMessage: null,
+      ...(this.generateNewBarState())
     };
   }
 
   render() {
-    // todo
-    setTimeout(
-      () => this.renderStave(),
-      0
-    );
-
     const messageContainerStyle = classNames({
       Aligner: true,
       hide: this.state.errorMessage === null
@@ -74,7 +98,10 @@ export default class MainView extends Component {
         <div className="trainer">
           <div className="Aligner">
             <div className="Aligner-item">
-              <canvas ref="canvas" />
+              <StaveRenderer
+                currentNotes={this.state.currentNotes}
+                currentChordIndex={this.state.currentChordIndex}
+              />
             </div>
           </div>
 
@@ -102,14 +129,11 @@ export default class MainView extends Component {
     );
   }
 
-//   ui() {
-//     return {
-//       "canvas": "canvas",
-//       "statistics": "#statistics",
-//       "errorMessage": "#error-message",
-//       "messageContainer": "#message-container"
-//     };
-//   }
+  componentDidUpdate() {
+    this.startDate = new Date();
+    this.midiService.setDesiredKeys(this.getAllCurrentKeys());
+  }
+
 
   onError(msg) {
     console.error.apply(console, arguments);
@@ -124,7 +148,7 @@ export default class MainView extends Component {
 
   getAllCurrentKeys() {
     return _.flatten(["treble", "bass"].map((clef) =>
-      this.currentNotes[clef][this.currentChordIndex].getKeys()
+      this.state.currentNotes[clef][this.state.currentChordIndex].getKeys()
     ));
   }
 
@@ -148,8 +172,17 @@ export default class MainView extends Component {
       );
     }
 
-    this.currentChordIndex++;
-    this.renderStave();
+    if (this.state.currentChordIndex + 1 >= this.state.currentNotes.treble.length) {
+      this.setState({
+        errorMessage: null,
+        ...(this.generateNewBarState())
+      });
+    } else {
+      this.setState({
+        currentChordIndex: this.state.currentChordIndex + 1,
+      });
+    }
+
     this.playSuccessSound();
   }
 
@@ -168,135 +201,4 @@ export default class MainView extends Component {
   }
 
 
-  initializeRenderer() {
-    this.renderer = new Vex.Flow.Renderer(this.refs.canvas, Vex.Flow.Renderer.Backends.CANVAS);
-    this.ctx = this.renderer.getContext();
-  }
-
-
-  setCanvasExtent(width, height) {
-    const canvas = this.refs.canvas;
-    canvas.width = width;
-    canvas.height = height;
-    canvas.style.width = width;
-    canvas.style.height = height;
-  }
-
-
-  renderStave() {
-    this.startDate = new Date();
-
-    const [width, height] = [500, 250];
-    const ctx = this.ctx;
-
-    ctx.clear();
-
-    this.setCanvasExtent(width, height);
-
-    const rightHandStave = new Vex.Flow.Stave(10, 0, width);
-    rightHandStave.addClef("treble").setContext(ctx).draw();
-
-    const leftHandStave = new Vex.Flow.Stave(10, 80, width);
-    leftHandStave.addClef("bass").setContext(ctx).draw();
-    // todo
-    if (true || !this.currentNotes || this.currentChordIndex >= this.currentNotes.treble.length) {
-      this.currentNotes = {
-        treble: this.generateBar("treble"),
-        bass: this.generateBar("bass")
-      };
-    }
-
-    this.colorizeKeys();
-
-    [[rightHandStave, "treble"], [leftHandStave, "bass"]].map(([stave, clef]) => {
-      Vex.Flow.Formatter.FormatAndDraw(ctx, stave, this.currentNotes[clef]);
-    });
-
-    this.midiService.setDesiredKeys(this.getAllCurrentKeys());
-  }
-
-
-  colorizeKeys() {
-    Object.keys(this.currentNotes).map((key) => {
-      const clef = this.currentNotes[key];
-      clef.forEach((staveNote, index) => {
-        const color = index < this.currentChordIndex ? "green" : "black";
-        _.range(staveNote.getKeys().length).map((noteIndex) => {
-          staveNote.setKeyStyle(noteIndex, {fillStyle: color});
-        });
-      });
-    });
-  }
-
-
-  getBaseNotes() {
-    return "cdefgab".split("");
-  }
-
-
-  generateBar(clef) {
-    const options = {
-      notesPerBar: 4,
-      withModifiers: false,
-      levels: {
-        bass: [2, 3],
-        treble: [4, 5]
-      },
-      maximumInterval: 12
-    };
-
-    this.currentChordIndex = 0;
-    const baseModifiers = options.withModifiers ? ["", "b", "#"] : [""];
-    const generatedChords = _.range(0, options.notesPerBar).map(() => {
-      const randomLevel = _.sample(options.levels[clef]);
-
-      const generateNote = function (baseNotes) {
-        const randomNoteIndex = _.random(0, baseNotes.length - 1);
-        const note = baseNotes.splice(randomNoteIndex, 1)[0];
-
-        const modifier = _.sample(baseModifiers);
-        return {note, modifier};
-      };
-
-      const generateChord = () => {
-        const baseNotes = this.getBaseNotes();
-        return _.times(_.random.apply(_, this.props.settings.chordSizeRanges[clef]), () => {
-          return generateNote(baseNotes);
-        });
-      };
-
-      const formatKey = ({note, modifier}) => note + modifier + "/" + randomLevel;
-
-      const ensureInterval = (keys) => {
-        const keyNumbers = keys.map((key) => {
-          return this.keyConverter.getNumberForKeyString(formatKey(key));
-        });
-        return options.maximumInterval >= _.max(keyNumbers) - _.min(keyNumbers);
-      };
-
-      let randomChord = generateChord();
-      while (!ensureInterval(randomChord)) {
-        randomChord = generateChord();
-      }
-
-      const staveChord = new Vex.Flow.StaveNote({
-        clef: clef,
-        keys: randomChord.map(formatKey).sort((keyA, keyB) => {
-          return this.keyConverter.getNumberForKeyString(keyA) -
-            this.keyConverter.getNumberForKeyString(keyB);
-        }),
-        duration: `${options.notesPerBar}`
-      });
-
-      randomChord.forEach(({note, modifier}, index) => {
-        if (modifier) {
-          staveChord.addAccidental(index, new Vex.Flow.Accidental(modifier));
-        }
-      });
-
-      return staveChord;
-    });
-
-    return generatedChords;
-  }
 }

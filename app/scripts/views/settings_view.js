@@ -26,8 +26,6 @@ export default class SettingsView extends Component {
       marginBottom: -2,
     };
 
-    const keyConverter = new KeyConverter();
-
     return (
       <div id="settings">
         <h3 style={{marginTop: -5}}>Settings</h3>
@@ -50,7 +48,7 @@ export default class SettingsView extends Component {
           rangeMax={14}
           values={this.props.settings.keySignature}
           onChange={this.buildStateChanger("keySignature")}
-          valueToString={keyConverter.keySignatureValueToString}
+          valueToString={KeyConverter.keySignatureValueToString}
           label={"signature"}
         />
       </div>

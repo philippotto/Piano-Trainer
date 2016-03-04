@@ -10,7 +10,6 @@ export default class MidiService {
     this.errorResolveCallback = errorResolveCallback || (() => {});
 
     this.receivingMidiMessages = false;
-    this.keyConverter = new KeyConverter();
     this.initializeInputStates();
 
     // a wrong chord should not result in lots of failure calls
@@ -68,7 +67,7 @@ export default class MidiService {
     this.desiredInputState = {};
 
     keys.map((key) => {
-      const number = this.keyConverter.getNumberForKeyString(key);
+      const number = KeyConverter.getNumberForKeyString(key);
       this.desiredInputState[number] = true;
     });
   }

@@ -1,25 +1,55 @@
 import _ from "lodash";
 
-export default class KeyConverter {
+const scaleIntervals = [0, 2, 2, 1, 2, 2, 2];
+const keyMap = initializeKeyMap();
 
-  constructor() {
-    this.initializeKeyMap();
-    this.scaleIntervals = [0, 2, 2, 1, 2, 2, 2];
+function initializeKeyMap() {
+  // builds a keyMap which looks like this
+  // {
+  //   21 : "a/0"
+  //   22 : "a#/0"
+  //   ...
+  //   108 : "c/8"
+  // }
+
+  const baseScale = [
+    "c", "c#", "d", "d#", "e", "f", "f#", "g", "g#", "a", "a#", "b"
+  ];
+
+  const claviature = baseScale
+    .slice(-3)
+    .concat(
+      _.flatten(_.times(7, () => baseScale))
+    ).concat([baseScale[0]]);
+
+  const keyMap = {};
+
+  for (let index = 0, key; index < claviature.length; index++) {
+    key = claviature[index];
+    const offsettedIndex = index - 3;
+    const nr = Math.floor((offsettedIndex + 12) / 12);
+
+    keyMap[index + 21] = key + "/" + nr;
   }
 
-
-  getNumberForCanonicalKeyString(keyString) {
-    return parseInt(_.findKey(this.keyMap, (key) => key === keyString), 10);
-  }
+  return keyMap;
+}
 
 
-  getNumberForKeyString(keyString) {
+export default {
+
+  getNumberForCanonicalKeyString: function (keyString) {
+    return parseInt(_.findKey(keyMap, (key) => key === keyString), 10);
+  },
+
+
+  getNumberForKeyString: function (keyString) {
     keyString = this.getCanonicalForm(keyString);
     return this.getNumberForCanonicalKeyString(keyString);
-  }
+  },
 
 
-  getScaleForBase(baseKey) {
+  getScaleForBase: function (baseKey) {
     // TODO: this returns canonical key strings
     // For example, the last key of the f sharp major scale is e#
     // The function will return a f (which is harmonically seen the same)
@@ -33,15 +63,15 @@ export default class KeyConverter {
     let lastNote = baseKey;
 
     return _.times(7, (index) => {
-      lastNote += this.scaleIntervals[index];
+      lastNote += scaleIntervals[index];
       return lastNote;
     }
     )
     .map(this.getKeyStringForNumber, this);
-  }
+  },
 
 
-  getCanonicalForm(key) {
+  getCanonicalForm: function (key) {
     // strips away the given modifier and returns the strippedKey as well as the
     // amount of stripped modifiers
     const stripKey = function (keyToStrip, modifier) {
@@ -61,48 +91,15 @@ export default class KeyConverter {
     key = key + sharpDifference - flatDifference;
 
     return this.getKeyStringForNumber(key);
-  }
+  },
 
 
-  getKeyStringForNumber(number) {
-    return this.keyMap[number + ""];
-  }
+  getKeyStringForNumber: function (number) {
+    return keyMap[number + ""];
+  },
 
-
-  initializeKeyMap() {
-    // builds a keyMap which looks like this
-    // {
-    //   21 : "a/0"
-    //   22 : "a#/0"
-    //   ...
-    //   108 : "c/8"
-    // }
-
-    const baseScale = [
-      "c", "c#", "d", "d#", "e", "f", "f#", "g", "g#", "a", "a#", "b"
-    ];
-
-    const claviature = baseScale
-      .slice(-3)
-      .concat(
-        _.flatten(_.times(7, () => baseScale))
-      ).concat([baseScale[0]]);
-
-    const keyMap = {};
-
-    for (let index = 0, key; index < claviature.length; index++) {
-      key = claviature[index];
-      const offsettedIndex = index - 3;
-      const nr = Math.floor((offsettedIndex + 12) / 12);
-
-      keyMap[index + 21] = key + "/" + nr;
-    }
-
-    this.keyMap = keyMap;
-  }
-
-  keySignatureValueToString(value) {
+  keySignatureValueToString: function (value) {
     const keySignatures = ["C#", "F#", "B", "E", "A", "D", "G", "C", "F", "Bb", "Eb", "Ab", "Db", "Gb", "Cb"];
     return keySignatures[value];
   }
-}
+};
