@@ -8,17 +8,17 @@ function getBaseNotes() {
 
 export default {
 
-  generateBars: function(chordSizeRanges) {
+  generateBars: function(settings) {
     return {
-      treble: this.generateBar("treble", chordSizeRanges),
-      bass: this.generateBar("bass", chordSizeRanges)
+      treble: this.generateBar("treble", settings),
+      bass: this.generateBar("bass", settings)
     };
   },
 
-  generateBar: function(clef, chordSizeRanges) {
+  generateBar: function(clef, settings) {
+    const chordSizeRanges = settings.chordSizeRanges;
     const options = {
       notesPerBar: 4,
-      withModifiers: false,
       levels: {
         bass: [2, 3],
         treble: [4, 5]
@@ -26,7 +26,7 @@ export default {
       maximumInterval: 12
     };
 
-    const baseModifiers = options.withModifiers ? ["", "b", "#"] : [""];
+    const baseModifiers = settings.useAccidentals ? ["", "b", "#"] : [""];
     const generatedChords = _.range(0, options.notesPerBar).map(() => {
       const randomLevel = _.sample(options.levels[clef]);
 

@@ -17,6 +17,12 @@ export default class SettingsView extends Component {
     };
   }
 
+  toggleAccidentalsCheckbox() {
+    this.props.settings.set({
+      useAccidentals: !this.props.settings.useAccidentals
+    });
+  }
+
   render() {
     const rangeContainerStyle = {
       marginLeft: "10",
@@ -25,6 +31,17 @@ export default class SettingsView extends Component {
       marginRight: "10",
       marginBottom: -2,
     };
+
+
+    // <RangeSettingComponent
+      // rangeMin={0}
+      // rangeMax={14}
+      // values={this.props.settings.keySignature}
+      // onChange={this.buildStateChanger("keySignature")}
+      // valueToString={KeyConverter.keySignatureValueToString}
+      // label={"signature"}
+    // />
+
 
     return (
       <div id="settings">
@@ -43,14 +60,20 @@ export default class SettingsView extends Component {
           onChange={this.buildStateChanger("chordSizeRanges.bass")}
           label={"bass notes/chord"}
         />
-        <RangeSettingComponent
-          rangeMin={0}
-          rangeMax={14}
-          values={this.props.settings.keySignature}
-          onChange={this.buildStateChanger("keySignature")}
-          valueToString={KeyConverter.keySignatureValueToString}
-          label={"signature"}
-        />
+
+        <div>
+          Accidentals: On/Off
+          <div className="accidental_checkbox" style={{float: "right"}}>
+            <input
+             type="checkbox"
+             checked={this.props.settings.useAccidentals}
+             id="accidental_checkbox"
+             name="check"
+             onChange={this.toggleAccidentalsCheckbox.bind(this)}
+            />
+            <label htmlFor="accidental_checkbox"></label>
+          </div>
+        </div>
       </div>
     );
   }

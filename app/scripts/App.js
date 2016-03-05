@@ -13,6 +13,7 @@ let freezer = new Freezer({
       bass: [1, 3],
     },
     keySignature: [7, 7],
+    useAccidentals: false,
   }
 });
 

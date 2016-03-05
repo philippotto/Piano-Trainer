@@ -29,18 +29,23 @@ export default class MainView extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.settings !== this.props.settings) {
-      const nextChordSizeRanges = nextProps.settings.chordSizeRanges;
-      const chordSizeRanges = this.props.settings.chordSizeRanges;
+    const nextSettings = nextProps.settings;
+    const prevSettings = this.props.settings;
+
+    if (nextSettings !== prevSettings) {
+      const nextChordSizeRanges = nextSettings.chordSizeRanges;
+      const chordSizeRanges = prevSettings.chordSizeRanges;
 
       let treble = this.state.currentNotes.treble;
       let bass = this.state.currentNotes.bass;
 
-      if (nextChordSizeRanges.treble !== chordSizeRanges.treble) {
-        treble = BarGenerator.generateBar("treble", nextChordSizeRanges);
+      let shouldRegenerateAll = prevSettings.useAccidentals !== nextSettings.useAccidentals;
+
+      if (shouldRegenerateAll || nextChordSizeRanges.treble !== chordSizeRanges.treble) {
+        treble = BarGenerator.generateBar("treble", nextSettings);
       }
-      if (nextChordSizeRanges.bass !== chordSizeRanges.bass) {
-        bass = BarGenerator.generateBar("bass", nextChordSizeRanges);
+      if (shouldRegenerateAll || nextChordSizeRanges.bass !== chordSizeRanges.bass) {
+        bass = BarGenerator.generateBar("bass", nextSettings);
       }
 
       this.setState({
@@ -53,7 +58,7 @@ export default class MainView extends Component {
   generateNewBarState() {
     return {
       currentChordIndex: 0,
-      currentNotes: BarGenerator.generateBars(this.props.settings.chordSizeRanges),
+      currentNotes: BarGenerator.generateBars(this.props.settings),
     };
   }
 
