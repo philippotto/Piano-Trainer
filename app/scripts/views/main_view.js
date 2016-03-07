@@ -9,6 +9,8 @@ import BarGenerator from "../services/bar_generator.js";
 import StaveRenderer from "./stave_renderer.js";
 
 const successMp3Url = require("file!../../resources/success.mp3");
+const pianoBackgroundJpg = require("file!../../images/piano-background.jpg");
+const githubPng = require("file!../../images/github.png");
 
 export default class MainView extends Component {
 
@@ -78,12 +80,12 @@ export default class MainView extends Component {
 
     return (
       <div>
-        <img id="image-background" src="images/piano-background.jpg" />
+        <img id="image-background" src={pianoBackgroundJpg} />
 
         <div className="jumbotron">
           <h1>Piano Trainer</h1>
           <a href="https://github.com/philippotto/Piano-Trainer">
-            <img id="github" src="images/github.png" />
+            <img id="github" src={githubPng} />
           </a>
         </div>
 

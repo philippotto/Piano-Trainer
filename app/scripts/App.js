@@ -1,3 +1,4 @@
+require("html!../index.html");
 require("../styles/index.less");
 require("font-awesome-webpack");
 

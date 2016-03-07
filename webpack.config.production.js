@@ -43,7 +43,7 @@ var webpack = require('webpack');
 var path = require('path');
 
 module.exports = {
-  entry: './app/scripts/index',
+  entry: './app/scripts/index.js',
   output: {
     path: path.join(__dirname, 'dist'),
     filename: 'bundle.js',
@@ -75,7 +75,14 @@ module.exports = {
         test: /\.jsx?$/,
         loaders: ['babel'],
         include: path.join(__dirname, 'app', 'scripts')
-      }
+      },
+      {
+        test: /\.less$/,
+        loader: "style!css!less",
+      },
+      { test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: "url-loader?limit=10000&minetype=application/font-woff" },
+      { test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: "file-loader" },
+      { test: /\.html/, loader: 'file?name=[name].[ext]' },
     ]
   }
 };
