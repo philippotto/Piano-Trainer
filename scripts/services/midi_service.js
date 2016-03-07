@@ -2,6 +2,12 @@
   define(["./key_converter"], function(KeyConverter) {
     var MidiService;
     return MidiService = (function() {
+      MidiService.onKeyStatus = 159;
+
+      MidiService.offKeyStatus = 143;
+
+      MidiService.activeSensingStatus = 254;
+
       function MidiService(successCallback, failureCallback, errorCallback, errorResolveCallback, mocked) {
         this.successCallback = successCallback;
         this.failureCallback = failureCallback;
@@ -113,14 +119,14 @@
           this.errorResolveCallback();
         }
         _ref = msg.data, status = _ref[0], note = _ref[1], intensity = _ref[2];
-        if (status === 254) {
+        if (status === MidiService.activeSensingStatus) {
           return;
         }
         console.log(msg);
-        if (status <= 143) {
+        if (status <= MidiService.offKeyStatus) {
           intensity = 0;
         }
-        if (status <= 159) {
+        if (status <= MidiService.onKeyStatus) {
           return this.setNote(note, intensity);
         }
       };
