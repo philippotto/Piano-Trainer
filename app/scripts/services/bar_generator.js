@@ -26,7 +26,10 @@ export default {
       maximumInterval: 12
     };
 
-    const baseModifiers = settings.useAccidentals ? ["", "b", "#"] : [""];
+    const baseModifiers = settings.useAccidentals ?
+      _.flatten([_.times(8, _.constant("")), "b", "#"])
+      : [""];
+
     const generatedChords = _.range(0, options.notesPerBar).map(() => {
       const randomLevel = _.sample(options.levels[clef]);
 
