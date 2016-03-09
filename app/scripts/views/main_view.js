@@ -130,7 +130,7 @@ export default class MainView extends Component {
             <SettingsView settings={this.props.settings} />
             <StatisticsView statisticService={this.props.statisticService} />
           </div>
-          <audio id="success-player" hidden="true" src={successMp3Url} controls preload="auto" autobuffer></audio>
+          <audio ref="successPlayer" hidden="true" src={successMp3Url} controls preload="auto" autobuffer></audio>
         </div>
       </div>
     );
@@ -195,7 +195,7 @@ export default class MainView extends Component {
 
 
   playSuccessSound() {
-    document.getElementById("success-player").play();
+    this.refs.successPlayer.play();
   }
 
 

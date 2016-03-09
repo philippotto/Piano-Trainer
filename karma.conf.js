@@ -1,5 +1,4 @@
 // Karma configuration
-
 var webpackConfig = require("./webpack.config");
 
 module.exports = function(config) {
@@ -16,10 +15,6 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       'scripts/spec/*.js'
-      // 'scripts/test_config.js',
-      // {pattern: 'scripts/**/*.js', included: false},
-      // {pattern: 'bower_components/**/*.js', included: false},
-      // {pattern: 'scripts/spec/*spec.js', included: false},
     ],
 
 
@@ -36,7 +31,10 @@ module.exports = function(config) {
       'scripts/spec/*.js': ['webpack']
     },
 
-    webpack: webpackConfig,
+    webpack: {
+      devtool: 'inline-source-map',
+      module: webpackConfig.module
+    },
 
     webpackMiddleware: {
         // webpack-dev-middleware configuration
