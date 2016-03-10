@@ -1,6 +1,7 @@
 import _ from "lodash";
+import StatEvolver from "../services/stat_evolver.js";
 
-export default class StatisticService {
+class StatisticService {
 
   constructor() {
     this.read();
@@ -26,15 +27,19 @@ export default class StatisticService {
     this.stats = localStorage.getItem("pianoTrainerStatistics");
 
     if (this.stats) {
-      this.stats = JSON.parse(this.stats).map((el) => {
-        el.date = new Date(el.date);
-        return el;
-      });
+      this.stats = JSON.parse(this.stats)
+        .map(this.transformDate)
+        .map(StatEvolver.evolveToLatestSchema);
     } else {
       this.stats = [];
     }
+    this.save();
   }
 
+  transformDate(el) {
+    el.date = new Date(el.date);
+    return el;
+  }
 
   save() {
     return localStorage.setItem("pianoTrainerStatistics", JSON.stringify(this.stats));
@@ -97,14 +102,13 @@ export default class StatisticService {
 
 
   getLastDays() {
-    return _(this.stats).filter((el) => el.success).map(function (el) {
-      el.formattedDate = [
+    return _(this.stats).filter((el) => el.success).groupBy(function (el) {
+      return [
         el.date.getUTCFullYear(),
         ("0" + el.date.getMonth()).slice(-2),
         ("0" + el.date.getDate()).slice(-2)
       ].join("-");
-      return el;
-    }).groupBy("formattedDate").map((aDay, formattedDate) => {
+    }).map((aDay, formattedDate) => {
       const dayTimes = aDay.map((el) => el.time);
       aDay.averageTime = this.computeAverage(dayTimes);
       aDay.totalTime = this.computeSum(dayTimes);
@@ -119,3 +123,5 @@ export default class StatisticService {
   }
 }
 
+
+export default new StatisticService();

@@ -23,7 +23,7 @@ export default class App extends Component {
     const state = freezer.get();
     return (
       <MainView
-       statisticService={new StatisticService()}
+       statisticService={StatisticService}
        settings={state.settings}
       />
     );
