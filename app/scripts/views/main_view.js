@@ -20,12 +20,12 @@ export default class MainView extends Component {
   }
 
   componentDidMount() {
-    this.midiService = new MidiService(
-      this.onSuccess.bind(this),
-      this.onFailure.bind(this),
-      this.onError.bind(this),
-      this.onErrorResolve.bind(this)
-    );
+    this.midiService = new MidiService({
+      successCallback: this.onSuccess.bind(this),
+      failureCallback: this.onFailure.bind(this),
+      errorCallback: this.onError.bind(this),
+      errorResolveCallback: this.onErrorResolve.bind(this),
+    });
     this.startDate = new Date();
     this.midiService.setDesiredKeys(this.getAllCurrentKeys());
   }

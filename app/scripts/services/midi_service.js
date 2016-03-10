@@ -1,13 +1,27 @@
+import Freezer from "freezer-js";
+import AppFreezer from "../AppFreezer.js";
 import KeyConverter from "../services/key_converter.js";
 import _ from "lodash";
 
+function getMidiSettings() {
+  return AppFreezer.get().settings.midi;
+}
+
 export default class MidiService {
 
-  constructor(successCallback, failureCallback, errorCallback, errorResolveCallback, mocked = false) {
+  constructor(opts) {
+    const {
+      successCallback,
+      failureCallback,
+      errorCallback,
+      errorResolveCallback,
+      mocked,
+    } = opts;
+
     this.successCallback = successCallback;
     this.failureCallback = failureCallback;
-    this.errorCallback = errorCallback || (() => {});
-    this.errorResolveCallback = errorResolveCallback || (() => {});
+    this.errorCallback = errorCallback || _.noop;
+    this.errorResolveCallback = errorResolveCallback || _.noop;
 
     this.receivingMidiMessages = false;
     this.initializeInputStates();
@@ -110,17 +124,41 @@ export default class MidiService {
   }
 
   onMidiAccess(midi) {
-    let inputs = midi.inputs;
-    if (inputs.size === 0) {
+    const inputValues = midi.inputs.values();
+    const inputs = [];
+    for (let input = inputValues.next(); input && !input.done; input = inputValues.next()) {
+      inputs.push(input.value);
+    }
+    if (inputs.length === 0) {
       this.errorCallback("No MIDI device found.");
       return;
     }
+    let input = inputs[0];
+    this.listenToInput(input);
 
-    // TODO: take care of multiple inputs
-    // weird workaround because inputs.get(0) doesn't always work?
-    let input = inputs.values().next().value;
+    getMidiSettings().set({
+      inputs: Freezer.createLeaf(inputs),
+      activeInputIndex: 0,
+    });
+
+    AppFreezer.on('input:changed', (newIndex) => {
+      const midiSettings = getMidiSettings();
+      midiSettings.set({
+        activeInputIndex: newIndex,
+      });
+      this.unlistenToInputs(midiSettings.inputs.get());
+      this.listenToInput(midiSettings.inputs.get()[newIndex]);
+    })
 
     console.log("Midi access received. Available inputs", inputs, "Chosen input:", input);
+  }
+
+  unlistenToInputs(inputs) {
+    inputs.forEach((input) => input.onmidimessage = null);
+  }
+
+  listenToInput(input) {
+    input.onmidimessage = null;
     input.onmidimessage = this.onMidiMessage.bind(this);
 
     setTimeout(
