@@ -13,8 +13,9 @@ const successMp3Url = require("file!../../resources/success.mp3");
 export default class StaveRenderer extends Component {
 
   propTypes: {
-    currentNotes: React.PropTypes.array,
-    currentChordIndex: React.PropTypes.number
+    notes: React.PropTypes.array,
+    chordIndex: React.PropTypes.number,
+    keySignature: React.PropTypes.string,
   }
 
   render() {
@@ -53,24 +54,32 @@ export default class StaveRenderer extends Component {
     this.setCanvasExtent(canvas, width, height);
 
     const rightHandStave = new Vex.Flow.Stave(10, 0, width);
-    rightHandStave.addClef("treble").setContext(ctx).draw();
+    rightHandStave
+      .addClef("treble")
+      .setKeySignature(this.props.keySignature)
+      .setContext(ctx)
+      .draw();
 
     const leftHandStave = new Vex.Flow.Stave(10, 80, width);
-    leftHandStave.addClef("bass").setContext(ctx).draw();
+    leftHandStave
+      .addClef("bass")
+      .setKeySignature(this.props.keySignature)
+      .setContext(ctx)
+      .draw();
 
     this.colorizeKeys();
 
     [[rightHandStave, "treble"], [leftHandStave, "bass"]].map(([stave, clef]) => {
-      Vex.Flow.Formatter.FormatAndDraw(ctx, stave, this.props.currentNotes[clef]);
+      Vex.Flow.Formatter.FormatAndDraw(ctx, stave, this.props.notes[clef]);
     });
   }
 
 
   colorizeKeys() {
-    Object.keys(this.props.currentNotes).map((key) => {
-      const clef = this.props.currentNotes[key];
+    Object.keys(this.props.notes).map((key) => {
+      const clef = this.props.notes[key];
       clef.forEach((staveNote, index) => {
-        const color = index < this.props.currentChordIndex ? "green" : "black";
+        const color = index < this.props.chordIndex ? "green" : "black";
         _.range(staveNote.getKeys().length).map((noteIndex) => {
           staveNote.setKeyStyle(noteIndex, {fillStyle: color});
         });

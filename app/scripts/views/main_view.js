@@ -27,7 +27,7 @@ export default class MainView extends Component {
       this.onErrorResolve.bind(this)
     );
     this.startDate = new Date();
-    this.midiService.setDesiredKeys(this.getAllCurrentKeys());
+    this.midiService.setDesiredKeys(this.getAllCurrentKeys(), this.state.currentKeySignature);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -40,6 +40,7 @@ export default class MainView extends Component {
 
       let treble = this.state.currentNotes.treble;
       let bass = this.state.currentNotes.bass;
+      let keySignature = this.state.currentKeySignature;
 
       let shouldRegenerateAll = prevSettings.useAccidentals !== nextSettings.useAccidentals;
 
@@ -49,10 +50,14 @@ export default class MainView extends Component {
       if (shouldRegenerateAll || nextChordSizeRanges.bass !== chordSizeRanges.bass) {
         bass = BarGenerator.generateBar("bass", nextSettings);
       }
+      if (shouldRegenerateAll || !_.isEqual(prevSettings.keySignature, nextSettings.keySignature)) {
+        keySignature = BarGenerator.generateKeySignature(nextSettings);
+      }
 
       this.setState({
         currentChordIndex: 0,
-        currentNotes: {treble, bass}
+        currentNotes: {treble, bass},
+        currentKeySignature: keySignature,
       });
     }
   }
@@ -61,6 +66,7 @@ export default class MainView extends Component {
     return {
       currentChordIndex: 0,
       currentNotes: BarGenerator.generateBars(this.props.settings),
+      currentKeySignature: BarGenerator.generateKeySignature(this.props.settings)
     };
   }
 
@@ -106,8 +112,9 @@ export default class MainView extends Component {
           <div className="Aligner">
             <div className="Aligner-item">
               <StaveRenderer
-                currentNotes={this.state.currentNotes}
-                currentChordIndex={this.state.currentChordIndex}
+                notes={this.state.currentNotes}
+                chordIndex={this.state.currentChordIndex}
+                keySignature={this.state.currentKeySignature}
               />
             </div>
           </div>
@@ -130,7 +137,7 @@ export default class MainView extends Component {
             <SettingsView settings={this.props.settings} />
             <StatisticsView statisticService={this.props.statisticService} />
           </div>
-          <audio ref="successPlayer" hidden="true" src={successMp3Url} controls preload="auto" autobuffer></audio>
+          <audio ref="successPlayer" hidden="true" src={successMp3Url} controls preload="auto" autobuffer />
         </div>
       </div>
     );
@@ -138,7 +145,7 @@ export default class MainView extends Component {
 
   componentDidUpdate() {
     this.startDate = new Date();
-    this.midiService.setDesiredKeys(this.getAllCurrentKeys());
+    this.midiService.setDesiredKeys(this.getAllCurrentKeys(), this.state.currentKeySignature);
   }
 
 
@@ -164,7 +171,8 @@ export default class MainView extends Component {
     const event = {
       success: true,
       keys: this.getAllCurrentKeys(),
-      time: new Date() - this.startDate
+      keySignature: this.state.currentKeySignature,
+      time: new Date() - this.startDate,
     };
 
     const timeThreshold = 30000;
@@ -203,7 +211,8 @@ export default class MainView extends Component {
     this.props.statisticService.register({
       success: false,
       keys: this.getAllCurrentKeys(),
-      time: new Date() - this.startDate
+      time: new Date() - this.startDate,
+      keySignature: this.state.currentKeySignature,
     });
   }
 

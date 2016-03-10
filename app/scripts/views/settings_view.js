@@ -33,14 +33,6 @@ export default class SettingsView extends Component {
     };
 
 
-    // <RangeSettingComponent
-      // rangeMin={0}
-      // rangeMax={14}
-      // values={this.props.settings.keySignature}
-      // onChange={this.buildStateChanger("keySignature")}
-      // valueToString={KeyConverter.keySignatureValueToString}
-      // label={"signature"}
-    // />
 
 
     return (
@@ -59,6 +51,14 @@ export default class SettingsView extends Component {
           values={this.props.settings.chordSizeRanges.bass}
           onChange={this.buildStateChanger("chordSizeRanges.bass")}
           label={"bass notes/chord"}
+        />
+        <RangeSettingComponent
+          rangeMin={0}
+          rangeMax={14}
+          values={this.props.settings.keySignature}
+          onChange={this.buildStateChanger("keySignature")}
+          valueToString={KeyConverter.keySignatureValueToString}
+          label={"signature"}
         />
 
         <div>

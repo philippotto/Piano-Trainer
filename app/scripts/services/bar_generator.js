@@ -8,6 +8,13 @@ function getBaseNotes() {
 
 export default {
 
+  generateKeySignature: function(settings) {
+    const keySignatureIndex = _.sample(
+      _.range(settings.keySignature[0], settings.keySignature[1] + 1)
+    );
+    return KeyConverter.keySignatureValueToString(keySignatureIndex);
+  },
+
   generateBars: function(settings) {
     return {
       treble: this.generateBar("treble", settings),
@@ -52,7 +59,7 @@ export default {
 
       const ensureInterval = (keys) => {
         const keyNumbers = keys.map((key) => {
-          return KeyConverter.getNumberForKeyString(formatKey(key));
+          return KeyConverter.getNumberForKeyString(formatKey(key), "C");
         });
         return options.maximumInterval >= _.max(keyNumbers) - _.min(keyNumbers);
       };
@@ -65,8 +72,8 @@ export default {
       const staveChord = new Vex.Flow.StaveNote({
         clef: clef,
         keys: randomChord.map(formatKey).sort((keyA, keyB) => {
-          return KeyConverter.getNumberForKeyString(keyA) -
-            KeyConverter.getNumberForKeyString(keyB);
+          return KeyConverter.getNumberForKeyString(keyA, "C") -
+            KeyConverter.getNumberForKeyString(keyB, "C");
         }),
         duration: `${options.notesPerBar}`
       });

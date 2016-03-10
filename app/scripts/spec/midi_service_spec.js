@@ -12,7 +12,7 @@ describe("MidiService", function () {
     const failureCallback = () => failedCounter++;
 
     const midiService = new MidiService(successCallback, failureCallback, null, null, true);
-    midiService.setDesiredKeys(["a/0"]);
+    midiService.setDesiredKeys(["a/0"], "C");
 
     // onKeyStatus is an on event
     midiService.onMidiMessage(
@@ -35,7 +35,7 @@ describe("MidiService", function () {
     const failureCallback = () => failedCounter++;
 
     const midiService = new MidiService(successCallback, failureCallback, null, null, true);
-    midiService.setDesiredKeys(["a/0"]);
+    midiService.setDesiredKeys(["a/0"], "C");
 
     // send on event
     midiService.onMidiMessage(
@@ -58,7 +58,7 @@ describe("MidiService", function () {
     const failureCallback = () => failedCounter++;
 
     const midiService = new MidiService(successCallback, failureCallback, null, null, true);
-    midiService.setDesiredKeys(["a/0", "c/8"]);
+    midiService.setDesiredKeys(["a/0", "c/8"], "C");
 
     midiService.onMidiMessage(
       {data: [onKeyStatus, 21, 1]}
@@ -83,7 +83,7 @@ describe("MidiService", function () {
     const failureCallback = () => failedCounter++;
 
     const midiService = new MidiService(successCallback, failureCallback, null, null, true);
-    midiService.setDesiredKeys(["a/0", "c/8"]);
+    midiService.setDesiredKeys(["a/0", "c/8"], "C");
 
     midiService.onMidiMessage({data: [onKeyStatus, 21, 1]});
     midiService.onMidiMessage({data: [onKeyStatus, 107, 1]});

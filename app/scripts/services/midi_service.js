@@ -63,11 +63,11 @@ export default class MidiService {
   }
 
 
-  setDesiredKeys(keys) {
+  setDesiredKeys(keys, keySignature) {
     this.desiredInputState = {};
 
     keys.map((key) => {
-      const number = KeyConverter.getNumberForKeyString(key);
+      const number = KeyConverter.getNumberForKeyString(key, keySignature);
       this.desiredInputState[number] = true;
     });
   }
