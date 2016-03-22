@@ -87,7 +87,7 @@ class StatisticService {
   }
 
 
-  getTotalAmountOfNotes() {
+  getTotalAmountOfKeys() {
     return _(this.stats)
       .filter((el) => el.success)
       .map((el) => el.keys)

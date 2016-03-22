@@ -67,16 +67,16 @@ export default class MidiService {
     this.desiredInputState = {};
 
     keys.map((key) => {
-      const number = KeyConverter.getNumberForKeyString(key, keySignature);
+      const number = KeyConverter.getKeyNumberForKeyString(key, keySignature);
       this.desiredInputState[number] = true;
     });
   }
 
-  setNote(note, intensity) {
+  setKeyNumber(keyNumber, intensity) {
     if (intensity === 0) {
-      delete this.currentInputState[note];
+      delete this.currentInputState[keyNumber];
     } else {
-      this.currentInputState[note] = true;
+      this.currentInputState[keyNumber] = true;
     }
 
     this.checkEqual(intensity);
@@ -146,7 +146,7 @@ export default class MidiService {
       this.errorResolveCallback();
     }
 
-    let [status, note, intensity] = msg.data;
+    let [status, keyNumber, intensity] = msg.data;
 
     if (status === MidiService.activeSensingStatus) {
       // ignore "active sensing" event
@@ -162,7 +162,7 @@ export default class MidiService {
 
     if (status <= MidiService.onKeyStatus) {
       // on or off event
-      this.setNote(note, intensity);
+      this.setKeyNumber(keyNumber, intensity);
     }
   }
 }

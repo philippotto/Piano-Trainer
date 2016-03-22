@@ -42,20 +42,20 @@ function initializeKeyMap() {
 
 export default {
 
-  getNumberForCanonicalKeyString: function (keyString) {
+  getKeyNumberForCanonicalKeyString: function (keyString) {
     return parseInt(_.findKey(keyMap, (key) => key === keyString), 10);
   },
 
 
-  getNumberForKeyString: function (keyString, keySignature) {
-    keyString = this.getCanonicalForm(keyString);
-    const keyNumber = this.getNumberForCanonicalKeyString(keyString);
+  getKeyNumberForKeyString: function (keyString, keySignature) {
+    keyString = this.getCanonicalKeyString(keyString);
+    const keyNumber = this.getKeyNumberForCanonicalKeyString(keyString);
 
     if (keySignature !== "C") {
       // find out whether keyNumber is affected by keySignature
       // if yes, increment/decrement it accordingly
-      const scaleNotes = this.getScaleForBase(keySignature.toLowerCase() + "/1").map((el) =>
-        this.getKeyStringForNumber(el).split("/")[0]
+      const scaleNotes = this.getScaleKeysForBase(keySignature.toLowerCase() + "/1").map((el) =>
+        this.getKeyStringForKeyNumber(el).split("/")[0]
       );
       if (scaleNotes.indexOf(keyString.split("/")[0]) === -1) {
         const modifierType = this.getModifierTypeOfKeySignature(keySignature);
@@ -72,28 +72,28 @@ export default {
     return keyNumber;
   },
 
-
-  getScaleForBase: function (baseKey) {
+  getScaleKeysForBase: function (baseKeyString) {
     // Returns canonical key strings.
     // For example, the last key of the f sharp major scale is e#
     // The function will return a f (which is harmonically seen the same)
 
-    if (_.isString(baseKey)) {
-      baseKey = this.getNumberForKeyString(baseKey, "C");
+    if (_.isString(baseKeyString)) {
+      baseKeyString = this.getKeyNumberForKeyString(baseKeyString, "C");
     }
 
-    baseKey = parseInt(baseKey, 10);
+    baseKeyString = parseInt(baseKeyString, 10);
 
-    let lastNote = baseKey;
+    let lastKey = baseKeyString;
 
     return _.times(7, (index) => {
-      lastNote += scaleIntervals[index];
-      return lastNote;
+      lastKey += scaleIntervals[index];
+      return lastKey;
     });
   },
 
 
-  getCanonicalForm: function (key) {
+  getCanonicalKeyString: function (keyString) {
+
     // strips away the given modifier and returns the strippedKey as well as the
     // amount of stripped modifiers
     const stripKey = function (keyToStrip, modifier) {
@@ -106,17 +106,18 @@ export default {
     };
 
     let flatDifference, sharpDifference;
-    [key, flatDifference] = stripKey(key, "b");
-    [key, sharpDifference] = stripKey(key, "#");
+    [keyString, flatDifference] = stripKey(keyString, "b");
+    [keyString, sharpDifference] = stripKey(keyString, "#");
 
-    key = this.getNumberForCanonicalKeyString(key);
-    key = key + sharpDifference - flatDifference;
+    const keyNumber = this.getKeyNumberForCanonicalKeyString(keyString) +
+      sharpDifference -
+      flatDifference;
 
-    return this.getKeyStringForNumber(key);
+    return this.getKeyStringForKeyNumber(keyNumber);
   },
 
 
-  getKeyStringForNumber: function (number) {
+  getKeyStringForKeyNumber: function (number) {
     return keyMap[number + ""];
   },
 

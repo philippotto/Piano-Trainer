@@ -25,7 +25,7 @@ export default {
   generateBar: function(clef, settings) {
     const chordSizeRanges = settings.chordSizeRanges;
     const options = {
-      notesPerBar: 4,
+      chordsPerBar: 4,
       levels: {
         bass: [2, 3],
         treble: [4, 5]
@@ -37,7 +37,7 @@ export default {
       _.flatten([_.times(8, _.constant("")), "b", "#"])
       : [""];
 
-    const generatedChords = _.range(0, options.notesPerBar).map(() => {
+    const generatedChords = _.range(0, options.chordsPerBar).map(() => {
       const randomLevel = _.sample(options.levels[clef]);
 
       const generateNote = function (baseNotes) {
@@ -48,37 +48,37 @@ export default {
         return {note, modifier};
       };
 
-      const generateChord = () => {
+      const generateNoteSet = () => {
         const baseNotes = getBaseNotes();
         return _.times(_.random.apply(_, chordSizeRanges[clef]), () => {
           return generateNote(baseNotes);
         });
       };
 
-      const formatKey = ({note, modifier}) => note + modifier + "/" + randomLevel;
+      const noteObjectToKeyString = ({note, modifier}) => note + modifier + "/" + randomLevel;
 
-      const ensureInterval = (keys) => {
-        const keyNumbers = keys.map((key) => {
-          return KeyConverter.getNumberForKeyString(formatKey(key), "C");
+      const ensureInterval = (keyObjects) => {
+        const keyNumbers = keyObjects.map((keyObject) => {
+          return KeyConverter.getKeyNumberForKeyString(noteObjectToKeyString(keyObject), "C");
         });
         return options.maximumInterval >= _.max(keyNumbers) - _.min(keyNumbers);
       };
 
-      let randomChord = generateChord();
-      while (!ensureInterval(randomChord)) {
-        randomChord = generateChord();
+      let randomNoteSet = generateNoteSet();
+      while (!ensureInterval(randomNoteSet)) {
+        randomNoteSet = generateNoteSet();
       }
 
       const staveChord = new Vex.Flow.StaveNote({
         clef: clef,
-        keys: randomChord.map(formatKey).sort((keyA, keyB) => {
-          return KeyConverter.getNumberForKeyString(keyA, "C") -
-            KeyConverter.getNumberForKeyString(keyB, "C");
+        keys: randomNoteSet.map(noteObjectToKeyString).sort((keyA, keyB) => {
+          return KeyConverter.getKeyNumberForKeyString(keyA, "C") -
+            KeyConverter.getKeyNumberForKeyString(keyB, "C");
         }),
-        duration: `${options.notesPerBar}`
+        duration: `${options.chordsPerBar}`
       });
 
-      randomChord.forEach(({note, modifier}, index) => {
+      randomNoteSet.forEach(({note, modifier}, index) => {
         if (modifier) {
           staveChord.addAccidental(index, new Vex.Flow.Accidental(modifier));
         }

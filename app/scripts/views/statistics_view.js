@@ -28,7 +28,7 @@ export default class StatisticsView extends Component {
           <OverlayTrigger placement="top" overlay={<Tooltip id="playedChordsAndNotes">Played chords / played notes</Tooltip>}>
             <span className="stat-detail">
               <i className="fa fa-music"></i>
-              { statistics.getTotalAmountOfChords() } / { statistics.getTotalAmountOfNotes() }
+              { statistics.getTotalAmountOfChords() } / { statistics.getTotalAmountOfKeys() }
             </span>
           </OverlayTrigger>
           <OverlayTrigger placement="top" overlay={<Tooltip id="successRate">Success rate</Tooltip>}>

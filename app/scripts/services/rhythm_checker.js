@@ -2,21 +2,21 @@ import _ from "lodash";
 
 export default {
 
-  convertNotesToTimes: function(notes) {
+  convertDurationsToTimes: function(durations) {
     const times = [];
     let lastTick = 0;
 
-    for (let i = 0; i < notes.length; i++) {
-      const currentNote = notes[i];
+    for (let i = 0; i < durations.length; i++) {
+      const currentDuration = durations[i];
       let newLastTick;
-      if (currentNote > 0) {
-        newLastTick = lastTick + currentNote;
+      if (currentDuration > 0) {
+        newLastTick = lastTick + currentDuration;
         times.push({
           startTime: lastTick,
           endTime: newLastTick
         });
       } else {
-        newLastTick = lastTick + Math.abs(currentNote);
+        newLastTick = lastTick + Math.abs(currentDuration);
       }
       lastTick = newLastTick;
     }

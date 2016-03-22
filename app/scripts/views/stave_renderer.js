@@ -13,7 +13,7 @@ const successMp3Url = require("file!../../resources/success.mp3");
 export default class StaveRenderer extends Component {
 
   propTypes: {
-    notes: React.PropTypes.array,
+    keys: React.PropTypes.array,
     chordIndex: React.PropTypes.number,
     keySignature: React.PropTypes.string,
   }
@@ -70,14 +70,14 @@ export default class StaveRenderer extends Component {
     this.colorizeKeys();
 
     [[rightHandStave, "treble"], [leftHandStave, "bass"]].map(([stave, clef]) => {
-      Vex.Flow.Formatter.FormatAndDraw(ctx, stave, this.props.notes[clef]);
+      Vex.Flow.Formatter.FormatAndDraw(ctx, stave, this.props.keys[clef]);
     });
   }
 
 
   colorizeKeys() {
-    Object.keys(this.props.notes).map((key) => {
-      const clef = this.props.notes[key];
+    Object.keys(this.props.keys).map((key) => {
+      const clef = this.props.keys[key];
       clef.forEach((staveNote, index) => {
         const color = index < this.props.chordIndex ? "green" : "black";
         _.range(staveNote.getKeys().length).map((noteIndex) => {

@@ -5,9 +5,9 @@ const inverse = (el) => 1 / el;
 
 describe("RhythmChecker", function () {
 
-  it("converts notes to times - without pauses", function () {
-    const notes = [4, 4, 4, 2].map(inverse);
-    const times = RhythmChecker.convertNotesToTimes(notes);
+  it("converts durations to times - without pauses", function () {
+    const durations = [4, 4, 4, 2].map(inverse);
+    const times = RhythmChecker.convertDurationsToTimes(durations);
     const expectedTimes = [
       [0, 0.25],
       [0.25, 0.5],
@@ -18,9 +18,9 @@ describe("RhythmChecker", function () {
     expect(times).toEqual(expectedTimes);
   });
 
-  it("converts notes to times - with pauses", function () {
-    const notes = [4, -4, 2, 4].map(inverse);
-    const times = RhythmChecker.convertNotesToTimes(notes);
+  it("converts durations to times - with pauses", function () {
+    const durations = [4, -4, 2, 4].map(inverse);
+    const times = RhythmChecker.convertDurationsToTimes(durations);
     const expectedTimes = [
       [0, 0.25],
       [0.5, 1.0],

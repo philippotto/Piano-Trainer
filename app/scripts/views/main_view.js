@@ -38,8 +38,8 @@ export default class MainView extends Component {
       const nextChordSizeRanges = nextSettings.chordSizeRanges;
       const chordSizeRanges = prevSettings.chordSizeRanges;
 
-      let treble = this.state.currentNotes.treble;
-      let bass = this.state.currentNotes.bass;
+      let treble = this.state.currentKeys.treble;
+      let bass = this.state.currentKeys.bass;
       let keySignature = this.state.currentKeySignature;
 
       let shouldRegenerateAll = prevSettings.useAccidentals !== nextSettings.useAccidentals;
@@ -56,7 +56,7 @@ export default class MainView extends Component {
 
       this.setState({
         currentChordIndex: 0,
-        currentNotes: {treble, bass},
+        currentKeys: {treble, bass},
         currentKeySignature: keySignature,
       });
     }
@@ -65,7 +65,7 @@ export default class MainView extends Component {
   generateNewBarState() {
     return {
       currentChordIndex: 0,
-      currentNotes: BarGenerator.generateBars(this.props.settings),
+      currentKeys: BarGenerator.generateBars(this.props.settings),
       currentKeySignature: BarGenerator.generateKeySignature(this.props.settings)
     };
   }
@@ -112,7 +112,7 @@ export default class MainView extends Component {
           <div className="Aligner">
             <div className="Aligner-item">
               <StaveRenderer
-                notes={this.state.currentNotes}
+                keys={this.state.currentKeys}
                 chordIndex={this.state.currentChordIndex}
                 keySignature={this.state.currentKeySignature}
               />
@@ -162,7 +162,7 @@ export default class MainView extends Component {
 
   getAllCurrentKeys() {
     return _.flatten(["treble", "bass"].map((clef) =>
-      this.state.currentNotes[clef][this.state.currentChordIndex].getKeys()
+      this.state.currentKeys[clef][this.state.currentChordIndex].getKeys()
     ));
   }
 
@@ -187,7 +187,7 @@ export default class MainView extends Component {
       );
     }
 
-    if (this.state.currentChordIndex + 1 >= this.state.currentNotes.treble.length) {
+    if (this.state.currentChordIndex + 1 >= this.state.currentKeys.treble.length) {
       this.setState({
         errorMessage: null,
         ...(this.generateNewBarState())
