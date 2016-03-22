@@ -11,7 +11,7 @@ describe("MidiService", function () {
     const successCallback = () => successCounter++;
     const failureCallback = () => failedCounter++;
 
-    const midiService = new MidiService(successCallback, failureCallback, null, null, true);
+    const midiService = new MidiService({ successCallback, failureCallback, mocked: true });
     midiService.setDesiredKeys(["a/0"], "C");
 
     // onKeyStatus is an on event
@@ -25,7 +25,7 @@ describe("MidiService", function () {
     );
 
     expect(failedCounter).toBe(0);
-    return expect(successCounter).toBe(1);
+    expect(successCounter).toBe(1);
   });
 
   it("notifies about a simple desired key state (midi implementation 2)", function () {
@@ -34,7 +34,7 @@ describe("MidiService", function () {
     const successCallback = () => successCounter++;
     const failureCallback = () => failedCounter++;
 
-    const midiService = new MidiService(successCallback, failureCallback, null, null, true);
+    const midiService = new MidiService({ successCallback, failureCallback, mocked: true });
     midiService.setDesiredKeys(["a/0"], "C");
 
     // send on event
@@ -48,7 +48,7 @@ describe("MidiService", function () {
     );
 
     expect(failedCounter).toBe(0);
-    return expect(successCounter).toBe(1);
+    expect(successCounter).toBe(1);
   });
 
   it("notifies about a complex desired key state", function () {
@@ -57,7 +57,7 @@ describe("MidiService", function () {
     const successCallback = () => successCounter++;
     const failureCallback = () => failedCounter++;
 
-    const midiService = new MidiService(successCallback, failureCallback, null, null, true);
+    const midiService = new MidiService({ successCallback, failureCallback, mocked: true });
     midiService.setDesiredKeys(["a/0", "c/8"], "C");
 
     midiService.onMidiMessage(
@@ -73,16 +73,16 @@ describe("MidiService", function () {
     );
 
     expect(successCounter).toBe(1);
-    return expect(failedCounter).toBe(0);
+    expect(failedCounter).toBe(0);
   });
 
-  return it("notifies once about a wrong desired key state", function () {
+  it("notifies once about a wrong desired key state", function () {
 
     let [successCounter, failedCounter] = [0, 0];
     const successCallback = () => successCounter++;
     const failureCallback = () => failedCounter++;
 
-    const midiService = new MidiService(successCallback, failureCallback, null, null, true);
+    const midiService = new MidiService({ successCallback, failureCallback, mocked: true });
     midiService.setDesiredKeys(["a/0", "c/8"], "C");
 
     midiService.onMidiMessage({data: [onKeyStatus, 21, 1]});
@@ -92,6 +92,6 @@ describe("MidiService", function () {
     midiService.onMidiMessage({data: [onKeyStatus, 107, 0]});
 
     expect(failedCounter).toBe(1);
-    return expect(successCounter).toBe(0);
+    expect(successCounter).toBe(0);
   });
 });

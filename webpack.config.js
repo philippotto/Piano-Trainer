@@ -63,7 +63,7 @@ module.exports = {
   resolveLoader: {
     root: path.join(__dirname, 'node_modules')
   },
-  devtool: 'eval-source-map',
+  devtool: 'inline-source-map',
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoErrorsPlugin()

@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import RangeSettingComponent from "./range_setting_component";
 import KeyConverter from "../services/key_converter";
+import AppFreezer from "../AppFreezer.js";
 import _ from "lodash";
 
 export default class SettingsView extends Component {
@@ -23,6 +24,10 @@ export default class SettingsView extends Component {
     });
   }
 
+  onMidiSelectChange(event) {
+    AppFreezer.trigger("input:changed", parseInt(this.refs.midiSelect.value));
+  }
+
   render() {
     const rangeContainerStyle = {
       marginLeft: "10",
@@ -34,10 +39,36 @@ export default class SettingsView extends Component {
 
 
 
+    const midiSettings = this.props.settings.midi;
+    const midiInputs = midiSettings.inputs.get();
+    const deviceSelector = midiInputs.length <= 1 ?
+      null :
+      <div>
+        Midi device:
+        <select
+         name="select"
+         className="pull-right"
+         onChange={this.onMidiSelectChange.bind(this)}
+         defaultValue={midiSettings.currentInput}
+         ref="midiSelect"
+        >
+          {midiInputs.map((el, index) => {
+            return (
+              <option
+               value={index}
+               key={index}
+              >
+                Device {index + 1}
+              </option>
+            );
+          })}
+        </select>
+      </div>;
 
     return (
       <div id="settings">
         <h3 style={{marginTop: -5}}>Settings</h3>
+        {deviceSelector}
         <RangeSettingComponent
           rangeMin={1}
           rangeMax={5}
@@ -63,7 +94,7 @@ export default class SettingsView extends Component {
 
         <div>
           Accidentals: On/Off
-          <div className="accidental_checkbox" style={{float: "right"}}>
+          <div className="accidental_checkbox pull-right">
             <input
              type="checkbox"
              checked={this.props.settings.useAccidentals}
