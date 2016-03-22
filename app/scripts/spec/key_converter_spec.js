@@ -29,11 +29,11 @@ describe("KeyConverter", function () {
   it("gets scales for an arbitrary base", function () {
 
     const cScale = KeyConverter.getScaleKeysForBase("c/4")
-      .map(KeyConverter.getKeyStringForKeyNumber, this);
+      .map(KeyConverter.getKeyStringForKeyNumber);
     expect(cScale).toEqual(["c/4", "d/4", "e/4", "f/4", "g/4", "a/4", "b/4"]);
 
     const fSharpScale = KeyConverter.getScaleKeysForBase("f#/4")
-      .map(KeyConverter.getKeyStringForKeyNumber, this);
+      .map(KeyConverter.getKeyStringForKeyNumber);
 
     const expectedFSharpScale = ["f#/4", "g#/4", "a#/4", "b/4", "c#/5", "d#/5", "e#/5"];
     const normalizedFSharpScale = expectedFSharpScale.map(KeyConverter.getCanonicalKeyString, KeyConverter);
@@ -41,7 +41,14 @@ describe("KeyConverter", function () {
     expect(fSharpScale).toEqual(normalizedFSharpScale);
   });
 
-  // it("gets ")
+  it("can generate notes outside a given scale", function () {
+
+    const actualNonC = KeyConverter.getNotesOutsideScale("c/4");
+    expect(actualNonC).toEqual(["c#", "d#", "f#", "g#", "a#"]);
+
+    const actualNonC = KeyConverter.getNotesOutsideScale("b/4");
+    expect(actualNonC).toEqual(["c", "d", "f", "g", "a",]);
+  });
 
   it("gets the canonical form of a key", function () {
 

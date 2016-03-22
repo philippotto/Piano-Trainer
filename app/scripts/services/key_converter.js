@@ -1,8 +1,12 @@
 import _ from "lodash";
 
 const scaleIntervals = [0, 2, 2, 1, 2, 2, 2];
-const keyMap = initializeKeyMap();
 const keySignatures = ["C#", "F#", "B", "E", "A", "D", "G", "C", "F", "Bb", "Eb", "Ab", "Db", "Gb", "Cb"];
+const octaveNotes = [
+  "c", "c#", "d", "d#", "e", "f", "f#", "g", "g#", "a", "a#", "b"
+];
+
+const keyMap = initializeKeyMap();
 
 function initializeKeyMap() {
   // builds a keyMap which looks like this
@@ -13,9 +17,6 @@ function initializeKeyMap() {
   //   108 : "c/8"
   // }
 
-  const octaveNotes = [
-    "c", "c#", "d", "d#", "e", "f", "f#", "g", "g#", "a", "a#", "b"
-  ];
   const octaveNoteLength = octaveNotes.length;
 
   const claviatureOffset = -3;
@@ -40,7 +41,7 @@ function initializeKeyMap() {
 }
 
 
-export default {
+const KeyConverter = {
 
   getKeyNumberForCanonicalKeyString: function (keyString) {
     return parseInt(_.findKey(keyMap, (key) => key === keyString), 10);
@@ -48,17 +49,19 @@ export default {
 
 
   getKeyNumberForKeyString: function (keyString, keySignature) {
-    keyString = this.getCanonicalKeyString(keyString);
-    const keyNumber = this.getKeyNumberForCanonicalKeyString(keyString);
+    keyString = KeyConverter.getCanonicalKeyString(keyString);
+    const keyNumber = KeyConverter.getKeyNumberForCanonicalKeyString(keyString);
 
     if (keySignature !== "C") {
       // find out whether keyNumber is affected by keySignature
       // if yes, increment/decrement it accordingly
-      const scaleNotes = this.getScaleKeysForBase(keySignature.toLowerCase() + "/1").map((el) =>
-        this.getKeyStringForKeyNumber(el).split("/")[0]
-      );
-      if (scaleNotes.indexOf(keyString.split("/")[0]) === -1) {
-        const modifierType = this.getModifierTypeOfKeySignature(keySignature);
+      const scaleNotes = KeyConverter.getScaleKeysForBase(keySignature.toLowerCase() + "/1").map((el) => {
+        const elAsKeyString = KeyConverter.getKeyStringForKeyNumber(el);
+        return KeyConverter.getNoteFromKeyString(elAsKeyString);
+      });
+      const note = KeyConverter.getNoteFromKeyString(keyString);
+      if (scaleNotes.indexOf(note) === -1) {
+        const modifierType = KeyConverter.getModifierTypeOfKeySignature(keySignature);
         let offset = 0;
         if (modifierType === "#") {
           offset = +1;
@@ -78,7 +81,7 @@ export default {
     // The function will return a f (which is harmonically seen the same)
 
     if (_.isString(baseKeyString)) {
-      baseKeyString = this.getKeyNumberForKeyString(baseKeyString, "C");
+      baseKeyString = KeyConverter.getKeyNumberForKeyString(baseKeyString, "C");
     }
 
     baseKeyString = parseInt(baseKeyString, 10);
@@ -109,11 +112,11 @@ export default {
     [keyString, flatDifference] = stripKey(keyString, "b");
     [keyString, sharpDifference] = stripKey(keyString, "#");
 
-    const keyNumber = this.getKeyNumberForCanonicalKeyString(keyString) +
+    const keyNumber = KeyConverter.getKeyNumberForCanonicalKeyString(keyString) +
       sharpDifference -
       flatDifference;
 
-    return this.getKeyStringForKeyNumber(keyNumber);
+    return KeyConverter.getKeyStringForKeyNumber(keyNumber);
   },
 
 
@@ -133,5 +136,21 @@ export default {
       return "b";
     }
     return "";
+  },
+
+  getNoteFromKeyString: function (keyString) {
+    return keyString.split("/")[0];
+  },
+
+  getNotesOutsideScale: function (keySignature) {
+    const cScaleKeyNumbers = KeyConverter.getScaleKeysForBase(keySignature);
+    const cScaleNotes = cScaleKeyNumbers
+      .map(KeyConverter.getKeyStringForKeyNumber)
+      .map(KeyConverter.getNoteFromKeyString);
+
+    return _.difference(octaveNotes, cScaleNotes);
   }
 };
+
+
+export default KeyConverter;
