@@ -52,11 +52,10 @@ class StatisticService {
 
 
   getLastTimes(n = 10) {
-    return _(this.stats)
+    return this.stats
       .filter((el) => el.success)
       .map((el) => el.time)
-      .slice(-n)
-      .value();
+      .slice(-n);
   }
 
 
