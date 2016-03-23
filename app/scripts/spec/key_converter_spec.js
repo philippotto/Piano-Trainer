@@ -46,8 +46,8 @@ describe("KeyConverter", function () {
     const actualNonC = KeyConverter.getNotesOutsideScale("c/4");
     expect(actualNonC).toEqual(["c#", "d#", "f#", "g#", "a#"]);
 
-    const actualNonC = KeyConverter.getNotesOutsideScale("b/4");
-    expect(actualNonC).toEqual(["c", "d", "f", "g", "a",]);
+    const actualNonB = KeyConverter.getNotesOutsideScale("b/4");
+    expect(actualNonB).toEqual(["c", "d", "f", "g", "a",]);
   });
 
   it("gets the canonical form of a key", function () {
