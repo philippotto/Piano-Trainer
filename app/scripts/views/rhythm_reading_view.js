@@ -26,7 +26,7 @@ export default class PitchReadingView extends Component {
     super(props, context);
     this.state = {
       errorMessage: null,
-      success: true,
+      result: {success: true},
       currentRhythm: BarGenerator.generateEmptyRhythmBar(),
       phase: phases.welcome
     };
@@ -62,11 +62,11 @@ export default class PitchReadingView extends Component {
           } else {
             const expectedTimes = this.getExpectedTimes();
             this.fixBeatHistory();
-            const correct = RhythmChecker.compare(expectedTimes, this.beatHistory);
+            const result = RhythmChecker.compare(expectedTimes, this.beatHistory);
 
             this.setState({
               phase: phases.feedback,
-              success: correct
+              result: result
             });
           }
         },
@@ -110,18 +110,34 @@ export default class PitchReadingView extends Component {
 
     };
 
-    const drawBeats = (beats, y, color) => {
-      beats.forEach((beat) => {
+    const drawBeats = (beats, y, getColor) => {
+      beats.forEach((beat, index) => {
         const a = beat[0] * conversionFactor;
         const b = beat[1] * conversionFactor;
         const x = offset + a;
         const width = b - a;
-        drawBar(x, y, width, color);
+
+        drawBar(x, y, width, getColor(index));
       });
 
     }
-    drawBeats(this.getExpectedTimes(), 0, "gray");
-    drawBeats(this.beatHistory, 20, this.state.success ? "green" : "red");
+    drawBeats(this.getExpectedTimes(), 0, _.constant("gray"));
+    drawBeats(this.beatHistory, 20, (index) => {
+      const result = this.state.result;
+      if (result.success) {
+        return "green";
+      }
+      if (result.reason === RhythmChecker.reasons.wrongLength) {
+        return "red";
+      }
+      if (index < result.wrongBeat) {
+        return "green";
+      }
+      if (index === result.wrongBeat) {
+        return "red";
+      }
+      return "gray";
+    });
   }
 
   fixBeatHistory() {
@@ -190,7 +206,7 @@ export default class PitchReadingView extends Component {
           console.log("start game");
           this.beatHistory = [];
 
-          const newRhythm = this.state.success ?
+          const newRhythm = this.state.result.success ?
             BarGenerator.generateRhythmBar(this.props.settings) :
             this.state.currentRhythm;
 
@@ -221,7 +237,7 @@ export default class PitchReadingView extends Component {
       null :
       <div>
         <h3>
-          {this.state.success ?
+          {this.state.result.success ?
             "Yay! You nailed the rhythm!" :
             "Oh no, you didn't get the rhythm right :("
           }

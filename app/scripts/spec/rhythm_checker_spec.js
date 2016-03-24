@@ -41,7 +41,7 @@ describe("RhythmChecker", function () {
       [970, 1300]
     ];
 
-    expect(RhythmChecker.compare(expectedTimes, givenTimesCorrect)).toBe(true);
+    expect(RhythmChecker.compare(expectedTimes, givenTimesCorrect).success).toBe(true);
 
     const givenTimesFalse = [
       [0, 230],
@@ -49,7 +49,7 @@ describe("RhythmChecker", function () {
       [970, 1300]
     ];
 
-    expect(RhythmChecker.compare(expectedTimes, givenTimesFalse)).toBe(false);
+    expect(RhythmChecker.compare(expectedTimes, givenTimesFalse).success).toBe(false);
   });
 
 });
