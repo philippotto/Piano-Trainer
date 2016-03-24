@@ -17,10 +17,12 @@ export default class StaveRenderer extends Component {
     chordIndex: React.PropTypes.number,
     keySignature: React.PropTypes.string,
     afterRender: React.PropTypes.func,
+    staveCount: React.PropTypes.number,
   }
 
   defaultPropTypes: {
-    afterRender: _.noop
+    afterRender: _.noop,
+    staveCount: 2,
   }
 
   render() {
@@ -52,20 +54,21 @@ export default class StaveRenderer extends Component {
     this.renderer = new Vex.Flow.Renderer(canvas, Vex.Flow.Renderer.Backends.CANVAS);
     this.ctx = this.renderer.getContext();
 
-    const [width, height] = [500, 250];
+    const [width, height] = [600, this.props.staveCount * 100];
+    const staveWidth = 500;
     const ctx = this.ctx;
 
     ctx.clear();
 
     this.setCanvasExtent(canvas, width, height);
 
-    const rightHandStave = new Vex.Flow.Stave(10, 0, width);
+    const rightHandStave = new Vex.Flow.Stave(10, 0, staveWidth);
     rightHandStave
       .addClef("treble")
       .setKeySignature(this.props.keySignature)
       .setContext(ctx);
 
-    const leftHandStave = new Vex.Flow.Stave(10, 80, width);
+    const leftHandStave = new Vex.Flow.Stave(10, 80, staveWidth);
     leftHandStave
       .addClef("bass")
       .setKeySignature(this.props.keySignature)
@@ -73,9 +76,9 @@ export default class StaveRenderer extends Component {
 
     this.colorizeKeys();
 
-    [[rightHandStave, "treble"], [leftHandStave, "bass"]].map(([stave, clef]) => {
+    [[rightHandStave, "treble"], [leftHandStave, "bass"]].map(([stave, clef], index) => {
       const keys = this.props.keys[clef];
-      if (keys.length > 0) {
+      if (index < this.props.staveCount) {
         stave.draw();
         Vex.Flow.Formatter.FormatAndDraw(ctx, stave, keys);
       }

@@ -8,6 +8,8 @@ import StaveRenderer from "./stave_renderer.js";
 
 const successMp3Url = require("file!../../resources/success.mp3");
 
+const feedbackCanvasWidth = 500;
+
 export default class PitchReadingView extends Component {
 
   propTypes: {
@@ -28,7 +30,7 @@ export default class PitchReadingView extends Component {
       ...(this.generateNewBarState()),
       running: false,
     };
-    this.beatRegistry = [];
+    this.beatHistory = [];
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -59,18 +61,10 @@ export default class PitchReadingView extends Component {
             this.playSuccessSound();
           } else {
             // check durations
-            const durations = this.state.currentRhythm.durations;
-            console.log("durations", durations);
-            console.log("this.beatRegistry",  this.beatRegistry);
-            const expectedTimes = RhythmChecker.convertDurationsToTimes(
-              durations,
-              this.props.settings.barDuration
-            );
-
-            const correct = RhythmChecker.compare(expectedTimes, this.beatRegistry);
+            const expectedTimes = this.getExpectedTimes();
+            const correct = RhythmChecker.compare(expectedTimes, this.beatHistory);
 
             console.log("rhythm correct", correct);
-
 
             // stop and render new bar
             this.setState({
@@ -85,22 +79,68 @@ export default class PitchReadingView extends Component {
     });
   }
 
-  visualizeBeatRegistry() {
-    console.log("visualizeBeatRegistry");
-    console.log("beatRegistry",  this.beatRegistry);
-    const drawingContext = document.getElementById("canvas").getContext("2d");
-    const offset = 50;
-    const quarterWidth = 120;
-    const conversionFactor = 1000 / this.props.settings.barDuration * quarterWidth / 250;
-    this.beatRegistry.forEach((beat) => {
-      const a = beat[0] * conversionFactor;
-      const b = beat[1] * conversionFactor;
-      drawingContext.fillRect(offset + a, 150, b - a, 10);
-    });
+  visualizeBeatHistory() {
+    const canvas = this.refs.feedbackCanvas;
+    const context = canvas.getContext("2d");
+    if (this.beatHistory.length === 0) {
+      context.clearRect(0, 0, canvas.width, canvas.height);
+      return;
+    }
+
+    console.log("visualizeBeatHistory");
+    console.log("beatHistory",  this.beatHistory);
+    const offset = 0;
+    const conversionFactor = 1000 / this.props.settings.barDuration * (feedbackCanvasWidth / 1000);
+
+    const drawBar = (x, y, width, color) => {
+      const barHeight = 10;
+      const radius = barHeight / 2;
+
+      context.fillStyle = color;
+      context.fillRect(x + radius, y, width - 2 * radius, barHeight);
+
+      context.beginPath();
+      context.arc(x + radius, y + radius, radius, 0, 2 * Math.PI, false);
+      context.fill();
+
+      context.beginPath();
+      // The bar will be drawn one pixel too short, so that there is a margin
+      // between adjacent bars
+      context.arc(x + width - radius - 1, y + radius, radius, 0, 2 * Math.PI, false);
+      context.fill();
+
+    };
+
+    const drawBeats = (beats, y, color) => {
+      beats.forEach((beat) => {
+        const a = beat[0] * conversionFactor;
+        const b = beat[1] * conversionFactor;
+        const x = offset + a;
+        const width = b - a;
+        drawBar(x, y, width, color);
+      });
+
+    }
+    drawBeats(this.getExpectedTimes(), 0, "gray");
+    drawBeats(this.beatHistory, 20, "green");
+
+  }
+
+  getExpectedTimes() {
+    const durations = this.state.currentRhythm.durations;
+    console.log("durations", durations);
+    console.log("this.beatHistory",  this.beatHistory);
+    return RhythmChecker.convertDurationsToTimes(
+      this.state.currentRhythm.durations,
+      this.props.settings.barDuration
+    );
   }
 
   componentDidMount() {
-    let lastSpaceEvent = "keyup";
+    const keyup = "keyup";
+    const keydown = "keydown";
+
+    let lastSpaceEvent = keyup;
     const keyHandler = (eventType, event) => {
       const spaceCode = 32;
       if (event.keyCode !== spaceCode) {
@@ -111,20 +151,27 @@ export default class PitchReadingView extends Component {
         if (lastSpaceEvent === eventType) {
           return;
         }
-        lastSpaceEvent = eventType;
-
-
         // protocol beat
         const newBeatTime = performance.now() - this.firstBarBeatTime;
-        if (eventType === "keyup") {
-          this.beatRegistry.slice(-1)[0].push(newBeatTime);
-        } else {
-          this.beatRegistry.push([newBeatTime]);
+        if (newBeatTime < 0) {
+          return;
         }
-        this.visualizeBeatRegistry();
+
+        lastSpaceEvent = eventType;
+
+        if (eventType === keydown) {
+          this.beatHistory.push([newBeatTime]);
+        } else {
+          if (this.beatHistory.length === 0) {
+            // Keydown event was not registered. Assume it was pressed on
+            // firstBarBeatTime.
+            this.beatHistory.push([this.firstBarBeatTime]);
+          }
+          this.beatHistory.slice(-1)[0].push(newBeatTime);
+        }
       } else {
-        if (eventType === "keyup") {
-          this.beatRegistry = [];
+        if (eventType === keyup) {
+          this.beatHistory = [];
           this.setState({
             running: true,
           });
@@ -132,7 +179,7 @@ export default class PitchReadingView extends Component {
       }
     }
 
-    ['keydown', 'keyup'].forEach((eventType) => {
+    [keydown, keyup].forEach((eventType) => {
       document.addEventListener(eventType, keyHandler.bind(null, eventType));
     });
   }
@@ -151,9 +198,17 @@ export default class PitchReadingView extends Component {
               keys={this.state.currentRhythm.keys}
               chordIndex={this.state.currentChordIndex}
               keySignature={"C"}
-              afterRender={this.visualizeBeatRegistry.bind(this)}
+              afterRender={this.visualizeBeatHistory.bind(this)}
+              staveCount={1}
             />
-            <h3>
+
+            <canvas
+              ref="feedbackCanvas"
+              width={feedbackCanvasWidth}
+              height={50}
+              style={{marginLeft: 10}}/>
+
+            <h3 style={{textAlign: "center"}}>
               {this.state.running ? null : this.state.successMessage}
             </h3>
           </div>
