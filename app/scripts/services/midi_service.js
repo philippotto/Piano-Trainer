@@ -4,7 +4,7 @@ import KeyConverter from "../services/key_converter.js";
 import _ from "lodash";
 
 function getMidiSettings() {
-  return AppFreezer.get().settings.midi;
+  return AppFreezer.get().settings.pitchReading.midi;
 }
 
 export default class MidiService {

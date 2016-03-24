@@ -16,6 +16,11 @@ export default class StaveRenderer extends Component {
     keys: React.PropTypes.array,
     chordIndex: React.PropTypes.number,
     keySignature: React.PropTypes.string,
+    afterRender: React.PropTypes.func,
+  }
+
+  defaultPropTypes: {
+    afterRender: _.noop
   }
 
   render() {
@@ -25,6 +30,7 @@ export default class StaveRenderer extends Component {
 
   componentDidUpdate() {
     this.draw();
+    this.props.afterRender();
   }
 
 
@@ -57,20 +63,22 @@ export default class StaveRenderer extends Component {
     rightHandStave
       .addClef("treble")
       .setKeySignature(this.props.keySignature)
-      .setContext(ctx)
-      .draw();
+      .setContext(ctx);
 
     const leftHandStave = new Vex.Flow.Stave(10, 80, width);
     leftHandStave
       .addClef("bass")
       .setKeySignature(this.props.keySignature)
-      .setContext(ctx)
-      .draw();
+      .setContext(ctx);
 
     this.colorizeKeys();
 
     [[rightHandStave, "treble"], [leftHandStave, "bass"]].map(([stave, clef]) => {
-      Vex.Flow.Formatter.FormatAndDraw(ctx, stave, this.props.keys[clef]);
+      const keys = this.props.keys[clef];
+      if (keys.length > 0) {
+        stave.draw();
+        Vex.Flow.Formatter.FormatAndDraw(ctx, stave, keys);
+      }
     });
   }
 

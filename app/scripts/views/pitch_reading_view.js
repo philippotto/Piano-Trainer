@@ -9,10 +9,8 @@ import BarGenerator from "../services/bar_generator.js";
 import StaveRenderer from "./stave_renderer.js";
 
 const successMp3Url = require("file!../../resources/success.mp3");
-const pianoBackgroundJpg = require("file!../../images/piano-background.jpg");
-const githubPng = require("file!../../images/github.png");
 
-export default class MainView extends Component {
+export default class PitchReadingView extends Component {
 
   propTypes: {
     statisticService: React.PropTypes.object.isRequired,
@@ -85,60 +83,36 @@ export default class MainView extends Component {
     });
 
     return (
-      <div>
-        <img id="image-background" src={pianoBackgroundJpg} />
-
-        <div className="jumbotron">
-          <h1>Piano Trainer</h1>
-          <a href="https://github.com/philippotto/Piano-Trainer">
-            <img id="github" src={githubPng} />
-          </a>
-        </div>
-
-        <div className="too-small">
-          <div className="message">
-            <p>
-              {`
-                This page is meant to be viewed on a sufficiently large screen
-                with a MIDI enabled device connected.
-              `}
-              {"If you are interested to learn more about Piano-Trainer, view"}
-              <a href="http://github.com/philippotto/Piano-Trainer">this page.</a>
-            </p>
+      <div className="trainer">
+        <div className="Aligner">
+          <div className="Aligner-item">
+            <StaveRenderer
+              keys={this.state.currentKeys}
+              chordIndex={this.state.currentChordIndex}
+              keySignature={this.state.currentKeySignature}
+            />
           </div>
         </div>
 
-        <div className="trainer">
-          <div className="Aligner">
-            <div className="Aligner-item">
-              <StaveRenderer
-                keys={this.state.currentKeys}
-                chordIndex={this.state.currentChordIndex}
-                keySignature={this.state.currentKeySignature}
-              />
+        <div id="message-container" className={messageContainerStyle}>
+          <div className="Aligner-item message Aligner">
+            <div>
+              <h3 id="error-message"></h3>
+              <h4>
+                {"Have a look into the "}
+                <a href="https://github.com/philippotto/Piano-Trainer#how-to-use">
+                  Set Up
+                </a>
+                {" section."}
+              </h4>
             </div>
           </div>
-
-          <div id="message-container" className={messageContainerStyle}>
-            <div className="Aligner-item message Aligner">
-              <div>
-                <h3 id="error-message"></h3>
-                <h4>
-                  {"Have a look into the "}
-                  <a href="https://github.com/philippotto/Piano-Trainer#how-to-use">
-                    Set Up
-                  </a>
-                  {" section."}
-                </h4>
-              </div>
-            </div>
-          </div>
-          <div ref="stats">
-            <SettingsView settings={this.props.settings} />
-            <StatisticsView statisticService={this.props.statisticService} />
-          </div>
-          <audio ref="successPlayer" hidden="true" src={successMp3Url} controls preload="auto" autobuffer />
         </div>
+        <div ref="stats">
+          <SettingsView settings={this.props.settings} />
+          <StatisticsView statisticService={this.props.statisticService} />
+        </div>
+        <audio ref="successPlayer" hidden="true" src={successMp3Url} controls preload="auto" autobuffer />
       </div>
     );
   }

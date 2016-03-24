@@ -15,6 +15,48 @@ export default {
     return KeyConverter.keySignatureValueToString(keySignatureIndex);
   },
 
+  generateRhythmBar: function(settings) {
+    // const durations = [4, 2, -4, 4];
+
+    const calcBarLength = (durations) => {
+      return durations.map((el) => 1 / el).reduce((a, b) => a + b, 0);
+    }
+
+    let durations = [];
+    while (calcBarLength(durations) < 1)  {
+      const newDuration = _.sample(settings.durationOptions);
+      if (calcBarLength(durations.concat(newDuration)) <= 1) {
+        durations.push(newDuration);
+      }
+    }
+
+    durations = _.shuffle(durations);
+
+    // durations = _.sample([
+    //   [4, 4, 4, 4],
+    //   [4, -4, 4, 4],
+    //   [2, 2],
+    //   [4, 2, 4],
+    //   [4, 2, -4],
+    // ]);
+
+    const staveNotes = durations.map((duration) =>
+      new Vex.Flow.StaveNote({
+        clef: "treble",
+        keys: ["a/4"],
+        duration: duration > 0 ? `${duration}` : `${duration}r`
+      })
+    );
+
+    return {
+      keys: {
+        treble: staveNotes,
+        bass: []
+      },
+      durations
+    };
+  },
+
   generateBars: function(settings) {
     return {
       treble: this.generateBar("treble", settings),
