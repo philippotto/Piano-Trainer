@@ -15,6 +15,16 @@ export default {
     return KeyConverter.keySignatureValueToString(keySignatureIndex);
   },
 
+  generateEmptyRhythmBar: function() {
+    return {
+      keys: {
+        treble: [],
+        bass: []
+      },
+      durations: []
+    };
+  },
+
   generateRhythmBar: function(settings) {
     // const durations = [4, 2, -4, 4];
 

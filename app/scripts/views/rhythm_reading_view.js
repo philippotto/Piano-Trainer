@@ -10,31 +10,31 @@ const successMp3Url = require("file!../../resources/success.mp3");
 
 const feedbackCanvasWidth = 500;
 
+const phases = {
+  welcome: "welcome",
+  running: "running",
+  feedback: "feedback",
+};
+
 export default class PitchReadingView extends Component {
 
   propTypes: {
     settings: React.PropTypes.object.isRequired,
   }
 
-  generateNewBarState() {
-    return {
-      currentRhythm: BarGenerator.generateRhythmBar(this.props.settings),
-    };
-  }
-
   constructor(props, context) {
     super(props, context);
     this.state = {
       errorMessage: null,
-      successMessage: null,
-      ...(this.generateNewBarState()),
-      running: false,
+      success: true,
+      currentRhythm: BarGenerator.generateEmptyRhythmBar(),
+      phase: phases.welcome
     };
     this.beatHistory = [];
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (this.state.running && !prevState.running) {
+    if (this.state.phase === phases.running && prevState.phase !== phases.running) {
       this.playMetronome();
 
     } else {
@@ -60,17 +60,13 @@ export default class PitchReadingView extends Component {
             console.log("playSound", performance.now());
             this.playSuccessSound();
           } else {
-            // check durations
             const expectedTimes = this.getExpectedTimes();
+            this.fixBeatHistory();
             const correct = RhythmChecker.compare(expectedTimes, this.beatHistory);
 
-            console.log("rhythm correct", correct);
-
-            // stop and render new bar
             this.setState({
-              running: false,
-              successMessage: correct ? "Yay! You nailed the rhythm!" : "Oh no, you didn't play the rhythm correctly"
-              // ...(this.generateNewBarState())
+              phase: phases.feedback,
+              success: correct
             });
           }
         },
@@ -80,9 +76,12 @@ export default class PitchReadingView extends Component {
   }
 
   visualizeBeatHistory() {
+    if (this.state.phase === phases.welcome) {
+      return;
+    }
     const canvas = this.refs.feedbackCanvas;
     const context = canvas.getContext("2d");
-    if (this.beatHistory.length === 0) {
+    if (this.state.phase !== phases.feedback) {
       context.clearRect(0, 0, canvas.width, canvas.height);
       return;
     }
@@ -122,8 +121,19 @@ export default class PitchReadingView extends Component {
 
     }
     drawBeats(this.getExpectedTimes(), 0, "gray");
-    drawBeats(this.beatHistory, 20, "green");
+    drawBeats(this.beatHistory, 20, this.state.success ? "green" : "red");
+  }
 
+  fixBeatHistory() {
+    if (this.beatHistory.length === 0) {
+      return;
+    }
+    // If the user doesn't release the key at the end of the bar,
+    // we will add the up event to the beatHistory
+    const lastBeat = this.beatHistory.slice(-1)[0];
+    if (lastBeat.length === 1) {
+      lastBeat.push(performance.now() - this.firstBarBeatTime);
+    }
   }
 
   getExpectedTimes() {
@@ -146,7 +156,7 @@ export default class PitchReadingView extends Component {
       if (event.keyCode !== spaceCode) {
         return;
       }
-      if (this.state.running) {
+      if (this.state.phase === phases.running) {
         // ignore consecutive events of the same type
         if (lastSpaceEvent === eventType) {
           return;
@@ -170,10 +180,23 @@ export default class PitchReadingView extends Component {
           this.beatHistory.slice(-1)[0].push(newBeatTime);
         }
       } else {
+        console.log("lastSpaceEvent",  lastSpaceEvent);
+        console.log("eventType",  eventType);
+        if (lastSpaceEvent === keydown && eventType === keyup) {
+          lastSpaceEvent = keyup;
+          return;
+        }
         if (eventType === keyup) {
+          console.log("start game");
           this.beatHistory = [];
+
+          const newRhythm = this.state.success ?
+            BarGenerator.generateRhythmBar(this.props.settings) :
+            this.state.currentRhythm;
+
           this.setState({
-            running: true,
+            phase: phases.running,
+            currentRhythm: newRhythm
           });
         }
       }
@@ -190,6 +213,40 @@ export default class PitchReadingView extends Component {
       hide: this.state.errorMessage === null
     });
 
+    const welcomeText = this.state.phase !== phases.welcome ?
+      null :
+      <h3>Welcome to this rhythm training. Hit space to start.</h3>;
+
+    const feedbackText = this.state.phase !== phases.feedback ?
+      null :
+      <div>
+        <h3>
+          {this.state.success ?
+            "Yay! You nailed the rhythm!" :
+            "Oh no, you didn't get the rhythm right :("
+          }
+        </h3>
+        <h3 style={{marginTop: 0}}>
+        Have a look at your performance:
+        </h3>
+      </div>;
+
+    const feedbackCanvasHeight = this.state.phase !== phases.welcome ? 30 : 0;
+    const feedbackCanvas =
+      <canvas
+        ref="feedbackCanvas"
+        id="feedbackCanvas"
+        width={feedbackCanvasWidth}
+        height={feedbackCanvasHeight}
+        style={{
+          marginLeft: 10,
+          marginTop: 20,
+          width: feedbackCanvasWidth,
+          height: feedbackCanvasHeight
+        }} />;
+
+    console.log(this.state.currentRhythm.keys);
+
     return (
       <div className="trainer">
         <div className="Aligner">
@@ -202,15 +259,12 @@ export default class PitchReadingView extends Component {
               staveCount={1}
             />
 
-            <canvas
-              ref="feedbackCanvas"
-              width={feedbackCanvasWidth}
-              height={50}
-              style={{marginLeft: 10}}/>
+            <div style={{textAlign: "center"}}>
+              {feedbackText}
+              {welcomeText}
+            </div>
 
-            <h3 style={{textAlign: "center"}}>
-              {this.state.running ? null : this.state.successMessage}
-            </h3>
+            {feedbackCanvas}
           </div>
         </div>
 
