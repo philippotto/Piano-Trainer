@@ -125,12 +125,29 @@ h1 {
   width: 600px;
 
   padding: 50px;
-
-  transition: all 1.0s ease-out;
 }
 
-#feedbackCanvas {
-  transition: all 1.0s ease-out;
+.transition {
+  transition:
+    max-height 0.4s ease,
+    height 0.4s ease,
+    margin 0.4s ease,
+    opacity 0.75s ease;
+  opacity: 1;
+  overflow: hidden;
+}
+
+.welcomeText, .feedbackText, .feedbackCanvas, .metronomeBeat {
+  max-height: 200px;
+}
+
+.heightOut {
+  max-height: 0px;
+  margin: 0px;
+}
+
+.opacityOut {
+  opacity: 0;
 }
 
 .message {

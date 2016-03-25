@@ -55,7 +55,7 @@
     "style-loader": "^0.13.0",
     "url-loader": "^0.5.7",
     "webpack": "^1.8.4",
-    "webpack-dev-server": "^1.8.0"
+    "webpack-dev-server": "^1.14.1"
   },
   "scripts": {
     "start": "node server.js",

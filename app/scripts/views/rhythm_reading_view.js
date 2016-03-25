@@ -16,7 +16,7 @@ const phases = {
   feedback: "feedback",
 };
 
-export default class PitchReadingView extends Component {
+export default class RhythmReadingView extends Component {
 
   propTypes: {
     settings: React.PropTypes.object.isRequired,
@@ -28,6 +28,7 @@ export default class PitchReadingView extends Component {
       errorMessage: null,
       result: {success: true},
       currentRhythm: BarGenerator.generateEmptyRhythmBar(),
+      currentMetronomeBeat: -1,
       phase: phases.welcome
     };
     this.beatHistory = [];
@@ -36,7 +37,6 @@ export default class PitchReadingView extends Component {
   componentDidUpdate(prevProps, prevState) {
     if (this.state.phase === phases.running && prevState.phase !== phases.running) {
       this.playMetronome();
-
     } else {
       console.log("not running");
     }
@@ -45,17 +45,20 @@ export default class PitchReadingView extends Component {
   playMetronome() {
     const beatLength = this.props.settings.barDuration / 4;
     const startDate = performance.now();
-    console.log("startDate",  startDate);
+    console.log("startDate", startDate);
+
+    // this is the first beat of the actual bar
+    this.firstBarBeatTime = startDate + 4 * beatLength;
 
     _.range(9).map((beatIndex) => {
-      if (beatIndex === 4)  {
-        // this is the first beat of the actual bar
-        this.firstBarBeatTime = startDate + beatIndex * beatLength;
-      }
       const timeout = startDate + beatIndex * beatLength - performance.now();
       console.log("timeout",  timeout);
       setTimeout(
         () => {
+          this.setState({
+            currentMetronomeBeat: beatIndex < 4 ? beatIndex : -1
+          });
+
           if (beatIndex < 8) {
             console.log("playSound", performance.now());
             this.playSuccessSound();
@@ -224,18 +227,26 @@ export default class PitchReadingView extends Component {
   }
 
   render() {
-    const messageContainerStyle = classNames({
+    const messageContainerClasses = classNames({
       Aligner: true,
       hide: this.state.errorMessage === null
     });
 
-    const welcomeText = this.state.phase !== phases.welcome ?
-      null :
-      <h3>Welcome to this rhythm training. Hit space to start.</h3>;
+    const welcomeText =
+      <h3 className={classNames({
+        welcomeText: true,
+        transition: true,
+        heightOut: this.state.phase !== phases.welcome
+      })}>
+        Welcome to this rhythm training. Hit space to start.
+      </h3>;
 
-    const feedbackText = this.state.phase !== phases.feedback ?
-      null :
-      <div>
+    const feedbackText =
+      <div className={classNames({
+        feedbackText: true,
+        transition: true,
+        heightOut: this.state.phase !== phases.feedback
+      })}>
         <h3>
           {this.state.result.success ?
             "Yay! You nailed the rhythm!" :
@@ -247,26 +258,34 @@ export default class PitchReadingView extends Component {
         </h3>
       </div>;
 
-    const feedbackCanvasHeight = this.state.phase !== phases.welcome ? 30 : 0;
     const feedbackCanvas =
       <canvas
         ref="feedbackCanvas"
-        id="feedbackCanvas"
+        className="feedbackCanvas transition"
         width={feedbackCanvasWidth}
-        height={feedbackCanvasHeight}
+        height={30}
         style={{
           marginLeft: 10,
           marginTop: 20,
-          width: feedbackCanvasWidth,
-          height: feedbackCanvasHeight
+          height: this.state.phase === phases.feedback ? 30 : 0
         }} />;
 
     console.log(this.state.currentRhythm.keys);
 
+    const metronomeBeat =
+     <h2 className={classNames({
+      metronomeBeat: true,
+      transition: true,
+      heightOut: this.state.currentMetronomeBeat == -1,
+      opacityOut: (this.state.currentMetronomeBeat + 1) % 4 === 0
+     })}>
+      {this.state.currentMetronomeBeat + 1}
+    </h2>;
+
     return (
       <div className="trainer">
         <div className="Aligner">
-          <div className="Aligner-item">
+          <div className="Aligner-item transition">
             <StaveRenderer
               keys={this.state.currentRhythm.keys}
               chordIndex={this.state.currentChordIndex}
@@ -276,15 +295,15 @@ export default class PitchReadingView extends Component {
             />
 
             <div style={{textAlign: "center"}}>
+              {metronomeBeat}
               {feedbackText}
               {welcomeText}
+              {feedbackCanvas}
             </div>
-
-            {feedbackCanvas}
           </div>
         </div>
 
-        <div id="message-container" className={messageContainerStyle}>
+        <div id="message-container" className={messageContainerClasses}>
           <div className="Aligner-item message Aligner">
             <h3 id="error-message"></h3>
           </div>
