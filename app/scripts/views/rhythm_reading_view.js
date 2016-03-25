@@ -205,6 +205,7 @@ export default class RhythmReadingView extends Component {
           if (newBeatTime < 0) {
             // If the user hit the key and lifted it before the first beat
             // (which is way too early), we'll ignore it.
+            this.beatHistory = [];
             return;
           }
           if (this.beatHistory.length === 0) {
