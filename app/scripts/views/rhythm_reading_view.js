@@ -4,9 +4,8 @@ import _ from "lodash";
 
 import BarGenerator from "../services/bar_generator.js";
 import RhythmChecker from "../services/rhythm_checker.js";
+import MetronomeService from "../services/metronome_service.js";
 import StaveRenderer from "./stave_renderer.js";
-
-const successMp3Url = require("file!../../resources/success.mp3");
 
 const feedbackCanvasWidth = 500;
 
@@ -44,25 +43,33 @@ export default class RhythmReadingView extends Component {
 
   playMetronome() {
     const beatLength = this.props.settings.barDuration / 4;
-    const startDate = performance.now();
-    console.log("startDate", startDate);
-
+    const delay = 100; // give the scheduler a bit of time to start the jam
+    const now = performance.now();
+    const startTime = now + delay;
+    console.log("startTime", startTime);
+    const beatAmount = 8;
+    const metronomeSoundLength = 180; // ms
+    // Not sure when exactly the metronome beat is anticipated by a human
+    // E.g. exactly on the first millisecond? For now I'm assuming at 1/3 of
+    // playing time.
+    const magicPercentileOfAudibleBeat = 0.33;
     // this is the first beat of the actual bar
-    this.firstBarBeatTime = startDate + 4 * beatLength;
+    this.firstBarBeatTime = startTime + 4 * beatLength + metronomeSoundLength * magicPercentileOfAudibleBeat;
 
-    _.range(9).map((beatIndex) => {
-      const timeout = startDate + beatIndex * beatLength - performance.now();
-      console.log("timeout",  timeout);
+    _.range(beatAmount + 1).map((beatIndex) => {
+      const beatTime = startTime + beatIndex * beatLength;
+      const delay = beatTime - now;
+
+      if (beatIndex < beatAmount) {
+        MetronomeService.play(delay);
+      }
       setTimeout(
         () => {
           this.setState({
             currentMetronomeBeat: beatIndex < 4 ? beatIndex : -1
           });
 
-          if (beatIndex < 8) {
-            console.log("playSound", performance.now());
-            this.playSuccessSound();
-          } else {
+          if (beatIndex === beatAmount) {
             const expectedTimes = this.getExpectedTimes();
             this.fixBeatHistory();
             const result = RhythmChecker.compare(expectedTimes, this.beatHistory);
@@ -73,7 +80,7 @@ export default class RhythmReadingView extends Component {
             });
           }
         },
-        timeout
+        delay
       )
     });
   }
@@ -147,6 +154,13 @@ export default class RhythmReadingView extends Component {
     if (this.beatHistory.length === 0) {
       return;
     }
+    // If the user pressed the very first beat it a bit too early,
+    // we will round the time up to zero
+    const firstBeat = this.beatHistory[0];
+    if (firstBeat[0] < 0) {
+      firstBeat[0] = 0;
+    }
+
     // If the user doesn't release the key at the end of the bar,
     // we will add the up event to the beatHistory
     const lastBeat = this.beatHistory.slice(-1)[0];
@@ -182,15 +196,17 @@ export default class RhythmReadingView extends Component {
         }
         // protocol beat
         const newBeatTime = performance.now() - this.firstBarBeatTime;
-        if (newBeatTime < 0) {
-          return;
-        }
 
         lastSpaceEvent = eventType;
 
         if (eventType === keydown) {
           this.beatHistory.push([newBeatTime]);
         } else {
+          if (newBeatTime < 0) {
+            // If the user hit the key and lifted it before the first beat
+            // (which is way too early), we'll ignore it.
+            return;
+          }
           if (this.beatHistory.length === 0) {
             // Keydown event was not registered. Assume it was pressed on
             // firstBarBeatTime.
@@ -308,13 +324,7 @@ export default class RhythmReadingView extends Component {
             <h3 id="error-message"></h3>
           </div>
         </div>
-        <audio ref="successPlayer" hidden="true" src={successMp3Url} controls preload="auto" autobuffer />
       </div>
     );
   }
-
-  playSuccessSound() {
-    this.refs.successPlayer.play();
-  }
-
 }
