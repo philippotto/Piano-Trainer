@@ -324,18 +324,22 @@ export default class RhythmReadingView extends Component {
       : (this.state.result.success ?
           <div>
             <GameButton
+             key="repeat"
              label="Repeat this bar" shortcutLetter='r'
              onClick={this.repeatBar.bind(this)} />
             <GameButton
+             key="continue"
              label="Continue with a new bar" shortcutLetter='c'
              onClick={this.nextBar.bind(this)} primary />
           </div>
         :
           <div>
             <GameButton
+             key="repeat"
              label="Repeat this bar" shortcutLetter='r'
              onClick={this.repeatBar.bind(this)} primary />
             <GameButton
+             key="continue"
              label="Skip this bar" shortcutLetter='s'
              onClick={this.nextBar.bind(this)} />
           </div>
