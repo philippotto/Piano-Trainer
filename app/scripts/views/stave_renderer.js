@@ -10,7 +10,7 @@ import BarGenerator from "../services/bar_generator.js";
 
 const successMp3Url = require("file!../../resources/success.mp3");
 
-export default class StaveRenderer extends Component {
+class StaveRenderer extends Component {
 
   propTypes: {
     keys: React.PropTypes.array,
@@ -20,14 +20,11 @@ export default class StaveRenderer extends Component {
     staveCount: React.PropTypes.number,
   }
 
-  defaultPropTypes: {
-    afterRender: _.noop,
-    staveCount: 2,
-  }
 
   render() {
     return <canvas ref="canvas" id="canvas" />;
   }
+
 
 
   componentDidUpdate() {
@@ -99,3 +96,9 @@ export default class StaveRenderer extends Component {
   }
 
 }
+
+StaveRenderer.defaultProps = {
+  afterRender: _.noop,
+  staveCount: 2
+};
+export default StaveRenderer;

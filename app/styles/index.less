@@ -129,6 +129,30 @@ h1 {
   padding-bottom: 20px;
 }
 
+.modeNavItem:first-child {
+  margin-right: 5px;
+}
+
+.modeNavItem a, .modeNavItem a:focus {
+  background-color: transparent;
+  border: 1px solid white;
+  color: white;
+  &:hover {
+    background-color: white;
+    color: black;
+  }
+}
+
+li.modeNavItem.active a:focus, li.modeNavItem.active a {
+  background-color: white;
+  border: 1px solid white;
+  color: black;
+  &:hover {
+    background-color: transparent;
+    color: white;
+  }
+}
+
 .transition {
   transition:
     max-height 0.4s ease,
