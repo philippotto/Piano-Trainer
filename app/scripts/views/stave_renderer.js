@@ -3,14 +3,12 @@ import React, {Component} from "react";
 import classNames from "classnames";
 import _ from "lodash";
 
-import StatisticsView from "../views/statistics_view.js";
-import SettingsView from "../views/settings_view.js";
-import MidiService from "../services/midi_service.js";
-import BarGenerator from "../services/bar_generator.js";
-
-const successMp3Url = require("file!../../resources/success.mp3");
-
 class StaveRenderer extends Component {
+
+  static defaultProps = {
+    afterRender: _.noop,
+    staveCount: 2
+  }
 
   propTypes: {
     keys: React.PropTypes.array,
@@ -20,12 +18,9 @@ class StaveRenderer extends Component {
     staveCount: React.PropTypes.number,
   }
 
-
   render() {
     return <canvas ref="canvas" id="canvas" />;
   }
-
-
 
   componentDidUpdate() {
     this.draw();
@@ -97,8 +92,5 @@ class StaveRenderer extends Component {
 
 }
 
-StaveRenderer.defaultProps = {
-  afterRender: _.noop,
-  staveCount: 2
-};
+
 export default StaveRenderer;

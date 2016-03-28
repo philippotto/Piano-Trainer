@@ -3,7 +3,7 @@ import classNames from "classnames";
 import _ from "lodash";
 
 import StatisticsView from "../views/statistics_view.js";
-import SettingsView from "../views/settings_view.js";
+import PitchSettingsView from "../views/pitch_settings_view.js";
 import MidiService from "../services/midi_service.js";
 import BarGenerator from "../services/bar_generator.js";
 import StaveRenderer from "./stave_renderer.js";
@@ -78,39 +78,41 @@ export default class PitchReadingView extends Component {
 
   render() {
     const messageContainerStyle = classNames({
-      Aligner: true,
+      "content-box": true,
+      "message-container": true,
       hide: this.state.errorMessage === null
     });
 
     return (
-      <div className="trainer">
-        <div className="Aligner">
-          <div className="Aligner-item">
-            <StaveRenderer
-              keys={this.state.currentKeys}
-              chordIndex={this.state.currentChordIndex}
-              keySignature={this.state.currentKeySignature}
-            />
-          </div>
-        </div>
-
-        <div id="message-container" className={messageContainerStyle}>
-          <div className="Aligner-item message Aligner">
+      <div>
+        <div className="row center-xs">
+          <div className="col-xs-5">
             <div>
-              <h3 id="error-message"></h3>
-              <h4>
-                {"Have a look into the "}
-                <a href="https://github.com/philippotto/Piano-Trainer#how-to-use">
-                  Set Up
-                </a>
-                {" section."}
-              </h4>
+              <div className="game-container content-box">
+                <StaveRenderer
+                  keys={this.state.currentKeys}
+                  chordIndex={this.state.currentChordIndex}
+                  keySignature={this.state.currentKeySignature}
+                />
+              </div>
+              <div className={messageContainerStyle}>
+                <div className="message">
+                  <h3 id="error-message">{this.state.errorMessage}</h3>
+                  <h4>
+                    {"Have a look into the "}
+                    <a href="https://github.com/philippotto/Piano-Trainer#how-to-use">
+                      Set Up
+                    </a>
+                    {" section."}
+                  </h4>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-        <div ref="stats">
-          <SettingsView settings={this.props.settings} />
-          <StatisticsView statisticService={this.props.statisticService} />
+          <div className="col-xs-3 second-column">
+            <PitchSettingsView settings={this.props.settings} />
+            <StatisticsView statisticService={this.props.statisticService} />
+          </div>
         </div>
         <audio ref="successPlayer" hidden="true" src={successMp3Url} controls preload="auto" autobuffer />
       </div>

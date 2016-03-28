@@ -1,5 +1,6 @@
 import React, {Component, PropTypes} from "react";
-import RangeSlider from "react-range-slider";
+import RangeSlider from "react-range-slider-bem";
+import SettingLine from "./setting_line";
 import _ from "lodash";
 
 const multiplier = 10;
@@ -26,8 +27,9 @@ export default class SettingsView extends Component {
   }
 
   receiveValueAsProps(props) {
+    let values = _.isArray(props.values) ? props.values : [props.values];
     this.state = {
-      values: props.values.map((el) => el * multiplier)
+      values: values.map((el) => el * multiplier)
     };
   }
 
@@ -37,13 +39,13 @@ export default class SettingsView extends Component {
 
   onChange(event, index, values) {
     this.setState({
-      values: values.map((el) => el.value)
+      values: values.map((el) => el.value),
     });
   }
 
   onAfterChange() {
     let newValues = this.state.values.map(this.quantitizeValue).map((el) => el / multiplier);
-    this.props.onChange(newValues);
+    this.props.onChange(newValues.length === 1 ? newValues[0] : newValues);
   }
 
   quantitizeValue(value) {
@@ -56,27 +58,18 @@ export default class SettingsView extends Component {
 
     let renderedRangeValues = this.state.values;
     let quantitizedValues = this.state.values.map(this.quantitizeValue);
-    // todo only for multiple cursors
-    if (_.isEqual(quantitizedValues, [upscaledRangeMax, upscaledRangeMax])) {
-      renderedRangeValues = [45, upscaledRangeMax];
-    }
 
     const downScaledValues = quantitizedValues.map((el) => Math.round(el / multiplier));
     const rangeContainerStyle = {
-      width: "30%",
-      display: "inline-block",
       marginBottom: -2,
-      float: "right",
     };
 
-    const valueLabel = downScaledValues
+    const valueLabel = this.props.label + ": " + downScaledValues
       .map(this.props.valueToString)
-      .join(" - ")
-      + " " + this.props.label;
+      .join(" - ");
 
     return (
-      <div>
-        {valueLabel}
+      <SettingLine label={valueLabel}>
         <div style={rangeContainerStyle}>
           <RangeSlider
            cursor
@@ -87,7 +80,7 @@ export default class SettingsView extends Component {
            onAfterChange={this.onAfterChange.bind(this)}
           />
         </div>
-      </div>
+      </SettingLine>
     );
   }
 }

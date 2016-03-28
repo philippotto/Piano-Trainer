@@ -33,8 +33,6 @@ body {
   }
 }
 
-
-
 .jumbotron {
   background-color: rgba(0, 0, 0, 0.7);
   padding-top: 24px;
@@ -82,51 +80,40 @@ h1 {
   border-radius: 4px;
 }
 
-#settings {
+.settings {
   .box-shadow;
+  margin-bottom: 3rem;
   background: white;
-  position: absolute;
-  left: 10px;
-  bottom: 10px;
   padding: 20px;
   color: #777777;
-  width: 300px;
+  width: 100%;
 }
 
-.stat-detail {
-  margin-left: 60px;
-
-  i {
-    margin-right: 5px;
-  }
+.stat-detail i {
+  margin-right: 5px;
 }
 
 #graph-stats {
   .box-shadow;
   background: white;
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  height: 340px;
-  width: 420px;
-  padding: 10px;
+  padding: 20px;
 }
 
-.Aligner {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-}
-
-.Aligner-item {
+.content-box {
   .box-shadow;
   background: white;
-  max-width: 50%;
-  width: 600px;
+}
+.game-container {
+  padding: 50px 50px 20px 50px;
+  margin-bottom: 3rem;
+  // max-width: 620px;
+}
+.message-container {
+  padding: 5px;
+}
 
-  padding: 50px;
-  padding-bottom: 20px;
+.second-column {
+  margin-left: 3rem;
 }
 
 .modeNavItem:first-child {
@@ -180,12 +167,18 @@ li.modeNavItem.active a:focus, li.modeNavItem.active a {
 }
 
 .message {
-  margin-top: 25px;
   text-align: center;
   padding-left: 0px;
   padding-top: 0px;
 }
 
+
+.hr_gradient {
+  margin: 25px 0;
+  height: 1px;
+  background: black;
+  background: -webkit-gradient(linear, 0 0, 100% 0, from(rgba(255, 255, 255, 0.0)), to(rgba(255, 255, 255, 0.0)), color-stop(50%, white));
+}
 
 /* override chartist color */
 

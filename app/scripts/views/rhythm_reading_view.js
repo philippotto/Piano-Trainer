@@ -7,8 +7,11 @@ import RhythmChecker from "../services/rhythm_checker.js";
 import MetronomeService from "../services/metronome_service.js";
 import StaveRenderer from "./stave_renderer.js";
 import GameButton from "./game_button.js";
+import RhythmSettingsView from "../views/rhythm_settings_view.js";
 
 const feedbackCanvasWidth = 500;
+const keyup = "keyup";
+const keydown = "keydown";
 
 const Phases = {
   welcome: "welcome",
@@ -32,6 +35,7 @@ export default class RhythmReadingView extends Component {
       phase: Phases.welcome
     };
     this.beatHistory = [];
+    this.keyHandlers = {};
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -181,9 +185,6 @@ export default class RhythmReadingView extends Component {
   }
 
   componentDidMount() {
-    const keyup = "keyup";
-    const keydown = "keydown";
-
     let lastSpaceEvent = keyup;
     const keyHandler = (eventType, event) => {
       const spaceCode = 32;
@@ -227,7 +228,14 @@ export default class RhythmReadingView extends Component {
     }
 
     [keydown, keyup].forEach((eventType) => {
-      document.addEventListener(eventType, keyHandler.bind(null, eventType));
+      this.keyHandlers[eventType] = keyHandler.bind(null, eventType);
+      document.addEventListener(eventType, this.keyHandlers[eventType]);
+    });
+  }
+
+  componentWillUnmount() {
+    [keydown, keyup].forEach((eventType) => {
+      document.removeEventListener(eventType, this.keyHandlers[eventType]);
     });
   }
 
@@ -257,7 +265,6 @@ export default class RhythmReadingView extends Component {
 
   render() {
     const messageContainerClasses = classNames({
-      Aligner: true,
       hide: this.state.errorMessage === null
     });
 
@@ -343,43 +350,44 @@ export default class RhythmReadingView extends Component {
 
     return (
       <div className="trainer">
-        <div className="Aligner">
-          <div className="Aligner-item transition">
-            <StaveRenderer
-              keys={this.state.currentRhythm.keys}
-              chordIndex={this.state.currentChordIndex}
-              keySignature={"C"}
-              afterRender={this.visualizeBeatHistory.bind(this)}
-              staveCount={1}
-            />
 
-            <div style={{textAlign: "center"}}>
-              {metronomeBeat}
-              {welcomeText}
-              {feedbackSection}
-            </div>
+        <div className="row center-xs">
+          <div className="col-xs-5">
+            <div>
+              <div className="transition game-container content-box">
+                <StaveRenderer
+                  keys={this.state.currentRhythm.keys}
+                  chordIndex={this.state.currentChordIndex}
+                  keySignature={"C"}
+                  afterRender={this.visualizeBeatHistory.bind(this)}
+                  staveCount={1}
+                />
 
-            <div className={classNames({
-              "row center-xs": true,
-              transition: true,
-              gameButtonBar: true,
-              heightOut: this.state.phase === Phases.running
-            })} style={{marginTop: 20}}>
-              <div className="col-xs-12">
-                {buttons}
+                <div style={{textAlign: "center"}}>
+                  {metronomeBeat}
+                  {welcomeText}
+                  {feedbackSection}
+                </div>
+
+                <div className={classNames({
+                  "row center-xs": true,
+                  transition: true,
+                  gameButtonBar: true,
+                  heightOut: this.state.phase === Phases.running
+                })} style={{marginTop: 20}}>
+                  <div className="col-xs-12">
+                    {buttons}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-
-        <div id="message-container" className={messageContainerClasses}>
-          <div className="Aligner-item message Aligner">
-            <h3 id="error-message"></h3>
+          <div className="col-xs-3 second-column">
+            <RhythmSettingsView settings={this.props.settings} />
           </div>
         </div>
-
-
       </div>
     );
   }
+
 }

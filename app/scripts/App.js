@@ -40,7 +40,7 @@ export default class App extends Component {
        settings={appState.settings.rhythmReading}
       />;
 
-    console.log(this);
+    // <div className="hr_gradient" />
     return (
       <div>
         <img id="image-background" src={pianoBackgroundJpg} />
@@ -51,14 +51,15 @@ export default class App extends Component {
             <img id="github" src={githubPng} />
           </a>
 
+
           <div className="row around-xs">
             <div className="col-xs-2">
-              <Nav
-               bsStyle="pills" activeKey={this.state.activeGame}
-               onSelect={this.toggleGame.bind(this)}>
-                <NavItem eventKey="pitch" className="modeNavItem">Pitch training</NavItem>
-                <NavItem eventKey="rhythm" className="modeNavItem">Rhythm training</NavItem>
-              </Nav>
+                <Nav
+                 bsStyle="pills" activeKey={this.state.activeGame}
+                 onSelect={this.toggleGame.bind(this)}>
+                  <NavItem eventKey="pitch" className="modeNavItem">Pitch training</NavItem>
+                  <NavItem eventKey="rhythm" className="modeNavItem">Rhythm training</NavItem>
+                </Nav>
             </div>
           </div>
 

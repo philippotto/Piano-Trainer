@@ -6,7 +6,7 @@
 .range-slider:focus {
   outline: none;
 }
-.range-slider .bars {
+.range-slider__bars {
   width: 100%;
   height: 5px;
   cursor: pointer;
@@ -15,7 +15,7 @@
   border-radius: 25px;
   border: 0px solid #010101;
 }
-.range-slider .cursor {
+.range-slider__cursor {
   box-shadow: 0px 0px 1px #670000, 0px 0px 0px #810000;
   border: 0px solid #000000;
   height: 10px;
@@ -31,6 +31,6 @@
     visibility: hidden;
   }
 }
-.range-slider:focus .bars {
+.range-slider__bars:focus {
   background: rgba(0, 0, 0, 0.68);
 }

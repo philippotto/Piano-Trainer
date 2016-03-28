@@ -24,6 +24,7 @@
     "react": "^0.14.5",
     "react-bootstrap": "^0.28.3",
     "react-dom": "^0.14.5",
+    "react-range-slider-bem": "^0.2.11",
     "vexflow": "^1.2.41"
   },
   "devDependencies": {
@@ -51,7 +52,6 @@
     "less": "^2.6.0",
     "less-loader": "^2.2.2",
     "phantomjs-prebuilt": "^2.1.6",
-    "react-range-slider": "^0.2.1",
     "react-transform-hmr": "^1.0.1",
     "style-loader": "^0.13.0",
     "url-loader": "^0.5.7",

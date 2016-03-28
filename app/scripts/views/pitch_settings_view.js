@@ -1,10 +1,11 @@
 import React, {Component} from "react";
 import RangeSettingComponent from "./range_setting_component";
+import SettingLine from "./setting_line";
 import KeyConverter from "../services/key_converter";
 import AppFreezer from "../AppFreezer.js";
 import _ from "lodash";
 
-export default class SettingsView extends Component {
+export default class PitchSettingsView extends Component {
 
   constructor(props, context) {
     super(props, context);
@@ -29,25 +30,13 @@ export default class SettingsView extends Component {
   }
 
   render() {
-    const rangeContainerStyle = {
-      marginLeft: "10",
-      width: "30%",
-      display: "inline-block",
-      marginRight: "10",
-      marginBottom: -2,
-    };
-
-
-
     const midiSettings = this.props.settings.midi;
     const midiInputs = midiSettings.inputs.get();
     const deviceSelector = midiInputs.length <= 1 ?
       null :
-      <div>
-        Midi device:
+      <SettingLine label="Midi device">
         <select
          name="select"
-         className="pull-right"
          onChange={this.onMidiSelectChange.bind(this)}
          defaultValue={midiSettings.currentInput}
          ref="midiSelect"
@@ -63,25 +52,24 @@ export default class SettingsView extends Component {
             );
           })}
         </select>
-      </div>;
+      </SettingLine>;
 
     return (
-      <div id="settings">
+      <div className="settings">
         <h3 style={{marginTop: -5}}>Settings</h3>
-        {deviceSelector}
         <RangeSettingComponent
           rangeMin={1}
           rangeMax={5}
           values={this.props.settings.chordSizeRanges.treble}
           onChange={this.buildStateChanger("chordSizeRanges.treble")}
-          label={"treble notes/chord"}
+          label={"Treble notes/chord"}
         />
         <RangeSettingComponent
           rangeMin={1}
           rangeMax={5}
           values={this.props.settings.chordSizeRanges.bass}
           onChange={this.buildStateChanger("chordSizeRanges.bass")}
-          label={"bass notes/chord"}
+          label={"Bass notes/chord"}
         />
         <RangeSettingComponent
           rangeMin={0}
@@ -89,22 +77,19 @@ export default class SettingsView extends Component {
           values={this.props.settings.keySignature}
           onChange={this.buildStateChanger("keySignature")}
           valueToString={KeyConverter.keySignatureValueToString}
-          label={"signature"}
+          label={"Signature"}
         />
 
-        <div>
-          Accidentals: On/Off
-          <div className="accidental_checkbox pull-right">
-            <input
-             type="checkbox"
-             checked={this.props.settings.useAccidentals}
-             id="accidental_checkbox"
-             name="check"
-             onChange={this.toggleAccidentalsCheckbox.bind(this)}
-            />
-            <label htmlFor="accidental_checkbox"></label>
-          </div>
-        </div>
+        <SettingLine className="setting_checkbox" label="Accidentals:">
+          <input
+           type="checkbox"
+           checked={this.props.settings.useAccidentals}
+           id="accidental_checkbox"
+           name="check"
+           onChange={this.toggleAccidentalsCheckbox.bind(this)}
+          />
+          <label htmlFor="accidental_checkbox"></label>
+        </SettingLine>
       </div>
     );
   }

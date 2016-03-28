@@ -16,27 +16,34 @@ export default class StatisticsView extends Component {
 
     return (
       <div id="graph-stats">
-        <div ref="chart" className="semi-transparent ct-chart ct-perfect-fourth"></div>
+        <div ref="chart" className="semi-transparent ct-chart ct-major-eleventh"></div>
 
-        <div>
-          <OverlayTrigger placement="top" overlay={<Tooltip id="avgTime">Average time</Tooltip>}>
-            <span className="stat-detail">
-                <i className="fa fa-clock-o"></i>
-                { (statistics.getAverageTimeOfLast(100) / 1000).toFixed(2) }s
-            </span>
-          </OverlayTrigger>
-          <OverlayTrigger placement="top" overlay={<Tooltip id="playedChordsAndNotes">Played chords / played notes</Tooltip>}>
-            <span className="stat-detail">
-              <i className="fa fa-music"></i>
-              { statistics.getTotalAmountOfChords() } / { statistics.getTotalAmountOfKeys() }
-            </span>
-          </OverlayTrigger>
-          <OverlayTrigger placement="top" overlay={<Tooltip id="successRate">Success rate</Tooltip>}>
-            <span className="stat-detail">
-              <i className="fa fa-trophy"></i>
-              { statistics.getSuccessRate().toFixed(2) * 100 } %
-            </span>
-          </OverlayTrigger>
+        <div className="row around-xs">
+          <div className="col-xs">
+            <OverlayTrigger placement="top" overlay={<Tooltip id="avgTime">Average time</Tooltip>}>
+              <span className="stat-detail">
+                  <i className="fa fa-clock-o"></i>
+                  { (statistics.getAverageTimeOfLast(100) / 1000).toFixed(2) }s
+              </span>
+            </OverlayTrigger>
+          </div>
+          <div className="col-xs">
+            <OverlayTrigger placement="top" overlay={<Tooltip id="playedChordsAndNotes">Played chords / played notes</Tooltip>}>
+              <span className="stat-detail">
+                <i className="fa fa-music"></i>
+                { statistics.getTotalAmountOfChords() } / { statistics.getTotalAmountOfKeys() }
+              </span>
+            </OverlayTrigger>
+
+          </div>
+          <div className="col-xs">
+            <OverlayTrigger placement="top" overlay={<Tooltip id="successRate">Success rate</Tooltip>}>
+              <span className="stat-detail">
+                <i className="fa fa-trophy"></i>
+                { statistics.getSuccessRate().toFixed(2) * 100 } %
+              </span>
+            </OverlayTrigger>
+          </div>
         </div>
       </div>
     );
@@ -56,9 +63,7 @@ export default class StatisticsView extends Component {
       axisX: {
         showGrid: false,
         showLabel: false
-      },
-      width: 400,
-      height: 300
+      }
     };
 
     if (statistics.getSuccessCount() > 1) {
