@@ -258,23 +258,6 @@ export default class RhythmReadingView extends Component {
         Welcome to this rhythm training. Hit space to start.
       </h3>;
 
-    const feedbackText =
-      <div className={classNames({
-        feedbackText: true,
-        transition: true,
-        heightOut: this.state.phase !== phases.feedback
-      })}>
-        <h3>
-          {this.state.result.success ?
-            "Yay! You nailed the rhythm!" :
-            "Oh no, you didn't get the rhythm right :("
-          }
-        </h3>
-        <h3 style={{marginTop: 0}}>
-        Have a look at your performance:
-        </h3>
-      </div>;
-
     const feedbackCanvas =
       <canvas
         ref="feedbackCanvas"
@@ -282,10 +265,33 @@ export default class RhythmReadingView extends Component {
         width={feedbackCanvasWidth}
         height={30}
         style={{
-          marginLeft: 10,
           marginTop: 20,
           height: this.state.phase === phases.feedback ? 30 : 0
         }} />;
+    const feedbackSection =
+      <div className={classNames({
+        feedbackText: true,
+        transition: true,
+        heightOut: this.state.phase !== phases.feedback
+      })}>
+        <h2>
+          {this.state.result.success ?
+            "Yay! You nailed the rhythm!" :
+            "Oh no, you didn't get the rhythm right :("
+          }
+        </h2>
+        <h4 style={{marginTop: 0}}>
+        Have a look at your performance:
+        </h4>
+        {feedbackCanvas}
+        <h4>
+          {this.state.result.success ?
+            "Hit space to try a new rhythm." :
+            "Hit space to try again."
+          }
+        </h4>
+      </div>;
+
 
     console.log(this.state.currentRhythm.keys);
 
@@ -313,9 +319,8 @@ export default class RhythmReadingView extends Component {
 
             <div style={{textAlign: "center"}}>
               {metronomeBeat}
-              {feedbackText}
               {welcomeText}
-              {feedbackCanvas}
+              {feedbackSection}
             </div>
           </div>
         </div>

@@ -29,18 +29,25 @@ export default {
     // const durations = [4, 2, -4, 4];
 
     const calcBarLength = (durations) => {
-      return durations.map((el) => 1 / el).reduce((a, b) => a + b, 0);
+      return durations.map((el) => 1 / Math.abs(el)).reduce((a, b) => a + b, 0);
     }
 
-    let durations = [];
-    while (calcBarLength(durations) < 1)  {
-      const newDuration = _.sample(settings.durationOptions);
-      if (calcBarLength(durations.concat(newDuration)) <= 1) {
-        durations.push(newDuration);
+    const generateRandomDurations = () => {
+      const durations = [];
+      while (calcBarLength(durations) < 1)  {
+        const newDuration = _.sample(settings.durationOptions);
+        if (calcBarLength(durations.concat(newDuration)) <= 1) {
+          durations.push(newDuration);
+        }
       }
+
+      return _.shuffle(durations);
     }
 
-    durations = _.shuffle(durations);
+    let durations = generateRandomDurations();
+    while (durations.every((el) => el < 0)) {
+      durations = generateRandomDurations();
+    }
 
     // durations = _.sample([
     //   [4, 4, 4, 4],

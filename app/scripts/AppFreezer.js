@@ -16,7 +16,7 @@ export default new Freezer({
     },
     rhythmReading: {
       barDuration: 3000,
-      durationOptions: [8, 4, 2],
+      durationOptions: [8, 4, 2, -2, -4],
       dottedNotes: false,
       triplets: false,
     }
