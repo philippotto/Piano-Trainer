@@ -133,13 +133,16 @@ h1 {
   margin-right: 5px;
 }
 
-.modeNavItem a, .modeNavItem a:focus {
+.modeNavItem a {
+  transition: all 0.5s ease;
+}
+
+li.modeNavItem a, li.modeNavItem a:focus {
   background-color: transparent;
   border: 1px solid white;
   color: white;
   &:hover {
-    background-color: white;
-    color: black;
+    background-color: rgba(255, 255, 255, 0.15);
   }
 }
 
@@ -148,8 +151,8 @@ li.modeNavItem.active a:focus, li.modeNavItem.active a {
   border: 1px solid white;
   color: black;
   &:hover {
-    background-color: transparent;
     color: white;
+    background-color: rgba(255, 255, 255, 0.15);
   }
 }
 
