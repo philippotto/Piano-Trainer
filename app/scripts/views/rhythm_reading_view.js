@@ -6,10 +6,11 @@ import BarGenerator from "../services/bar_generator.js";
 import RhythmChecker from "../services/rhythm_checker.js";
 import MetronomeService from "../services/metronome_service.js";
 import StaveRenderer from "./stave_renderer.js";
+import GameButton from "./game_button.js";
 
 const feedbackCanvasWidth = 500;
 
-const phases = {
+const Phases = {
   welcome: "welcome",
   running: "running",
   feedback: "feedback",
@@ -28,13 +29,13 @@ export default class RhythmReadingView extends Component {
       result: {success: true},
       currentRhythm: BarGenerator.generateEmptyRhythmBar(),
       currentMetronomeBeat: -1,
-      phase: phases.welcome
+      phase: Phases.welcome
     };
     this.beatHistory = [];
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (this.state.phase === phases.running && prevState.phase !== phases.running) {
+    if (this.state.phase === Phases.running && prevState.phase !== Phases.running) {
       this.playMetronome();
     } else {
       console.log("not running");
@@ -75,7 +76,7 @@ export default class RhythmReadingView extends Component {
             const result = RhythmChecker.compare(expectedTimes, this.beatHistory);
 
             this.setState({
-              phase: phases.feedback,
+              phase: Phases.feedback,
               result: result
             });
           }
@@ -86,12 +87,12 @@ export default class RhythmReadingView extends Component {
   }
 
   visualizeBeatHistory() {
-    if (this.state.phase === phases.welcome) {
+    if (this.state.phase === Phases.welcome) {
       return;
     }
     const canvas = this.refs.feedbackCanvas;
     const context = canvas.getContext("2d");
-    if (this.state.phase !== phases.feedback) {
+    if (this.state.phase !== Phases.feedback) {
       context.clearRect(0, 0, canvas.width, canvas.height);
       return;
     }
@@ -189,7 +190,7 @@ export default class RhythmReadingView extends Component {
       if (event.keyCode !== spaceCode) {
         return;
       }
-      if (this.state.phase === phases.running) {
+      if (this.state.phase === Phases.running) {
         // ignore consecutive events of the same type
         if (lastSpaceEvent === eventType) {
           return;
@@ -222,19 +223,6 @@ export default class RhythmReadingView extends Component {
           lastSpaceEvent = keyup;
           return;
         }
-        if (eventType === keyup) {
-          console.log("start game");
-          this.beatHistory = [];
-
-          const newRhythm = this.state.result.success ?
-            BarGenerator.generateRhythmBar(this.props.settings) :
-            this.state.currentRhythm;
-
-          this.setState({
-            phase: phases.running,
-            currentRhythm: newRhythm
-          });
-        }
       }
     }
 
@@ -243,20 +231,49 @@ export default class RhythmReadingView extends Component {
     });
   }
 
+  repeatBar() {
+    if (this.state.phase === Phases.running) {
+      return;
+    }
+    this.beatHistory = [];
+    this.setState({
+      phase: Phases.running
+    });
+  }
+
+  nextBar() {
+    if (this.state.phase === Phases.running) {
+      return;
+    }
+    this.beatHistory = [];
+    const newRhythm = BarGenerator.generateRhythmBar(this.props.settings);
+
+    this.setState({
+      phase: Phases.running,
+      currentRhythm: newRhythm
+    });
+  }
+
+
   render() {
     const messageContainerClasses = classNames({
       Aligner: true,
       hide: this.state.errorMessage === null
     });
 
-    const welcomeText =
-      <h3 className={classNames({
+    const welcomeText = <div className={classNames({
         welcomeText: true,
         transition: true,
-        heightOut: this.state.phase !== phases.welcome
+        heightOut: this.state.phase !== Phases.welcome
       })}>
-        Welcome to this rhythm training. Hit space to start.
-      </h3>;
+      <h3>
+        Welcome to this rhythm training!
+      </h3>
+      <p>
+         After you clicked on Start, we will count in for 4 beats and afterwards
+         you can tap given rhythm with your Space button.
+        </p>
+    </div>;
 
     const feedbackCanvas =
       <canvas
@@ -266,13 +283,13 @@ export default class RhythmReadingView extends Component {
         height={30}
         style={{
           marginTop: 20,
-          height: this.state.phase === phases.feedback ? 30 : 0
+          height: this.state.phase === Phases.feedback ? 30 : 0
         }} />;
     const feedbackSection =
       <div className={classNames({
         feedbackText: true,
         transition: true,
-        heightOut: this.state.phase !== phases.feedback
+        heightOut: this.state.phase !== Phases.feedback
       })}>
         <h2>
           {this.state.result.success ?
@@ -284,12 +301,6 @@ export default class RhythmReadingView extends Component {
         Have a look at your performance:
         </h4>
         {feedbackCanvas}
-        <h4>
-          {this.state.result.success ?
-            "Hit space to try a new rhythm." :
-            "Hit space to try again."
-          }
-        </h4>
       </div>;
 
 
@@ -304,6 +315,32 @@ export default class RhythmReadingView extends Component {
      })}>
       {this.state.currentMetronomeBeat + 1}
     </h2>;
+
+
+    const buttons =
+      this.state.phase === Phases.welcome ?
+        <GameButton
+           label="Start training" shortcutLetter='s' primary
+           onClick={this.repeatBar.bind(this)} />
+      : (this.state.result.success ?
+          <div>
+            <GameButton
+             label="Repeat this bar" shortcutLetter='r'
+             onClick={this.repeatBar.bind(this)} />
+            <GameButton
+             label="Continue with a new bar" shortcutLetter='c'
+             onClick={this.nextBar.bind(this)} primary />
+          </div>
+        :
+          <div>
+            <GameButton
+             label="Repeat this bar" shortcutLetter='r'
+             onClick={this.repeatBar.bind(this)} primary />
+            <GameButton
+             label="Skip this bar" shortcutLetter='s'
+             onClick={this.nextBar.bind(this)} />
+          </div>
+      );
 
     return (
       <div className="trainer">
@@ -322,6 +359,19 @@ export default class RhythmReadingView extends Component {
               {welcomeText}
               {feedbackSection}
             </div>
+
+            <div className={classNames({
+              "row center-xs": true,
+              transition: true,
+              gameButtonBar: true,
+              heightOut: this.state.phase === Phases.running
+            })} style={{marginTop: 20}}>
+              <div className="col-xs-12">
+                <div className="box">
+                  {buttons}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -330,6 +380,8 @@ export default class RhythmReadingView extends Component {
             <h3 id="error-message"></h3>
           </div>
         </div>
+
+
       </div>
     );
   }
