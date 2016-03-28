@@ -270,8 +270,8 @@ export default class RhythmReadingView extends Component {
         Welcome to this rhythm training!
       </h3>
       <p>
-         After you clicked on Start, we will count in for 4 beats and afterwards
-         you can tap given rhythm with your Space button.
+         When you start the training, we will count in for 4 beats and afterwards
+         you can tap the given rhythm with your Space button.
         </p>
     </div>;
 
@@ -316,12 +316,11 @@ export default class RhythmReadingView extends Component {
       {this.state.currentMetronomeBeat + 1}
     </h2>;
 
-
     const buttons =
-      this.state.phase === Phases.welcome ?
+      this.state.phase !== Phases.feedback ?
         <GameButton
            label="Start training" shortcutLetter='s' primary
-           onClick={this.repeatBar.bind(this)} />
+           onClick={this.nextBar.bind(this)} />
       : (this.state.result.success ?
           <div>
             <GameButton
@@ -367,9 +366,7 @@ export default class RhythmReadingView extends Component {
               heightOut: this.state.phase === Phases.running
             })} style={{marginTop: 20}}>
               <div className="col-xs-12">
-                <div className="box">
-                  {buttons}
-                </div>
+                {buttons}
               </div>
             </div>
           </div>
