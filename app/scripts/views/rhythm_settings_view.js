@@ -28,20 +28,14 @@ export default class PitchSettingsView extends Component {
     };
   }
 
-  toggleDottedNotesCheckbox() {
-    this.props.settings.set({
-      dottedNotes: !this.props.settings.dottedNotes
-    });
-  }
-
-  toggleTripletsCheckbox() {
-    this.props.settings.set({
-      triplets: !this.props.settings.triplets
-    });
+  buildCheckboxStateChanger(stateKey) {
+    const stateChanger = this.buildStateChanger(stateKey);
+    return function(event) {
+      return stateChanger(event.currentTarget.checked);
+    };
   }
 
   render() {
-
     return (
       <div className="settings">
         <h3 style={{marginTop: -5}}>Settings</h3>
@@ -53,28 +47,39 @@ export default class PitchSettingsView extends Component {
           label={"Bar duration"}
         />
 
-        <SettingLine className="setting_checkbox" label="Dotted notes">
+        <SettingLine className="setting_checkbox" label="Rests">
           <input
            type="checkbox"
-           checked={this.props.settings.dottedNotes}
-           id="dotted_notes_checkbox"
+           checked={this.props.settings.rests}
+           id="rests_checkbox"
            name="check"
-           onChange={this.toggleDottedNotesCheckbox.bind(this)}
+           onChange={this.buildCheckboxStateChanger("rests")}
           />
-          <label htmlFor="dotted_notes_checkbox"></label>
+          <label htmlFor="rests_checkbox"></label>
         </SettingLine>
 
-        <SettingLine className="setting_checkbox" label="Triplets">
-          <input
-           type="checkbox"
-           checked={this.props.settings.triplets}
-           id="triplets_checkbox"
-           name="check"
-           onChange={this.toggleTripletsCheckbox.bind(this)}
-          />
-          <label htmlFor="triplets_checkbox"></label>
-        </SettingLine>
       </div>
     );
+      // <SettingLine className="setting_checkbox" label="Dotted notes">
+      //   <input
+      //    type="checkbox"
+      //    checked={this.props.settings.dottedNotes}
+      //    id="dotted_notes_checkbox"
+      //    name="check"
+      //    onChange={this.buildCheckboxStateChanger("dottedNotes")}
+      //   />
+      //   <label htmlFor="dotted_notes_checkbox"></label>
+      // </SettingLine>
+
+      // <SettingLine className="setting_checkbox" label="Triplets">
+      //   <input
+      //    type="checkbox"
+      //    checked={this.props.settings.triplets}
+      //    id="triplets_checkbox"
+      //    name="check"
+      //    onChange={this.buildCheckboxStateChanger("triplets")}
+      //   />
+      //   <label htmlFor="triplets_checkbox"></label>
+      // </SettingLine>
   }
 }

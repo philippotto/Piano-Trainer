@@ -35,7 +35,10 @@ export default {
     const generateRandomDurations = () => {
       const durations = [];
       while (calcBarLength(durations) < 1)  {
-        const newDuration = _.sample(settings.durationOptions);
+        let newDuration = _.sample(settings.durationOptions);
+        if (settings.rests && Math.random() < settings.restProbability) {
+          newDuration *= -1;
+        }
         if (calcBarLength(durations.concat(newDuration)) <= 1) {
           durations.push(newDuration);
         }

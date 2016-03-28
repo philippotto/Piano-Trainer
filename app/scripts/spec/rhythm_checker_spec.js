@@ -2,7 +2,7 @@ import RhythmChecker from "../services/rhythm_checker.js";
 
 describe("RhythmChecker", function () {
 
-  it("converts durations to times - without pauses", function () {
+  it("converts durations to times - without rests", function () {
     const durations = [4, 4, 4, 2];
     const times = RhythmChecker.convertDurationsToTimes(durations, 1000);
     const expectedTimes = [
@@ -15,7 +15,7 @@ describe("RhythmChecker", function () {
     expect(times).toEqual(expectedTimes);
   });
 
-  it("converts durations to times - with pauses", function () {
+  it("converts durations to times - with rests", function () {
     const durations = [4, -4, 2, 4];
     const times = RhythmChecker.convertDurationsToTimes(durations, 1000);
     const expectedTimes = [

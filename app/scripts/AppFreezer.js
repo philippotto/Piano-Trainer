@@ -18,6 +18,7 @@ export default new Freezer({
       barDuration: 3000,
       durationOptions: [8, 4, 2],
       rests: true,
+      restProbability: 0.2,
       dottedNotes: false,
       triplets: false,
     }
