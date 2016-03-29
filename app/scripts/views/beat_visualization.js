@@ -14,6 +14,19 @@ export default class BeatVisualization extends Component {
     result: React.PropTypes.object.isRequired,
   }
 
+  convertTicksToBeatNames(tickTime, tickLength) {
+    const tickTimeToIndexFactor = 1/16 * 100;
+    const tickIndex = tickTime / tickTimeToIndexFactor;
+    const tickStepCount = tickLength / tickTimeToIndexFactor;
+    const allBeatNames = ['1', 'e', '&', 'a', '2', 'e', '&', 'a', '3', 'e', '&', 'a', '4', 'e', '&', 'a'];
+    const ticks = allBeatNames.slice(tickIndex, tickIndex + tickStepCount);
+    return <div className="row center-xs">
+      {ticks.map((beatName, index) =>
+        <div className="col-xs" key={index}>{beatName}</div>
+      )}
+    </div>;
+  };
+
   render() {
     // if (this.state.phase === Phases.welcome) {
     //   return null;
@@ -23,31 +36,30 @@ export default class BeatVisualization extends Component {
 
     const drawBeats = (beats, getColor, withBeatNames) => {
       let currentX = 0;
-      const allBeatNames = ['1', 'e', '&', 'a', '2', 'e', '&', 'a', '3', 'e', '&', 'a', '4', 'e', '&', 'a'];
-
       const createBeat = (x, width, color, index) => {
         const marginLeft = x - currentX;
-
-        let beatNames = "-"; // fix for wrong rendering when bars are empty
+        let beatNamesRest = "-"; // fix for wrong rendering when bars are empty
+        let beatNames = "-";
         if (withBeatNames) {
-          const tickIndex = currentX / 6.25;
-          const tickLength = width / 6.25;
-
-          beatNames = <div className="row center-xs">
-            {allBeatNames.slice(tickIndex, tickIndex + tickLength)//.join(" ");
-             .map((beatName, index) =>
-                <div className="col-xs" key={index}>{beatName}</div>
-              )
-            }
-          </div>;
+          beatNamesRest = this.convertTicksToBeatNames(currentX, x - currentX);
+          beatNames = this.convertTicksToBeatNames(x, width);
         }
-
         currentX = x + width;
-        return <div
-          className={classNames({beat: true, invisibleText: !withBeatNames})}
-          style={{width: `${width}%`, backgroundColor: color, marginLeft: `${marginLeft}%`}}
-          key={index}
-        >{beatNames}</div>;
+
+        return [
+          marginLeft > 0 ?
+            <div
+              className="beat restBeat"
+              style={{width: `${marginLeft}%`}}
+              key={"spacer-${index}"}
+            >{beatNamesRest}</div>
+          : null,
+          <div
+            className="beat"
+            style={{width: `${width}%`, backgroundColor: color}}
+            key={index}
+          >{beatNames}</div>
+        ];
       };
 
       return beats.map((beat, index) => {
@@ -55,7 +67,7 @@ export default class BeatVisualization extends Component {
         const b = beat[1] * conversionFactor;
         const width = b - a;
 
-        return createBeat(a, width, getColor(index), index);
+        return _.flatten(createBeat(a, width, getColor(index), index));
       });
     };
     const expectedTimes = RhythmChecker.convertDurationsToTimes(
@@ -92,8 +104,8 @@ export default class BeatVisualization extends Component {
     });
 
     return <div className={className}>
-      <div>{expectedBeats}</div>
-      <div>{actualBeats}</div>
+      <div className="expectedBeatBar">{expectedBeats}</div>
+      <div className="actualBeatBar">{actualBeats}</div>
     </div>;
   }
 }
