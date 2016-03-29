@@ -48,20 +48,6 @@ export default class MidiService {
         this.errorCallback("There was a problem while requesting MIDI access.", arguments);
       }
     );
-
-    const debugMode = true;
-    if (debugMode) {
-      document.addEventListener("keyup", (event) => {
-        const trueKeyCode = 84;
-        const falseKeyCode = 70;
-        if (event.keyCode === trueKeyCode) {
-          this.successCallback();
-        } else if (event.keyCode === falseKeyCode) {
-          this.failureCallback();
-        }
-      });
-    }
-
   }
 
   initializeInputStates() {

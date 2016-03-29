@@ -26,6 +26,24 @@ export default class PitchReadingView extends Component {
     });
     this.startDate = new Date();
     this.midiService.setDesiredKeys(this.getAllCurrentKeys(), this.state.currentKeySignature);
+
+    const debugMode = true;
+    if (debugMode) {
+      this.debugKeyUpCallback = (event) => {
+        const trueKeyCode = 84;
+        const falseKeyCode = 70;
+        if (event.keyCode === trueKeyCode) {
+          this.onSuccess();
+        } else if (event.keyCode === falseKeyCode) {
+          this.onFailure();
+        }
+      };
+      document.addEventListener("keyup", this.debugKeyUpCallback);
+    }
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener("keyup", this.debugKeyUpCallback);
   }
 
   componentWillReceiveProps(nextProps) {
