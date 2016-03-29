@@ -26,8 +26,6 @@ export default {
   },
 
   generateRhythmBar: function(settings) {
-    // const durations = [4, 2, -4, 4];
-
     const calcBarLength = (durations) => {
       return durations.map((el) => 1 / Math.abs(el)).reduce((a, b) => a + b, 0);
     }
@@ -52,13 +50,7 @@ export default {
       durations = generateRandomDurations();
     }
 
-    // durations = _.sample([
-    //   [4, 4, 4, 4],
-    //   [4, -4, 4, 4],
-    //   [2, 2],
-    //   [4, 2, 4],
-    //   [4, 2, -4],
-    // ]);
+    // durations = [4, 2, -4, 4];
 
     const staveNotes = durations.map((duration) =>
       new Vex.Flow.StaveNote({

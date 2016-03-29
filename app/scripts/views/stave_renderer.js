@@ -91,7 +91,7 @@ class StaveRenderer extends Component {
     Object.keys(this.props.keys).map((key) => {
       const clef = this.props.keys[key];
       clef.forEach((staveNote, index) => {
-        const color = index < this.props.chordIndex ? "green" : "black";
+        const color = index < this.props.chordIndex ? "#398439" : "black";
         _.range(staveNote.getKeys().length).map((noteIndex) => {
           staveNote.setKeyStyle(noteIndex, {fillStyle: color});
         });

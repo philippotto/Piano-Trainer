@@ -55,8 +55,8 @@ export default class BeatVisualization extends Component {
             >{beatNamesRest}</div>
           : null,
           <div
-            className="beat"
-            style={{width: `${width}%`, backgroundColor: color}}
+            className={`beat ${color}-beat`}
+            style={{width: `${width}%`}}
             key={index}
           >{beatNames}</div>
         ];
