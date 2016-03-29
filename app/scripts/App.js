@@ -35,9 +35,11 @@ export default class App extends Component {
       <PitchReadingView
        statisticService={StatisticService}
        settings={appState.settings.pitchReading}
+       key="pitch_game"
       /> :
       <RhythmReadingView
        settings={appState.settings.rhythmReading}
+       key="rhythm_game"
       />;
 
     // <div className="hr_gradient" />
@@ -51,15 +53,15 @@ export default class App extends Component {
             <img id="github" src={githubPng} />
           </a>
 
-
-          <div className="row around-xs">
-            <div className="col-xs-2">
-                <Nav
-                 bsStyle="pills" activeKey={this.state.activeGame}
-                 onSelect={this.toggleGame.bind(this)}>
-                  <NavItem eventKey="pitch" className="modeNavItem">Pitch training</NavItem>
-                  <NavItem eventKey="rhythm" className="modeNavItem">Rhythm training</NavItem>
-                </Nav>
+          <div className="row center-xs">
+            <div className="col-xs">
+              <Nav
+               bsStyle="pills" activeKey={this.state.activeGame}
+               onSelect={this.toggleGame.bind(this)}
+               className="inlineBlock">
+                <NavItem eventKey="pitch" className="modeNavItem">Pitch training</NavItem>
+                <NavItem eventKey="rhythm" className="modeNavItem">Rhythm training</NavItem>
+              </Nav>
             </div>
           </div>
 
@@ -77,7 +79,10 @@ export default class App extends Component {
             </p>
           </div>
         </div>
-        {activeGame}
+
+        <div className="gameContainer">
+          {activeGame}
+        </div>
       </div>
     );
   }

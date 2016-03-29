@@ -15,7 +15,8 @@ export default class GameButton extends Component {
   componentDidMount() {
     this.keyHandler = (event) => {
       const isPrimaryAndEnter = this.props.primary && event.code === "Enter";
-      const isShortcutLetter = String.fromCharCode(event.keyCode) === this.props.shortcutLetter;
+      const charCode = event.which || event.keyCode;
+      const isShortcutLetter = String.fromCharCode(charCode) === this.props.shortcutLetter;
       if (isPrimaryAndEnter || isShortcutLetter) {
         return this.props.onClick();
       } else {

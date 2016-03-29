@@ -84,7 +84,7 @@ export default class PitchReadingView extends Component {
     });
 
     return (
-      <div>
+      <div className="trainer">
         <div className="row center-xs">
           <div className="col-xs-5">
             <div>
@@ -113,8 +113,8 @@ export default class PitchReadingView extends Component {
             <PitchSettingsView settings={this.props.settings} />
             <StatisticsView statisticService={this.props.statisticService} />
           </div>
+          <audio ref="successPlayer" hidden="true" src={successMp3Url} controls preload="auto" autobuffer />
         </div>
-        <audio ref="successPlayer" hidden="true" src={successMp3Url} controls preload="auto" autobuffer />
       </div>
     );
   }
