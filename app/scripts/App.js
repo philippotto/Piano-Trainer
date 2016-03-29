@@ -48,7 +48,8 @@ export default class App extends Component {
         <img id="image-background" src={pianoBackgroundJpg} />
 
         <div className="jumbotron">
-          <h1>Piano Trainer</h1>
+          <h1>Sheet Music Tutor</h1>
+          <h3>Improve your sheet reading skills.</h3>
           <a href="https://github.com/philippotto/Piano-Trainer">
             <img id="github" src={githubPng} />
           </a>
