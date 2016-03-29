@@ -6,7 +6,6 @@ import _ from "lodash";
 class StaveRenderer extends Component {
 
   static defaultProps = {
-    afterRender: _.noop,
     staveCount: 2
   }
 
@@ -14,7 +13,6 @@ class StaveRenderer extends Component {
     keys: React.PropTypes.array,
     chordIndex: React.PropTypes.number,
     keySignature: React.PropTypes.string,
-    afterRender: React.PropTypes.func,
     staveCount: React.PropTypes.number,
   }
 
@@ -24,7 +22,6 @@ class StaveRenderer extends Component {
 
   componentDidUpdate() {
     this.draw();
-    this.props.afterRender();
   }
 
 

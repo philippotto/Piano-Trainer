@@ -5,11 +5,12 @@ import _ from "lodash";
 import BarGenerator from "../services/bar_generator.js";
 import RhythmChecker from "../services/rhythm_checker.js";
 import MetronomeService from "../services/metronome_service.js";
+
 import StaveRenderer from "./stave_renderer.js";
 import GameButton from "./game_button.js";
-import RhythmSettingsView from "../views/rhythm_settings_view.js";
+import RhythmSettingsView from "./rhythm_settings_view.js";
+import BeatVisualization from "./beat_visualization.js";
 
-const feedbackCanvasWidth = 500;
 const keyup = "keyup";
 const keydown = "keydown";
 
@@ -75,7 +76,10 @@ export default class RhythmReadingView extends Component {
           });
 
           if (beatIndex === beatAmount) {
-            const expectedTimes = this.getExpectedTimes();
+            const expectedTimes = RhythmChecker.convertDurationsToTimes(
+              this.state.currentRhythm.durations,
+              this.props.settings.barDuration
+            );
             this.fixBeatHistory();
             const result = RhythmChecker.compare(expectedTimes, this.beatHistory);
 
@@ -87,71 +91,6 @@ export default class RhythmReadingView extends Component {
         },
         delay
       )
-    });
-  }
-
-  visualizeBeatHistory() {
-    if (this.state.phase === Phases.welcome) {
-      return;
-    }
-    const canvas = this.refs.feedbackCanvas;
-    const context = canvas.getContext("2d");
-    if (this.state.phase !== Phases.feedback) {
-      context.clearRect(0, 0, canvas.width, canvas.height);
-      return;
-    }
-
-    console.log("visualizeBeatHistory");
-    console.log("beatHistory",  this.beatHistory);
-    const offset = 0;
-    const conversionFactor = 1000 / this.props.settings.barDuration * (feedbackCanvasWidth / 1000);
-
-    const drawBar = (x, y, width, color) => {
-      const barHeight = 10;
-      const radius = barHeight / 2;
-
-      context.fillStyle = color;
-      context.fillRect(x + radius, y, width - 2 * radius, barHeight);
-
-      context.beginPath();
-      context.arc(x + radius, y + radius, radius, 0, 2 * Math.PI, false);
-      context.fill();
-
-      context.beginPath();
-      // The bar will be drawn one pixel too short, so that there is a margin
-      // between adjacent bars
-      context.arc(x + width - radius - 1, y + radius, radius, 0, 2 * Math.PI, false);
-      context.fill();
-
-    };
-
-    const drawBeats = (beats, y, getColor) => {
-      beats.forEach((beat, index) => {
-        const a = beat[0] * conversionFactor;
-        const b = beat[1] * conversionFactor;
-        const x = offset + a;
-        const width = b - a;
-
-        drawBar(x, y, width, getColor(index));
-      });
-
-    }
-    drawBeats(this.getExpectedTimes(), 0, _.constant("gray"));
-    drawBeats(this.beatHistory, 20, (index) => {
-      const result = this.state.result;
-      if (result.success) {
-        return "green";
-      }
-      if (result.reason === RhythmChecker.reasons.wrongLength) {
-        return "red";
-      }
-      if (index < result.wrongBeat) {
-        return "green";
-      }
-      if (index === result.wrongBeat) {
-        return "red";
-      }
-      return "gray";
     });
   }
 
@@ -172,16 +111,6 @@ export default class RhythmReadingView extends Component {
     if (lastBeat.length === 1) {
       lastBeat.push(performance.now() - this.firstBarBeatTime);
     }
-  }
-
-  getExpectedTimes() {
-    const durations = this.state.currentRhythm.durations;
-    console.log("durations", durations);
-    console.log("this.beatHistory",  this.beatHistory);
-    return RhythmChecker.convertDurationsToTimes(
-      this.state.currentRhythm.durations,
-      this.props.settings.barDuration
-    );
   }
 
   componentDidMount() {
@@ -282,16 +211,6 @@ export default class RhythmReadingView extends Component {
         </p>
     </div>;
 
-    const feedbackCanvas =
-      <canvas
-        ref="feedbackCanvas"
-        className="feedbackCanvas transition"
-        width={feedbackCanvasWidth}
-        height={30}
-        style={{
-          marginTop: 20,
-          height: this.state.phase === Phases.feedback ? 30 : 0
-        }} />;
     const feedbackSection =
       <div className={classNames({
         feedbackText: true,
@@ -307,9 +226,13 @@ export default class RhythmReadingView extends Component {
         <h4 style={{marginTop: 0}}>
         Have a look at your performance:
         </h4>
-        {feedbackCanvas}
+        {<BeatVisualization
+          currentRhythm={this.state.currentRhythm}
+          settings={this.props.settings}
+          beatHistory={this.beatHistory}
+          result={this.state.result}
+         />}
       </div>;
-
 
     console.log(this.state.currentRhythm.keys);
 
@@ -350,7 +273,6 @@ export default class RhythmReadingView extends Component {
 
     return (
       <div className="trainer">
-
         <div className="row center-xs">
           <div className="col-xs-5">
             <div>
@@ -359,7 +281,6 @@ export default class RhythmReadingView extends Component {
                   keys={this.state.currentRhythm.keys}
                   chordIndex={this.state.currentChordIndex}
                   keySignature={"C"}
-                  afterRender={this.visualizeBeatHistory.bind(this)}
                   staveCount={1}
                 />
 

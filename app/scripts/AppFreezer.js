@@ -21,6 +21,7 @@ export default new Freezer({
       restProbability: 0.2,
       dottedNotes: false,
       triplets: false,
+      labelBeats: true,
     }
   }
 });

@@ -3,6 +3,8 @@
 @import (less) "../../node_modules/flexboxgrid/dist/flexboxgrid.min.css";
 @import (less) "./slider.css";
 @import (less) "./checkbox.css";
+@import (less) "./chartist_modifications.less";
+@import (less) "./beat_visualization.less";
 
 @import url(http://fonts.googleapis.com/css?family=Poiret+One);
 @import url(http://fonts.googleapis.com/css?family=Droid+Sans:400);
@@ -153,7 +155,7 @@ li.modeNavItem.active a:focus, li.modeNavItem.active a {
   overflow: hidden;
 }
 
-.welcomeText, .feedbackText, .feedbackCanvas, .metronomeBeat, .gameButtonBar {
+.welcomeText, .feedbackText, .metronomeBeat, .gameButtonBar {
   max-height: 300px;
 }
 
@@ -172,7 +174,6 @@ li.modeNavItem.active a:focus, li.modeNavItem.active a {
   padding-top: 0px;
 }
 
-
 .hr_gradient {
   margin: 25px 0;
   height: 1px;
@@ -180,21 +181,11 @@ li.modeNavItem.active a:focus, li.modeNavItem.active a {
   background: -webkit-gradient(linear, 0 0, 100% 0, from(rgba(255, 255, 255, 0.0)), to(rgba(255, 255, 255, 0.0)), color-stop(50%, white));
 }
 
-/* override chartist color */
-
-.ct-chart .ct-series.ct-series-a .ct-bar, .ct-chart .ct-series.ct-series-a .ct-line, .ct-chart .ct-series.ct-series-a .ct-point, .ct-chart .ct-series.ct-series-a .ct-slice.ct-donut {
-  stroke: #777777 !important;
+.inlineBlock {
+  display: inline-block;
 }
 
-.semi-transparent {
-  opacity: 0.8;
+// workaround for https://github.com/kristoferjoseph/flexboxgrid/issues/144
+.row {
+  width: 99%;
 }
-
-.ct-chart .ct-line {
-  stroke-width: 1px;
-}
-
-.ct-chart .ct-point {
-  stroke-width: 6px;
-}
-

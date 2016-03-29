@@ -1,0 +1,28 @@
+.beat {
+  background-color: gray;
+  height: 20px;
+  border-radius: 10px;
+  display: inline-block;
+  color: white;
+  transition: all 0.5s ease;
+}
+
+.beat-container > div {
+  height: 20px;
+  transition: all 0.5s ease;
+  margin-bottom: 25px;
+}
+
+.beat-container.thin > div {
+  height: 10px;
+  margin-bottom: 20px;
+}
+
+.beat-container.thin .beat {
+  height: 10px;
+  color: transparent;
+}
+
+.invisibleText {
+  color: transparent;
+}

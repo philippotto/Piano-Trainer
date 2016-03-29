@@ -58,6 +58,17 @@ export default class PitchSettingsView extends Component {
           <label htmlFor="rests_checkbox"></label>
         </SettingLine>
 
+        <SettingLine className="setting_checkbox" label="Label beats">
+          <input
+           type="checkbox"
+           checked={this.props.settings.labelBeats}
+           id="label_beats_checkbox"
+           name="check"
+           onChange={this.buildCheckboxStateChanger("labelBeats")}
+          />
+          <label htmlFor="label_beats_checkbox"></label>
+        </SettingLine>
+
       </div>
     );
       // <SettingLine className="setting_checkbox" label="Dotted notes">
