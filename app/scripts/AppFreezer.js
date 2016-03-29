@@ -16,12 +16,14 @@ export default new Freezer({
     },
     rhythmReading: {
       barDuration: 3000,
-      durationOptions: [8, 4, 2],
+      labelBeats: false,
+      liveBeatBars: false,
       rests: true,
       restProbability: 0.2,
+      eighthNotes: true,
+      sixteenthNotes: false,
       dottedNotes: false,
       triplets: false,
-      labelBeats: false,
     }
   }
 });

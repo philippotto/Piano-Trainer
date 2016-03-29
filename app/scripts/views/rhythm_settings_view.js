@@ -47,17 +47,6 @@ export default class PitchSettingsView extends Component {
           label={"Bar duration"}
         />
 
-        <SettingLine className="setting_checkbox" label="Rests">
-          <input
-           type="checkbox"
-           checked={this.props.settings.rests}
-           id="rests_checkbox"
-           name="check"
-           onChange={this.buildCheckboxStateChanger("rests")}
-          />
-          <label htmlFor="rests_checkbox"></label>
-        </SettingLine>
-
         <SettingLine className="setting_checkbox" label="Label beats">
           <input
            type="checkbox"
@@ -69,6 +58,49 @@ export default class PitchSettingsView extends Component {
           <label htmlFor="label_beats_checkbox"></label>
         </SettingLine>
 
+        <SettingLine className="setting_checkbox" label="Live beat bars">
+          <input
+           type="checkbox"
+           checked={this.props.settings.liveBeatBars}
+           id="live_beat_bars_checkbox"
+           name="check"
+           onChange={this.buildCheckboxStateChanger("liveBeatBars")}
+          />
+          <label htmlFor="live_beat_bars_checkbox"></label>
+        </SettingLine>
+
+        <SettingLine className="setting_checkbox" label="Rests">
+          <input
+           type="checkbox"
+           checked={this.props.settings.rests}
+           id="rests_checkbox"
+           name="check"
+           onChange={this.buildCheckboxStateChanger("rests")}
+          />
+          <label htmlFor="rests_checkbox"></label>
+        </SettingLine>
+
+        <SettingLine className="setting_checkbox" label="Eighth notes">
+          <input
+           type="checkbox"
+           checked={this.props.settings.eighthNotes}
+           id="eighth_notes_checkbox"
+           name="check"
+           onChange={this.buildCheckboxStateChanger("eighthNotes")}
+          />
+          <label htmlFor="eighth_notes_checkbox"></label>
+        </SettingLine>
+
+        <SettingLine className="setting_checkbox" label="Sixteenth notes">
+          <input
+           type="checkbox"
+           checked={this.props.settings.sixteenthNotes}
+           id="sixteenth_notes_checkbox"
+           name="check"
+           onChange={this.buildCheckboxStateChanger("sixteenthNotes")}
+          />
+          <label htmlFor="sixteenth_notes_checkbox"></label>
+        </SettingLine>
       </div>
     );
       // <SettingLine className="setting_checkbox" label="Dotted notes">

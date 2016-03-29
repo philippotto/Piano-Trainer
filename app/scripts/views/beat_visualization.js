@@ -14,12 +14,30 @@ export default class BeatVisualization extends Component {
     result: React.PropTypes.object.isRequired,
   }
 
+  getNecessaryBeatNameFraction() {
+    // without eighth and sixteenths, we only need every 4th beat name
+    let necessaryNameFraction = 4;
+    if (this.props.settings.eighthNotes) {
+      necessaryNameFraction = 2;
+    }
+    if (this.props.settings.sixteenthNotes) {
+      necessaryNameFraction = 1;
+    }
+    return necessaryNameFraction;
+  }
+
   convertTicksToBeatNames(tickTime, tickLength) {
-    const tickTimeToIndexFactor = 1/16 * 100;
+    const tickTimeToIndexFactor = 1/(16 / this.getNecessaryBeatNameFraction()) * 100;
     const tickIndex = tickTime / tickTimeToIndexFactor;
     const tickStepCount = tickLength / tickTimeToIndexFactor;
     const allBeatNames = ['1', 'e', '&', 'a', '2', 'e', '&', 'a', '3', 'e', '&', 'a', '4', 'e', '&', 'a'];
-    const ticks = allBeatNames.slice(tickIndex, tickIndex + tickStepCount);
+
+    const necessaryNameFraction = this.getNecessaryBeatNameFraction();
+    const necessaryBeatNames = allBeatNames.filter((el, index) =>
+      index % necessaryNameFraction === 0
+    );
+
+    const ticks = necessaryBeatNames.slice(tickIndex, tickIndex + tickStepCount);
     return <div className="row center-xs">
       {ticks.map((beatName, index) =>
         <div className="col-xs" key={index}>{beatName}</div>
@@ -28,9 +46,6 @@ export default class BeatVisualization extends Component {
   };
 
   render() {
-    // if (this.state.phase === Phases.welcome) {
-    //   return null;
-    // }
     const barDuration = this.props.settings.barDuration;
     const conversionFactor = 100 / barDuration;
 
@@ -83,6 +98,9 @@ export default class BeatVisualization extends Component {
 
     const actualBeats = drawBeats(this.props.beatHistory, (index) => {
       const result = this.props.result;
+      if (!result) {
+        return "gray";
+      }
       if (result.success) {
         return "green";
       }

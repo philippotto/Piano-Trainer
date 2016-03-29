@@ -33,7 +33,13 @@ export default {
     const generateRandomDurations = () => {
       const durations = [];
       while (calcBarLength(durations) < 1)  {
-        let newDuration = _.sample(settings.durationOptions);
+        const possibleNotes = _.flatten([
+          [4, 2],
+          settings.eighthNotes ? 8 : null,
+          settings.sixteenthNotes ? 16 : null,
+        ]);
+
+        let newDuration = _.sample(possibleNotes);
         if (settings.rests && Math.random() < settings.restProbability) {
           newDuration *= -1;
         }

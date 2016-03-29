@@ -30,7 +30,7 @@ export default class RhythmReadingView extends Component {
     super(props, context);
     this.state = {
       errorMessage: null,
-      result: {success: true},
+      result: null,
       currentRhythm: BarGenerator.generateEmptyRhythmBar(),
       currentMetronomeBeat: -1,
       phase: Phases.welcome
@@ -174,7 +174,8 @@ export default class RhythmReadingView extends Component {
     }
     this.beatHistory = [];
     this.setState({
-      phase: Phases.running
+      phase: Phases.running,
+      result: null,
     });
   }
 
@@ -187,7 +188,8 @@ export default class RhythmReadingView extends Component {
 
     this.setState({
       phase: Phases.running,
-      currentRhythm: newRhythm
+      result: null,
+      currentRhythm: newRhythm,
     });
   }
 
@@ -218,7 +220,7 @@ export default class RhythmReadingView extends Component {
         heightOut: this.state.phase !== Phases.feedback
       })}>
         <h2>
-          {this.state.result.success ?
+          {(this.state.result && this.state.result.success) ?
             "Yay! You nailed the rhythm!" :
             "Oh no, you didn't get the rhythm right :("
           }
@@ -226,12 +228,23 @@ export default class RhythmReadingView extends Component {
         <h4 style={{marginTop: 0}}>
         Have a look at your performance:
         </h4>
-        {<BeatVisualization
+      </div>;
+
+    const beatBarSection =
+      <div className={classNames({
+        transition: true,
+        beatBarSection: true,
+        heightOut: !(
+          this.state.phase === Phases.feedback ||
+          (this.state.phase === Phases.running && this.props.settings.liveBeatBars)
+        )
+      })}>
+        <BeatVisualization
           currentRhythm={this.state.currentRhythm}
           settings={this.props.settings}
           beatHistory={this.beatHistory}
           result={this.state.result}
-         />}
+         />
       </div>;
 
     console.log(this.state.currentRhythm.keys);
@@ -288,6 +301,7 @@ export default class RhythmReadingView extends Component {
                   {metronomeBeat}
                   {welcomeText}
                   {feedbackSection}
+                  {beatBarSection}
                 </div>
 
                 <div className={classNames({
