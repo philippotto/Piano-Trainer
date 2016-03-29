@@ -2,12 +2,6 @@ import _ from "lodash";
 
 export default {
 
-  reasons: {
-    wrongLength: "wrong length",
-    wrongStartBeat: "wrong start beat",
-    wrongEndBeat: "wrong end beat",
-  },
-
   convertDurationsToTimes: function(durations, barDuration) {
     const times = [];
     let lastTick = 0;
@@ -31,39 +25,73 @@ export default {
     return times;
   },
 
-  compare: function(expectedTimes, givenTimes) {
-    if (expectedTimes.length !== givenTimes.length) {
-      console.warn("different length");
-      return {
-        success: false,
-        reason: this.reasons.wrongLength
-      };
-    }
+
+  /*
+     returns an evaluationObject which holds
+      {
+        beatEvaluations: [BeatEvaluation],
+        missesBeat: Boolean,                 // the user missed a beat
+        success: Boolean                     // the rhythm was tapped correctly
+      }
+     where a BeatEvaluation looks like
+      {
+        startDiff: Number,                   // difference in milliseconds
+        endDiff: Number,
+        superfluous: Boolean                 // true if beat was too much
+      }
+  */
+  compare: function(expectedTimes, givenTimes, settings) {
+    let missesBeat = false;
+    let beatEvaluations = [];
+    const barDuration = settings.barDuration;
+    const shortestNote = this.getShortestNote(settings);
 
     console.log("expectedTimes", JSON.stringify(expectedTimes));
     console.log("givenTimes", JSON.stringify(givenTimes));
 
-    const tolerance = 200 * 0.99;
+    const onTolerance = barDuration / (shortestNote * 2);
+    const offTolerance = onTolerance * 2.5;
     for (let i = 0; i < expectedTimes.length; i++) {
-      if (Math.abs(expectedTimes[i][0] - givenTimes[i][0]) > tolerance) {
-        console.warn(expectedTimes[i][0], "-", givenTimes[i][0], " = ", expectedTimes[i][0] - givenTimes[i][0]);
-        return {
-          success: false,
-          reason: this.reasons.wrongStartBeat,
-          wrongBeat: i
-        };
+      if (i >= givenTimes.length) {
+        missesBeat = true;
+        break;
       }
-      if (Math.abs(expectedTimes[i][1] - givenTimes[i][1]) > tolerance * 2.5) {
-        console.warn(expectedTimes[i][1], "-", givenTimes[i][1], " = ", expectedTimes[i][1] - givenTimes[i][1]);
-        return {
-          success: false,
-          reason: this.reasons.wrongEndBeat,
-          wrongBeat: i
-        };
+
+      const startDiff = expectedTimes[i][0] - givenTimes[i][0];
+      const endDiff = expectedTimes[i][1] - givenTimes[i][1];
+      let correct = true;
+      if (Math.abs(startDiff) > onTolerance) {
+        console.warn(expectedTimes[i][0], "-", givenTimes[i][0], " = ", startDiff);
+        correct = false;
       }
+      if (Math.abs(endDiff) > offTolerance) {
+        console.warn(expectedTimes[i][1], "-", givenTimes[i][1], " = ", endDiff);
+        correct = false;
+      }
+      beatEvaluations.push({ startDiff, endDiff, correct });
     }
+
+    if (givenTimes.length > expectedTimes.length) {
+      beatEvaluations = beatEvaluations.concat(
+        givenTimes.slice(expectedTimes.length).map((el) => ({superfluous: true, correct: false}))
+      );
+    }
+
     return {
-      success: true
+      beatEvaluations,
+      missesBeat,
+      success: beatEvaluations.every((el) => el.correct) && !missesBeat,
     };
   },
+
+  getShortestNote(settings) {
+    let shortestNote = 4;
+    if (settings.eighthNotes) {
+      shortestNote = 8;
+    }
+    if (settings.sixteenthNotes) {
+      shortestNote = 16;
+    }
+    return shortestNote;
+  }
 };

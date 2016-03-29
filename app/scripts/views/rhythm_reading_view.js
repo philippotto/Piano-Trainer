@@ -76,12 +76,18 @@ export default class RhythmReadingView extends Component {
           });
 
           if (beatIndex === beatAmount) {
+            const barDuration = this.props.settings.barDuration;
             const expectedTimes = RhythmChecker.convertDurationsToTimes(
               this.state.currentRhythm.durations,
-              this.props.settings.barDuration
+              barDuration
             );
             this.fixBeatHistory();
-            const result = RhythmChecker.compare(expectedTimes, this.beatHistory);
+
+            const result = RhythmChecker.compare(
+              expectedTimes,
+              this.beatHistory,
+              this.props.settings
+            );
 
             this.setState({
               phase: Phases.feedback,

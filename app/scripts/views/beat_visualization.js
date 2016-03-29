@@ -14,25 +14,13 @@ export default class BeatVisualization extends Component {
     result: React.PropTypes.object.isRequired,
   }
 
-  getNecessaryBeatNameFraction() {
-    // without eighth and sixteenths, we only need every 4th beat name
-    let necessaryNameFraction = 4;
-    if (this.props.settings.eighthNotes) {
-      necessaryNameFraction = 2;
-    }
-    if (this.props.settings.sixteenthNotes) {
-      necessaryNameFraction = 1;
-    }
-    return necessaryNameFraction;
-  }
-
   convertTicksToBeatNames(tickTime, tickLength) {
-    const tickTimeToIndexFactor = 1/(16 / this.getNecessaryBeatNameFraction()) * 100;
+    const tickTimeToIndexFactor = 1 / RhythmChecker.getShortestNote(this.props.settings) * 100;
     const tickIndex = tickTime / tickTimeToIndexFactor;
     const tickStepCount = tickLength / tickTimeToIndexFactor;
     const allBeatNames = ['1', 'e', '&', 'a', '2', 'e', '&', 'a', '3', 'e', '&', 'a', '4', 'e', '&', 'a'];
 
-    const necessaryNameFraction = this.getNecessaryBeatNameFraction();
+    const necessaryNameFraction = 16 / RhythmChecker.getShortestNote(this.props.settings);
     const necessaryBeatNames = allBeatNames.filter((el, index) =>
       index % necessaryNameFraction === 0
     );
@@ -104,16 +92,7 @@ export default class BeatVisualization extends Component {
       if (result.success) {
         return "green";
       }
-      if (result.reason === RhythmChecker.reasons.wrongLength) {
-        return "red";
-      }
-      if (index < result.wrongBeat) {
-        return "green";
-      }
-      if (index === result.wrongBeat) {
-        return "red";
-      }
-      return "gray";
+      return result.beatEvaluations[index].correct ? "green" : "red";
     }, false);
 
     const className = classNames({
