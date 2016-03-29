@@ -85,8 +85,8 @@ export default class PitchReadingView extends Component {
 
     return (
       <div className="trainer">
-        <div className="row center-xs">
-          <div className="col-xs-5">
+        <div className="row center-lg center-md center-sm center-xs">
+          <div className="col-lg col-md col-sm col-xs leftColumn">
             <div>
               <div className="game-container content-box">
                 <StaveRenderer
@@ -109,7 +109,7 @@ export default class PitchReadingView extends Component {
               </div>
             </div>
           </div>
-          <div className="col-xs-3 second-column">
+          <div className="col-lg-4 col-md-12 col-sm-12 col-xs-12 rightColumn">
             <PitchSettingsView settings={this.props.settings} />
             <StatisticsView statisticService={this.props.statisticService} />
           </div>

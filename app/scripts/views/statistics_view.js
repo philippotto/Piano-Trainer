@@ -15,7 +15,7 @@ export default class StatisticsView extends Component {
     }
 
     return (
-      <div id="graph-stats">
+      <div className="graph-stats content-box">
         <div ref="chart" className="semi-transparent ct-chart ct-major-eleventh"></div>
 
         <div className="row around-xs">

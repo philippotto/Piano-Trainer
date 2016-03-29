@@ -64,20 +64,6 @@ export default class App extends Component {
               </Nav>
             </div>
           </div>
-
-        </div>
-
-        <div className="too-small">
-          <div className="message">
-            <p>
-              {`
-                This page is meant to be viewed on a sufficiently large screen
-                with a MIDI enabled device connected.
-              `}
-              {"If you are interested to learn more about Piano-Trainer, view"}
-              <a href="http://github.com/philippotto/Piano-Trainer">this page.</a>
-            </p>
-          </div>
         </div>
 
         <div className="gameContainer">

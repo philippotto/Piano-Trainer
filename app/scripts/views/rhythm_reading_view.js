@@ -273,10 +273,10 @@ export default class RhythmReadingView extends Component {
 
     return (
       <div className="trainer">
-        <div className="row center-xs">
-          <div className="col-xs-5">
+        <div className="row center-lg center-md center-sm center-xs">
+          <div className="col-lg col-md col-sm col-xs leftColumn">
             <div>
-              <div className="transition game-container content-box">
+              <div className="game-container content-box transition">
                 <StaveRenderer
                   keys={this.state.currentRhythm.keys}
                   chordIndex={this.state.currentChordIndex}
@@ -303,7 +303,7 @@ export default class RhythmReadingView extends Component {
               </div>
             </div>
           </div>
-          <div className="col-xs-3 second-column">
+          <div className="col-lg-4 col-md-12 col-sm-12 col-xs-12 rightColumn">
             <RhythmSettingsView settings={this.props.settings} />
           </div>
         </div>

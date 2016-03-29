@@ -37,7 +37,7 @@ export default class PitchSettingsView extends Component {
 
   render() {
     return (
-      <div className="settings">
+      <div className="settings content-box">
         <h3 style={{marginTop: -5}}>Settings</h3>
         <RangeSettingComponent
           rangeMin={250}

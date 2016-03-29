@@ -19,16 +19,16 @@ export default class SettingLine extends Component {
   }
 
   render() {
-    let className = "row around-xs";
+    let className = "settingLine row around-xs";
     if (this.props.className) {
       className = [className, this.props.className].join(" ");
     }
     return (
       <div className={className}>
-        <div className="col-xs-6" style={{textAlign: "left"}}>
+        <div className="col-lg-6 col-md-6 col-sm-6 col-xs-12" style={{textAlign: "left"}}>
           {this.props.label}
         </div>
-        <div className="col-xs-6">
+        <div className="settingUI col-lg-6 col-md-6 col-sm-6 col-xs-12">
           {this.props.children}
         </div>
       </div>

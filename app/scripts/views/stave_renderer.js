@@ -24,9 +24,14 @@ class StaveRenderer extends Component {
     this.draw();
   }
 
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.debouncedResizeHandler);
+  }
 
   componentDidMount() {
     this.draw();
+    this.debouncedResizeHandler = _.debounce(this.draw.bind(this), 250);
+    window.addEventListener("resize", this.debouncedResizeHandler);
   }
 
 
@@ -43,8 +48,15 @@ class StaveRenderer extends Component {
     this.renderer = new Vex.Flow.Renderer(canvas, Vex.Flow.Renderer.Backends.CANVAS);
     this.ctx = this.renderer.getContext();
 
-    const [width, height] = [600, this.props.staveCount * 100];
-    const staveWidth = 500;
+    const windowWidth = window.innerWidth
+      || document.documentElement.clientWidth
+      || document.body.clientWidth;
+
+    const widthThreshold = 600;
+    const margin = 20;
+    const width = windowWidth >= widthThreshold ? widthThreshold : windowWidth - margin;
+    const staveWidth = width - margin;
+    const height = this.props.staveCount * 100;
     const ctx = this.ctx;
 
     ctx.clear();

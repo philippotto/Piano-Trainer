@@ -15,26 +15,6 @@ body {
   font-family: "Droid Sans", sans-serif;
 }
 
-.too-small {
-
-  margin-bottom: 25px;
-  div {
-    padding: 10px;
-  }
-  font-size: 14px;
-  background: white;
-
-  @media screen and (min-width: 980px) {
-    display: none !important;
-  }
-}
-
-.trainer {
-  @media screen and (max-width: 980px) {
-    display: none !important;
-  }
-}
-
 .jumbotron {
   background-color: rgba(0, 0, 0, 0.7);
   padding-top: 24px;
@@ -82,40 +62,55 @@ h1 {
   border-radius: 4px;
 }
 
-.settings {
-  .box-shadow;
-  margin-bottom: 3rem;
-  background: white;
-  padding: 20px;
-  color: #777777;
-  width: 100%;
-}
-
 .stat-detail i {
   margin-right: 5px;
-}
-
-#graph-stats {
-  .box-shadow;
-  background: white;
-  padding: 20px;
 }
 
 .content-box {
   .box-shadow;
   background: white;
-}
-.game-container {
-  padding: 50px 50px 20px 50px;
-  margin-bottom: 3rem;
-  // max-width: 620px;
-}
-.message-container {
-  padding: 5px;
+
+  @media only screen and (max-width: 700px) {
+    padding: 20px 1px;
+  }
+
+  @media only screen and (min-width: 700px) {
+    padding: 50px 50px 20px 50px;
+  }
 }
 
-.second-column {
-  margin-left: 3rem;
+.settings {
+  padding: 20px;
+  margin-bottom: 3rem;
+  background: white;
+  width: 100%;
+}
+
+.graph-stats {
+  background: white;
+  margin-bottom: 3rem;
+  padding: 20px;
+}
+
+.game-container {
+  margin-bottom: 3rem;
+  overflow: hidden;
+}
+
+.message-container {
+  padding: 5px;
+  margin-bottom: 3rem;
+}
+
+.leftColumn {
+  max-width: 700px;
+  @media only screen and (min-width: 64em) {
+    margin-right: 3rem;
+  }
+}
+
+.rightColumn {
+  max-width: 400px;
 }
 
 .modeNavItem:first-child {
@@ -174,6 +169,21 @@ li.modeNavItem.active a:focus, li.modeNavItem.active a {
   padding-top: 0px;
 }
 
+.gameButton {
+  margin-left: 10px;
+  margin-right: 10px;
+  @media only screen and (max-width: 450px) {
+    width: 80%;
+    margin-bottom: 1rem;
+  }
+}
+
+.settingLine .settingUI {
+  @media only screen and (max-width: 48em) {
+    margin-bottom: 0.5rem;
+  }
+}
+
 .hr_gradient {
   margin: 25px 0;
   height: 1px;
@@ -188,4 +198,5 @@ li.modeNavItem.active a:focus, li.modeNavItem.active a {
 // workaround for https://github.com/kristoferjoseph/flexboxgrid/issues/144
 .row {
   width: 99%;
+  margin-left: 0.5%;
 }

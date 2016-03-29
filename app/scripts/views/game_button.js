@@ -41,7 +41,7 @@ export default class GameButton extends Component {
     return <Button
       onClick={this.props.onClick}
       bsStyle={this.props.primary ? "success" : "default"}
-      style={{marginLeft: 10, marginRight: 10}}>
+      className="gameButton">
       <span style={{fontSize: 18}}>{this.props.label}</span>
       {subtext}
     </Button>;
