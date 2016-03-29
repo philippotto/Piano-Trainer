@@ -117,17 +117,17 @@ export default class RhythmReadingView extends Component {
     let lastSpaceEvent = keyup;
     const keyHandler = (eventType, event) => {
       const spaceCode = 32;
-      if (event.keyCode !== spaceCode) {
+      if (event.keyCode !== spaceCode && event.type.indexOf("touch") === -1) {
         return;
       }
       if (this.state.phase === Phases.running) {
+        event.preventDefault();
         // ignore consecutive events of the same type
         if (lastSpaceEvent === eventType) {
           return;
         }
         // protocol beat
         const newBeatTime = performance.now() - this.firstBarBeatTime;
-
         lastSpaceEvent = eventType;
 
         if (eventType === keydown) {
@@ -147,8 +147,6 @@ export default class RhythmReadingView extends Component {
           this.beatHistory.slice(-1)[0].push(newBeatTime);
         }
       } else {
-        console.log("lastSpaceEvent",  lastSpaceEvent);
-        console.log("eventType",  eventType);
         if (lastSpaceEvent === keydown && eventType === keyup) {
           lastSpaceEvent = keyup;
           return;
@@ -159,12 +157,14 @@ export default class RhythmReadingView extends Component {
     [keydown, keyup].forEach((eventType) => {
       this.keyHandlers[eventType] = keyHandler.bind(null, eventType);
       document.addEventListener(eventType, this.keyHandlers[eventType]);
+      document.addEventListener(eventType === keydown ? "touchstart" : "touchend", this.keyHandlers[eventType]);
     });
   }
 
   componentWillUnmount() {
     [keydown, keyup].forEach((eventType) => {
       document.removeEventListener(eventType, this.keyHandlers[eventType]);
+      document.removeEventListener(eventType === keydown ? "touchstart" : "touchend", this.keyHandlers[eventType]);
     });
   }
 
@@ -207,7 +207,7 @@ export default class RhythmReadingView extends Component {
       </h3>
       <p>
          When you start the training, we will count in for 4 beats and afterwards
-         you can tap the given rhythm with your Space button.
+         you can tap the given rhythm (either use your 'space' button or your touchscreen).
         </p>
     </div>;
 
