@@ -16,8 +16,9 @@ export default class BeatVisualization extends Component {
 
   convertTicksToBeatNames(tickTime, tickLength) {
     const tickTimeToIndexFactor = 1 / RhythmChecker.getShortestNote(this.props.settings) * 100;
-    const tickIndex = tickTime / tickTimeToIndexFactor;
-    const tickStepCount = tickLength / tickTimeToIndexFactor;
+    // round to fix non-integers due to numerical imprecision
+    const tickIndex = Math.round(tickTime / tickTimeToIndexFactor);
+    const tickStepCount = Math.round(tickLength / tickTimeToIndexFactor);
     const allBeatNames = ['1', 'e', '&', 'a', '2', 'e', '&', 'a', '3', 'e', '&', 'a', '4', 'e', '&', 'a'];
 
     const necessaryNameFraction = 16 / RhythmChecker.getShortestNote(this.props.settings);

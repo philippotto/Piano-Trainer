@@ -50,7 +50,7 @@ export default {
     console.log("givenTimes", JSON.stringify(givenTimes));
 
     const onTolerance = barDuration / (shortestNote * 2);
-    const offTolerance = onTolerance * 2.5;
+    const offTolerance = onTolerance * 2;
     for (let i = 0; i < expectedTimes.length; i++) {
       if (i >= givenTimes.length) {
         missesBeat = true;
