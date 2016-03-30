@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import classNames from "classnames";
 import _ from "lodash";
 
-import StatisticsView from "../views/statistics_view.js";
+import PitchStatisticView from "../views/pitch_statistic_view.js";
 import PitchSettingsView from "../views/pitch_settings_view.js";
 import AnalyticsService from "../services/analytics_service.js";
 import MidiService from "../services/midi_service.js";
@@ -130,7 +130,7 @@ export default class PitchReadingView extends Component {
           </div>
           <div className="col-lg-4 col-md-12 col-sm-12 col-xs-12 rightColumn">
             <PitchSettingsView settings={this.props.settings} />
-            <StatisticsView statisticService={this.props.statisticService} />
+            <PitchStatisticView statisticService={this.props.statisticService} />
           </div>
           <audio ref="successPlayer" hidden="true" src={successMp3Url} controls preload="auto" autobuffer />
         </div>

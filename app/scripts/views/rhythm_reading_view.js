@@ -10,6 +10,7 @@ import AnalyticsService from "../services/analytics_service.js";
 import StaveRenderer from "./stave_renderer.js";
 import GameButton from "./game_button.js";
 import RhythmSettingsView from "./rhythm_settings_view.js";
+import RhythmStatisticView from "./rhythm_statistic_view.js";
 import BeatVisualization from "./beat_visualization.js";
 
 const keyup = "keyup";
@@ -25,6 +26,7 @@ export default class RhythmReadingView extends Component {
 
   propTypes: {
     settings: React.PropTypes.object.isRequired,
+    statisticService: React.PropTypes.object.isRequired
   }
 
   constructor(props, context) {
@@ -77,7 +79,8 @@ export default class RhythmReadingView extends Component {
           });
 
           if (beatIndex === beatAmount) {
-            const barDuration = this.props.settings.barDuration;
+            const settings = this.props.settings;
+            const barDuration = settings.barDuration;
             const expectedTimes = RhythmChecker.convertDurationsToTimes(
               this.state.currentRhythm.durations,
               barDuration
@@ -87,12 +90,20 @@ export default class RhythmReadingView extends Component {
             const result = RhythmChecker.compare(
               expectedTimes,
               this.beatHistory,
-              this.props.settings
+              settings
             );
 
             this.setState({
               phase: Phases.feedback,
               result: result
+            });
+
+            this.props.statisticService.register({
+              success: result.success,
+              durations: this.state.currentRhythm.durations,
+              barDuration,
+              liveBeatBars: settings.liveBeatBars,
+              labelBeats: settings.labelBeats,
             });
 
             AnalyticsService.sendEvent('RhythmReading-Result', result.success);
@@ -328,6 +339,7 @@ export default class RhythmReadingView extends Component {
           </div>
           <div className="col-lg-4 col-md-12 col-sm-12 col-xs-12 rightColumn">
             <RhythmSettingsView settings={this.props.settings} />
+            <RhythmStatisticView statisticService={this.props.statisticService} />
           </div>
         </div>
       </div>

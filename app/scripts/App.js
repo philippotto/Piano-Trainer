@@ -7,7 +7,8 @@ import PitchReadingView from "./views/pitch_reading_view";
 import RhythmReadingView from "./views/rhythm_reading_view";
 import PrivacyPolicyModal from "./views/privacy_policy_modal";
 import NewsletterForm from "./views/newsletter_form";
-import StatisticService from "./services/statistic_service.js";
+import PitchStatisticService from "./services/pitch_statistic_service.js";
+import RhythmStatisticService from "./services/rhythm_statistic_service.js";
 import AnalyticsService from "./services/analytics_service.js";
 import AppFreezer from "./AppFreezer.js";
 import { Nav, NavItem, Button, Input } from 'react-bootstrap';
@@ -38,11 +39,12 @@ export default class App extends Component {
 
     const activeGame = this.state.activeGame === "pitch" ?
       <PitchReadingView
-       statisticService={StatisticService}
+       statisticService={PitchStatisticService}
        settings={appState.settings.pitchReading}
        key="pitch_game"
       /> :
       <RhythmReadingView
+       statisticService={RhythmStatisticService}
        settings={appState.settings.rhythmReading}
        key="rhythm_game"
       />;
@@ -84,7 +86,10 @@ export default class App extends Component {
               </div>
               <div className="row">
                 <div className="col-md-12 col-xs-12">
-                  <p>Be first to find out when Sheet Music Tutor gets new features.</p>
+                  <p>
+                    Sheet Music Tutor is still under heavy development.
+                    Be first to find out when it gets updates.
+                  </p>
                   </div>
               </div>
               <NewsletterForm />
@@ -97,7 +102,9 @@ export default class App extends Component {
               </div>
               <div className="row">
                 <div className="col-md-12 col-xs-12">
-                  <p>Follow us on social media to stay up to date on new features.</p>
+                  <p>
+                    Follow us on social media to stay up to date on new features or to give us feedback.
+                  </p>
                   </div>
               </div>
               <div className="row">

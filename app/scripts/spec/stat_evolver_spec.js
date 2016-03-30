@@ -7,7 +7,7 @@ describe("StatEvolver", function () {
     StatisticService.transformDate(JSON.parse(`{
       "success":true,
       "keys":["f/4","e/3","b/3","d/3"],
-      "time":14622,
+      "time": 14622,
       "date":"2016-03-01T23:59:04.462Z",
       "formattedDate":"2016-02-01"
     }`)),

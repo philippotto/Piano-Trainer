@@ -1,7 +1,9 @@
 import _ from "lodash";
 import StatEvolver from "../services/stat_evolver.js";
 
-class StatisticService {
+const localStoragePitchStatsKey = "pianoTrainerStatistics";
+
+class PitchStatisticService {
 
   constructor() {
     this.read();
@@ -24,7 +26,7 @@ class StatisticService {
   }
 
   read() {
-    this.stats = localStorage.getItem("pianoTrainerStatistics");
+    this.stats = localStorage.getItem(localStoragePitchStatsKey);
 
     if (this.stats) {
       this.stats = JSON.parse(this.stats)
@@ -42,7 +44,7 @@ class StatisticService {
   }
 
   save() {
-    return localStorage.setItem("pianoTrainerStatistics", JSON.stringify(this.stats));
+    return localStorage.setItem(localStoragePitchStatsKey, JSON.stringify(this.stats));
   }
 
 
@@ -58,18 +60,8 @@ class StatisticService {
       .slice(-n);
   }
 
-
-  computeSum(array) {
-    return _.reduce(
-      array,
-      (a, b) => a + b,
-      0
-    );
-  }
-
-
   computeAverage(array) {
-    return this.computeSum(array) / (array.length || 1);
+    return _.sum(array) / (array.length || 1);
   }
 
 
@@ -110,7 +102,7 @@ class StatisticService {
     }).map((aDay, formattedDate) => {
       const dayTimes = aDay.map((el) => el.time);
       aDay.averageTime = this.computeAverage(dayTimes);
-      aDay.totalTime = this.computeSum(dayTimes);
+      aDay.totalTime = _.sum(dayTimes);
       aDay.formattedDate = formattedDate;
       return aDay;
     }).sortBy("formattedDate").reverse().value();
@@ -123,4 +115,4 @@ class StatisticService {
 }
 
 
-export default new StatisticService();
+export default new PitchStatisticService();

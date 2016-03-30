@@ -2,7 +2,7 @@ import Chartist from "Chartist";
 import React, {Component} from "react";
 import { Tooltip, OverlayTrigger } from 'react-bootstrap';
 
-export default class StatisticsView extends Component {
+export default class PitchStatisticView extends Component {
 
   propTypes: {
     statisticService: React.PropTypes.object.isRequired,
