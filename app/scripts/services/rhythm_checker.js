@@ -64,7 +64,8 @@ export default {
         console.warn(expectedTimes[i][0], "-", givenTimes[i][0], " = ", startDiff);
         correct = false;
       }
-      if (Math.abs(endDiff) > offTolerance) {
+      // positive time -> released too early -> be a bit more tolerant
+      if (endDiff > offTolerance || endDiff < -1 * onTolerance) {
         console.warn(expectedTimes[i][1], "-", givenTimes[i][1], " = ", endDiff);
         correct = false;
       }
