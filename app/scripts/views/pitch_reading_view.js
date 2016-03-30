@@ -4,6 +4,7 @@ import _ from "lodash";
 
 import StatisticsView from "../views/statistics_view.js";
 import PitchSettingsView from "../views/pitch_settings_view.js";
+import AnalyticsService from "../services/analytics_service.js";
 import MidiService from "../services/midi_service.js";
 import BarGenerator from "../services/bar_generator.js";
 import StaveRenderer from "./stave_renderer.js";
@@ -117,11 +118,11 @@ export default class PitchReadingView extends Component {
                 <div className="message">
                   <h3 id="error-message">{this.state.errorMessage}</h3>
                   <h4>
-                    {"Have a look into the "}
+                    {"At the moment this training mode only works with a connected MIDI device. Have a look into the "}
                     <a href="https://github.com/philippotto/Piano-Trainer#how-to-use">
                       Set Up
                     </a>
-                    {" section."}
+                    {" section or try the rhythm training mode instead."}
                   </h4>
                 </div>
               </div>
@@ -193,6 +194,7 @@ export default class PitchReadingView extends Component {
     }
 
     this.playSuccessSound();
+    AnalyticsService.sendEvent('PitchReading', "success");
   }
 
 
@@ -208,6 +210,7 @@ export default class PitchReadingView extends Component {
       time: new Date() - this.startDate,
       keySignature: this.state.currentKeySignature,
     });
+    AnalyticsService.sendEvent('PitchReading', "failure");
   }
 
 

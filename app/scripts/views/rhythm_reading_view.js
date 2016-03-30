@@ -5,6 +5,7 @@ import _ from "lodash";
 import BarGenerator from "../services/bar_generator.js";
 import RhythmChecker from "../services/rhythm_checker.js";
 import MetronomeService from "../services/metronome_service.js";
+import AnalyticsService from "../services/analytics_service.js";
 
 import StaveRenderer from "./stave_renderer.js";
 import GameButton from "./game_button.js";
@@ -93,6 +94,8 @@ export default class RhythmReadingView extends Component {
               phase: Phases.feedback,
               result: result
             });
+
+            AnalyticsService.sendEvent('RhythmReading-Result', result.success);
           }
         },
         delay

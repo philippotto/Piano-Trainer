@@ -3,6 +3,7 @@ import RangeSettingComponent from "./range_setting_component";
 import SettingLine from "./setting_line";
 import KeyConverter from "../services/key_converter";
 import AppFreezer from "../AppFreezer.js";
+import AnalyticsService from "../services/analytics_service.js";
 import _ from "lodash";
 
 export default class PitchSettingsView extends Component {
@@ -25,6 +26,8 @@ export default class PitchSettingsView extends Component {
           [keys.slice(-1)[0]]: newValue
         });
       }
+
+      AnalyticsService.sendEvent('PitchReading-Settings', stateKey + " - " + JSON.stringify(newValue));
     };
   }
 
