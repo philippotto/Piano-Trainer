@@ -2,6 +2,8 @@ import Chartist from "Chartist";
 import React, {Component} from "react";
 import { Tooltip, OverlayTrigger } from 'react-bootstrap';
 
+import AnimatedNumber from "./animated_number.js";
+
 export default class RhythmStatisticView extends Component {
 
   propTypes: {
@@ -54,13 +56,12 @@ export default class RhythmStatisticView extends Component {
     return (
       <div className="graph-stats content-box">
         <div ref="chart" className="semi-transparent ct-chart ct-major-eleventh"></div>
-
         <div className="row around-xs">
           <div className="col-xs">
             <OverlayTrigger placement="top" overlay={<Tooltip id="avgTime">Your current score</Tooltip>}>
               <span className="stat-detail">
                 <i className="fa fa-star"></i>
-                { statistics.getCurrentScore() }
+                <AnimatedNumber number={statistics.getCurrentScore()} />
               </span>
             </OverlayTrigger>
           </div>
@@ -68,7 +69,7 @@ export default class RhythmStatisticView extends Component {
             <OverlayTrigger placement="top" overlay={<Tooltip id="avgTime">Total time you played rhythms</Tooltip>}>
               <span className="stat-detail">
                 <i className="fa fa-clock-o"></i>
-                { this.getHumanReadableTime(statistics.getTotalRhythmTime()) }
+                <AnimatedNumber number={statistics.getTotalRhythmTime()} formatter={this.getHumanReadableTime} />
               </span>
             </OverlayTrigger>
           </div>
@@ -76,16 +77,18 @@ export default class RhythmStatisticView extends Component {
             <OverlayTrigger placement="top" overlay={<Tooltip id="playedChordsAndNotes">Played bars / played beats</Tooltip>}>
               <span className="stat-detail">
                 <i className="fa fa-music"></i>
-                { statistics.getTotalAmountOfRhythms() } / { statistics.getTotalAmountOfBeats() }
+                <AnimatedNumber number={statistics.getTotalAmountOfRhythms()} />
+                /
+                <AnimatedNumber number={statistics.getTotalAmountOfBeats()} />
               </span>
             </OverlayTrigger>
-
           </div>
           <div className="col-xs">
             <OverlayTrigger placement="top" overlay={<Tooltip id="successRate">Success rate</Tooltip>}>
               <span className="stat-detail">
                 <i className="fa fa-trophy"></i>
-                { Math.round(statistics.getSuccessRate() * 100) } %
+                <AnimatedNumber number={statistics.getSuccessRate() * 100} />
+                %
               </span>
             </OverlayTrigger>
           </div>

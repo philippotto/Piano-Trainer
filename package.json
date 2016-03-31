@@ -24,6 +24,7 @@
     "react": "^0.14.5",
     "react-bootstrap": "^0.28.3",
     "react-dom": "^0.14.5",
+    "react-motion": "^0.4.2",
     "react-range-slider-bem": "^0.2.11",
     "vexflow": "^1.2.41"
   },

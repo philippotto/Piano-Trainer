@@ -2,6 +2,8 @@ import Chartist from "Chartist";
 import React, {Component} from "react";
 import { Tooltip, OverlayTrigger } from 'react-bootstrap';
 
+import AnimatedNumber from "./animated_number.js";
+
 export default class PitchStatisticView extends Component {
 
   propTypes: {
@@ -22,8 +24,10 @@ export default class PitchStatisticView extends Component {
           <div className="col-xs">
             <OverlayTrigger placement="top" overlay={<Tooltip id="avgTime">Average time</Tooltip>}>
               <span className="stat-detail">
-                  <i className="fa fa-clock-o"></i>
-                  { (statistics.getAverageTimeOfLast(100) / 1000).toFixed(2) }s
+                <i className="fa fa-clock-o"></i>
+                <AnimatedNumber
+                 number={statistics.getAverageTimeOfLast(100) / 1000}
+                 formatter={(el) => el.toFixed(2)} />
               </span>
             </OverlayTrigger>
           </div>
@@ -31,7 +35,9 @@ export default class PitchStatisticView extends Component {
             <OverlayTrigger placement="top" overlay={<Tooltip id="playedChordsAndNotes">Played chords / played notes</Tooltip>}>
               <span className="stat-detail">
                 <i className="fa fa-music"></i>
-                { statistics.getTotalAmountOfChords() } / { statistics.getTotalAmountOfKeys() }
+                <AnimatedNumber number={statistics.getTotalAmountOfChords()} />
+                 /
+                <AnimatedNumber number={statistics.getTotalAmountOfKeys()} />
               </span>
             </OverlayTrigger>
 
@@ -40,7 +46,8 @@ export default class PitchStatisticView extends Component {
             <OverlayTrigger placement="top" overlay={<Tooltip id="successRate">Success rate</Tooltip>}>
               <span className="stat-detail">
                 <i className="fa fa-trophy"></i>
-                { statistics.getSuccessRate().toFixed(2) * 100 } %
+                <AnimatedNumber number={statistics.getSuccessRate()} formatter={(el) => el.toFixed(2) * 100} />
+                %
               </span>
             </OverlayTrigger>
           </div>
