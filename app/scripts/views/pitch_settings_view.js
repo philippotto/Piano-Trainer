@@ -32,7 +32,8 @@ export default class PitchSettingsView extends Component {
   render() {
     const midiSettings = this.props.settings.midi;
     const midiInputs = midiSettings.inputs.get();
-    const deviceSelector = midiInputs.length <= 1 ?
+    const isMidiAvailable = midiInputs.length > 0;
+    const deviceSelector = !isMidiAvailable ?
       null :
       <SettingLine label="Midi device">
         <select
@@ -63,6 +64,7 @@ export default class PitchSettingsView extends Component {
           values={this.props.settings.chordSizeRanges.treble}
           onChange={this.buildStateChanger("chordSizeRanges.treble")}
           label={"Treble notes/chord"}
+          disabled={!isMidiAvailable}
         />
         <RangeSettingComponent
           rangeMin={1}
@@ -70,6 +72,7 @@ export default class PitchSettingsView extends Component {
           values={this.props.settings.chordSizeRanges.bass}
           onChange={this.buildStateChanger("chordSizeRanges.bass")}
           label={"Bass notes/chord"}
+          disabled={!isMidiAvailable}
         />
         <RangeSettingComponent
           rangeMin={0}
@@ -80,17 +83,17 @@ export default class PitchSettingsView extends Component {
           label={"Signature"}
         />
 
-        <SettingLine className="setting_checkbox" label="Accidentals:">
-          <input
-           type="checkbox"
-           checked={this.props.settings.useAccidentals}
-           id="accidental_checkbox"
-           name="check"
-           onChange={this.toggleAccidentalsCheckbox.bind(this)}
-          />
-          <label htmlFor="accidental_checkbox"></label>
-        </SettingLine>
       </div>
     );
+    // <SettingLine className="setting_checkbox" label="Accidentals:">
+    //   <input
+    //    type="checkbox"
+    //    checked={this.props.settings.useAccidentals}
+    //    id="accidental_checkbox"
+    //    name="check"
+    //    onChange={this.toggleAccidentalsCheckbox.bind(this)}
+    //   />
+    //   <label htmlFor="accidental_checkbox"></label>
+    // </SettingLine>
   }
 }

@@ -85,7 +85,7 @@ export default {
   },
 
   generateBars: function(settings) {
-    const isMidiAvailable = settings.midi.inputs.length > 0;
+    const isMidiAvailable = settings.midi.inputs.get().length > 0;
 
     const treble = this.generateBar("treble", settings, isMidiAvailable);
     const bass = this.generateBar("bass", settings, isMidiAvailable);

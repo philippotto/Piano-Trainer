@@ -150,6 +150,10 @@ const KeyConverter = {
     return keySignatures[value];
   },
 
+  rateKeySignatureDifficulty: function(keySignature) {
+    return keySignatureOffsets[keySignature].length + 1;
+  },
+
   getModifierTypeOfKeySignature: function (keySignature) {
     const index = keySignatures.indexOf(keySignature);
     if (index < 7) {

@@ -1,5 +1,6 @@
 import _ from "lodash";
 import StatEvolver from "../services/stat_evolver.js";
+import KeyConverter from "../services/key_converter.js";
 
 const localStoragePitchStatsKey = "pianoTrainerStatistics";
 
@@ -56,7 +57,8 @@ class PitchStatisticService {
     return Math.round([
       event.success ? 10 : -0.1,
       event.keys.length,
-      10e6 / Math.pow(event.time, 2)
+      10e6 / Math.pow(event.time, 2),
+      KeyConverter.rateKeySignatureDifficulty(event.keySignature)
     ].reduce((a, b) => a * b, 1));
   }
 

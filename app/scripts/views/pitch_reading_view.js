@@ -102,7 +102,7 @@ export default class PitchReadingView extends Component {
       "claviature-container": true
     });
 
-    const isMidiAvailable = this.props.settings.midi.inputs.length > 0;
+    const isMidiAvailable = this.props.settings.midi.inputs.get().length > 0;
     const miniClaviature = isMidiAvailable ? null : <ClaviatureView
      desiredKeys={this.getAllCurrentKeys()}
      keySignature={this.state.currentKeySignature}

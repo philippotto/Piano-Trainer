@@ -19,6 +19,7 @@ export default class SettingsView extends Component {
     onChange: PropTypes.func.isRequired,
     label: PropTypes.string,
     valueToString: PropTypes.func,
+    disabled: PropTypes.boolean,
   }
 
   constructor(props, context) {
@@ -44,6 +45,9 @@ export default class SettingsView extends Component {
   }
 
   onAfterChange() {
+    if (this.props.disabled) {
+      return;
+    }
     let newValues = this.state.values.map(this.quantitizeValue).map((el) => el / multiplier);
     this.props.onChange(newValues.length === 1 ? newValues[0] : newValues);
   }
@@ -78,6 +82,7 @@ export default class SettingsView extends Component {
            max={upscaledRangeMax}
            onChange={this.onChange.bind(this)}
            onAfterChange={this.onAfterChange.bind(this)}
+           disabled={this.props.disabled}
           />
         </div>
       </SettingLine>
