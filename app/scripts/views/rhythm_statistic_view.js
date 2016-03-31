@@ -41,6 +41,11 @@ export default class RhythmStatisticView extends Component {
   componentDidMount() {
     this.refreshFunction = this.forceUpdate.bind(this);
     this.props.statisticService.on("update", this.refreshFunction);
+    this.drawDiagram();
+  }
+
+  componentDidUpdate() {
+    this.drawDiagram();
   }
 
   componentWillUnmount() {
@@ -97,7 +102,7 @@ export default class RhythmStatisticView extends Component {
     );
   }
 
-  componentDidUpdate() {
+  drawDiagram() {
     const statistics = this.props.statisticService;
     const currentScore = statistics.getCurrentScore();
     const lastScores = statistics.getLastScores(100);

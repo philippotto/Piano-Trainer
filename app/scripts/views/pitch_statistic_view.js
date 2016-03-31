@@ -40,7 +40,6 @@ export default class PitchStatisticView extends Component {
                 <AnimatedNumber number={statistics.getTotalAmountOfKeys()} />
               </span>
             </OverlayTrigger>
-
           </div>
           <div className="col-xs">
             <OverlayTrigger placement="top" overlay={<Tooltip id="successRate">Success rate</Tooltip>}>
