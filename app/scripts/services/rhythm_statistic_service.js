@@ -6,6 +6,19 @@ class RhythmStatisticService {
 
   constructor() {
     this.read();
+    this.callbacks = [];
+  }
+
+  on(event, callback) {
+    this.callbacks.push(callback);
+  }
+
+  off(event, callback) {
+    if (callback) {
+      this.callbacks = this.callbacks.filter((el) => el != callback)
+    } else {
+      this.callbacks = [];
+    }
   }
 
   register(evt) {
@@ -22,7 +35,9 @@ class RhythmStatisticService {
     evt.date = new Date();
 
     this.stats.push(evt);
-    return this.save();
+    this.save();
+
+    this.callbacks.forEach((cb) => cb());
   }
 
   read() {

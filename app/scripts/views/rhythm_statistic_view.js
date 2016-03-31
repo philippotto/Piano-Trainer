@@ -36,6 +36,15 @@ export default class RhythmStatisticView extends Component {
      .join(" ");
   }
 
+  componentDidMount() {
+    this.refreshFunction = this.forceUpdate.bind(this);
+    this.props.statisticService.on("update", this.refreshFunction);
+  }
+
+  componentWillUnmount() {
+    this.props.statisticService.off("update", this.refreshFunction);
+  }
+
   render() {
     const statistics = this.props.statisticService;
     if (statistics.getSuccessCount() === 0) {
