@@ -140,8 +140,13 @@ export default class RhythmReadingView extends Component {
       if (event.keyCode !== spaceCode && event.type.indexOf("touch") === -1) {
         return;
       }
-      if (this.state.phase === Phases.running) {
+      if (event.keyCode === spaceCode) {
+        // Always prevent scrolling by space-button (avoids annoying scrolling
+        // when the user keeps pressing the space button into the feedback
+        // phase.
         event.preventDefault();
+      }
+      if (this.state.phase === Phases.running) {
         // ignore consecutive events of the same type
         if (lastSpaceEvent === eventType) {
           return;
@@ -179,6 +184,15 @@ export default class RhythmReadingView extends Component {
       document.addEventListener(eventType, this.keyHandlers[eventType]);
       document.addEventListener(eventType === keydown ? "touchstart" : "touchend", this.keyHandlers[eventType]);
     });
+
+    this.keyHandlers.contextmenu = (event) => {
+      if (this.state.phase === Phases.running) {
+        // Circumvent long taps triggering a context menu.
+        event.preventDefault();
+      }
+    };
+
+    document.addEventListener("contextmenu", this.keyHandlers.contextmenu);
   }
 
   componentWillUnmount() {
@@ -186,6 +200,7 @@ export default class RhythmReadingView extends Component {
       document.removeEventListener(eventType, this.keyHandlers[eventType]);
       document.removeEventListener(eventType === keydown ? "touchstart" : "touchend", this.keyHandlers[eventType]);
     });
+    document.removeEventListener("contextmenu", this.keyHandlers.contextmenu);
   }
 
   repeatBar() {
