@@ -6,6 +6,15 @@ function getBaseNotes() {
   return "cdefgab".split("");
 }
 
+const options = {
+  chordsPerBar: 4,
+  levels: {
+    bass: [2, 3],
+    treble: [4, 5]
+  },
+  maximumInterval: 12
+};
+
 export default {
 
   generateKeySignature: function(settings) {
@@ -76,22 +85,39 @@ export default {
   },
 
   generateBars: function(settings) {
-    return {
-      treble: this.generateBar("treble", settings),
-      bass: this.generateBar("bass", settings)
-    };
+    const isMidiAvailable = settings.midi.inputs.length > 0;
+
+    const treble = this.generateBar("treble", settings, isMidiAvailable);
+    const bass = this.generateBar("bass", settings, isMidiAvailable);
+
+    if (!isMidiAvailable) {
+      // Only present either one treble note OR one bass note at a time.
+      // Just replace the current treble OR bass note with a rest for each beat.
+      _.range(0, options.chordsPerBar).map((chordIndex) => {
+        const clefs = ["treble", "bass"];
+        // clefIndex denotes the clef in which the note is replaced by a rest.
+        const clefIndex = _.sample([0, 1]);
+
+        const rest = new Vex.Flow.StaveNote({
+          clef: clefs[clefIndex],
+          keys: [clefIndex === 0 ? "a/4" : "c/3"],
+          duration: `${options.chordsPerBar}r`
+        });
+
+        [treble, bass][clefIndex][chordIndex] = rest;
+      });
+    }
+
+    return {treble, bass};
   },
 
-  generateBar: function(clef, settings) {
-    const chordSizeRanges = settings.chordSizeRanges;
-    const options = {
-      chordsPerBar: 4,
-      levels: {
-        bass: [2, 3],
-        treble: [4, 5]
-      },
-      maximumInterval: 12
-    };
+  generateBar: function(clef, settings, isMidiAvailable) {
+    const chordSizeRanges = isMidiAvailable ?
+      settings.chordSizeRanges :
+      {
+        treble: [1, 1],
+        bass: [1, 1],
+      };
 
     const baseModifiers = settings.useAccidentals ?
       _.flatten([_.times(8, _.constant("")), "b", "#"])

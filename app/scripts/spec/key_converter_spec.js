@@ -15,6 +15,9 @@ describe("KeyConverter", function () {
 
     const numberF7Sharp = KeyConverter.getKeyNumberForKeyString("f/7", "G");
     expect(numberF7Sharp).toBe(102);
+
+    const numberB3 = KeyConverter.getKeyNumberForKeyString("b/3", "Cb");
+    expect(numberB3).toBe(58);
   });
 
   it("gets key strings for a number", function () {

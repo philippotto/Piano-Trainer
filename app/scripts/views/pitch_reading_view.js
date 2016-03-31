@@ -8,6 +8,7 @@ import AnalyticsService from "../services/analytics_service.js";
 import MidiService from "../services/midi_service.js";
 import BarGenerator from "../services/bar_generator.js";
 import StaveRenderer from "./stave_renderer.js";
+import ClaviatureView from "./claviature_view";
 
 const successMp3Url = require("file!../../resources/success.mp3");
 
@@ -96,11 +97,18 @@ export default class PitchReadingView extends Component {
   }
 
   render() {
-    const messageContainerStyle = classNames({
+    const claviatureContainerClasses = classNames({
       "content-box": true,
-      "message-container": true,
-      hide: this.state.errorMessage === null
+      "claviature-container": true
     });
+
+    const isMidiAvailable = this.props.settings.midi.inputs.length > 0;
+    const miniClaviature = isMidiAvailable ? null : <ClaviatureView
+     desiredKeys={this.getAllCurrentKeys()}
+     keySignature={this.state.currentKeySignature}
+     successCallback={this.onSuccess.bind(this)}
+     failureCallback={this.onFailure.bind(this)}
+    />;
 
     return (
       <div className="trainer">
@@ -114,16 +122,25 @@ export default class PitchReadingView extends Component {
                   keySignature={this.state.currentKeySignature}
                 />
               </div>
-              <div className={messageContainerStyle}>
-                <div className="message">
-                  <h3 id="error-message">{this.state.errorMessage}</h3>
-                  <h4>
-                    {"At the moment this training mode only works with a connected MIDI device. Have a look into the "}
+              <div className={claviatureContainerClasses}>
+                {miniClaviature}
+                <div className={classNames({
+                  message: true,
+                  hide: this.state.errorMessage === null
+                })}>
+                  <h3>{this.state.errorMessage}</h3>
+                  <p>
+                    {`
+                      This training mode works best with a connected MIDI device.
+                      Since we can't find one, you can use the mini claviature above instead.
+                      The generated notes will be rather simple so that you play only one note at a time.
+                      If you want to practice chords, have a look into the
+                    `}
                     <a href="https://github.com/philippotto/Piano-Trainer#how-to-use">
                       Set Up
                     </a>
-                    {" section or try the rhythm training mode instead."}
-                  </h4>
+                    {" section to hook up your digital piano."}
+                  </p>
                 </div>
               </div>
             </div>
@@ -156,9 +173,11 @@ export default class PitchReadingView extends Component {
 
 
   getAllCurrentKeys() {
-    return _.flatten(["treble", "bass"].map((clef) =>
-      this.state.currentKeys[clef][this.state.currentChordIndex].getKeys()
-    ));
+    return _.compact(_.flatten(["treble", "bass"].map((clef) => {
+      const note = this.state.currentKeys[clef][this.state.currentChordIndex];
+      // Ignore rests
+      return note.noteType !== "r" ? note.getKeys() : null;
+    })));
   }
 
 
@@ -177,7 +196,7 @@ export default class PitchReadingView extends Component {
       this.onErrorResolve();
     } else {
       this.onError("Since you took more than " + timeThreshold / 1000 +
-        ` seconds, we ignored this event to avoid dragging down your statistics.
+        ` seconds, we ignored this chord to avoid dragging down your statistics.
          Hopefully, you just made a break in between :)`
       );
     }

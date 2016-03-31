@@ -1,0 +1,75 @@
+.scale {
+  position: relative;
+  ol {
+    padding: 0;
+  }
+
+  li {
+    top: 0px;
+    z-index: 1;
+    font-size: 1.5rem;
+    background: linear-gradient(to bottom, #F3F3F3, #f0f0f0 10%, #FBFAFA);
+    transition: all 0.1s ease-in-out;
+    margin: 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    padding: 160px 15px 50px;
+    border-radius: 0 0 5px 5px;
+    box-shadow: 0 3px 3px rgba(170, 170, 170, 0.50);
+    position: relative;
+    cursor: pointer;
+    color: transparent;
+    &:hover {
+      color: #171C1A;
+    }
+
+    &:active{
+      box-shadow: 0 0 0 rgb(0, 0, 0, 0);
+      top: 3px;
+      color: #333;
+    }
+  }
+
+  li.black-note {
+    z-index: 2;
+    position: absolute;
+    width: 32px;
+    top: 0px;
+    margin-left: -16px;
+    padding: 80px 0px 10px;
+    text-align: center;
+    font-size: 1.5rem;
+    color: transparent;
+    border-radius: 0 0 2px 2px;
+    border-width: 0 6px 12px;
+    border-color: #000;
+    border-bottom-color: #424546;
+    background: #171C1A;
+    &:hover {
+      color: #faf0e6;
+    }
+    &:active {
+      border-bottom-width: 8px;
+      padding-top: 85px;
+      color: white;
+    }
+  }
+
+  li:active {
+    // by default all keys are wrong which is shown when clicked
+    background: linear-gradient(to bottom, #B50C0C, #D81313 10%, #D20909);
+    &.black-note {
+      border-color: #790C0C;
+      border-bottom-color: #5A0202;
+    }
+  }
+  li.green:active {
+    color: white;
+    background: linear-gradient(to bottom, #158C0D, #2DAD3D 10%, #09A915);
+    &.black-note {
+      border-color: #18790C;
+      border-bottom-color: #025A1D;
+    }
+  }
+
+}

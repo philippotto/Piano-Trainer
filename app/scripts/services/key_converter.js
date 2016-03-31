@@ -1,6 +1,27 @@
 import _ from "lodash";
 
 const scaleIntervals = [0, 2, 2, 1, 2, 2, 2];
+
+// TODO: generate this
+const keySignatureOffsets = {
+  "C#": ['f', 'c', 'g', 'd', 'a', 'e', 'b'],
+  "F#": ['f', 'c', 'g', 'd', 'a', 'e'],
+  "B":  ['f', 'c', 'g', 'd', 'a'],
+  "E":  ['f', 'c', 'g', 'd'],
+  "A":  ['f', 'c', 'g'],
+  "D":  ['f', 'c'],
+  "G":  ['f'],
+  "C":  [],
+  "F":  ['b'],
+  "Bb": ['b', 'e'],
+  "Eb": ['b', 'e', 'a'],
+  "Ab": ['b', 'e', 'a', 'd'],
+  "Db": ['b', 'e', 'a', 'd', 'g'],
+  "Gb": ['b', 'e', 'a', 'd', 'g', 'c'],
+  "Cb": ['b', 'e', 'a', 'd', 'g', 'c', 'f']
+};
+
+
 const keySignatures = ["C#", "F#", "B", "E", "A", "D", "G", "C", "F", "Bb", "Eb", "Ab", "Db", "Gb", "Cb"];
 const octaveNotes = [
   "c", "c#", "d", "d#", "e", "f", "f#", "g", "g#", "a", "a#", "b"
@@ -47,20 +68,21 @@ const KeyConverter = {
     return parseInt(_.findKey(keyMap, (key) => key === keyString), 10);
   },
 
+  getCanonicalKeySignature: function(keySignature) {
+    const keyString = keySignature.toLowerCase() + "/1";
+    const canonicalKeyString = KeyConverter.getCanonicalKeyString(keyString)
+    return KeyConverter.getNoteFromKeyString(canonicalKeyString).toUpperCase();
+  },
 
   getKeyNumberForKeyString: function (keyString, keySignature) {
     keyString = KeyConverter.getCanonicalKeyString(keyString);
     const keyNumber = KeyConverter.getKeyNumberForCanonicalKeyString(keyString);
 
     if (keySignature !== "C") {
-      // find out whether keyNumber is affected by keySignature
-      // if yes, increment/decrement it accordingly
-      const scaleNotes = KeyConverter.getScaleKeysForBase(keySignature.toLowerCase() + "/1").map((el) => {
-        const elAsKeyString = KeyConverter.getKeyStringForKeyNumber(el);
-        return KeyConverter.getNoteFromKeyString(elAsKeyString);
-      });
       const note = KeyConverter.getNoteFromKeyString(keyString);
-      if (scaleNotes.indexOf(note) === -1) {
+      const affectedBySignature = keySignatureOffsets[keySignature].indexOf(note) > -1;
+
+      if (affectedBySignature) {
         const modifierType = KeyConverter.getModifierTypeOfKeySignature(keySignature);
         let offset = 0;
         if (modifierType === "#") {

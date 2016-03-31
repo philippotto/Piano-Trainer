@@ -5,6 +5,8 @@
 @import (less) "./checkbox.css";
 @import (less) "./chartist_modifications.less";
 @import (less) "./beat_visualization.less";
+@import (less) "./claviature.less";
+
 
 @import url(http://fonts.googleapis.com/css?family=Poiret+One);
 @import url(http://fonts.googleapis.com/css?family=Droid+Sans:400);
@@ -182,8 +184,8 @@ h1 {
   overflow: hidden;
 }
 
-.message-container {
-  padding: 5px;
+.claviature-container {
+  padding: 0 5px 5px 5px;
   margin-bottom: 3rem;
 }
 
@@ -288,4 +290,14 @@ li.modeNavItem.active a:focus, li.modeNavItem.active a {
 .row {
   width: 99%;
   margin-left: 0.5%;
+}
+
+
+.noselect {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
