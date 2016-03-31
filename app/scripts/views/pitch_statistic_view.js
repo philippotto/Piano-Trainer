@@ -22,6 +22,14 @@ export default class PitchStatisticView extends Component {
 
         <div className="row around-xs">
           <div className="col-xs">
+            <OverlayTrigger placement="top" overlay={<Tooltip id="avgTime">Your current score</Tooltip>}>
+              <span className="stat-detail">
+                <i className="fa fa-star"></i>
+                <AnimatedNumber number={statistics.getCurrentScore()} />
+              </span>
+            </OverlayTrigger>
+          </div>
+          <div className="col-xs">
             <OverlayTrigger placement="top" overlay={<Tooltip id="avgTime">Average time</Tooltip>}>
               <span className="stat-detail">
                 <i className="fa fa-clock-o"></i>

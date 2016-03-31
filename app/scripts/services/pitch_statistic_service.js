@@ -52,6 +52,17 @@ class PitchStatisticService {
     return _(this.stats).filter((el) => el.success).value().length;
   }
 
+  rateEvent(event) {
+    return Math.round([
+      event.success ? 10 : -0.1,
+      event.keys.length,
+      10e6 / Math.pow(event.time, 2)
+    ].reduce((a, b) => a * b, 1));
+  }
+
+  getCurrentScore() {
+    return _.sum(this.stats.map(this.rateEvent));
+  }
 
   getLastTimes(n = 10) {
     return this.stats

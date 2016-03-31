@@ -108,7 +108,7 @@ class RhythmStatisticService {
     return Math.round([
       event.success ? 10 : 1,
       _.sum(event.durations.map((el) => Math.abs(el))),
-      10e5 / (event.barDuration * event.barDuration),
+      10e5 / Math.pow(event.barDuration, 2),
       event.liveBeatBars ? 0.5 : 1,
       event.liveBeatBars && event.labelBeats ? 0.5 : 1
     ].reduce((a, b) => a * b, 1));
