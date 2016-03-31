@@ -1,4 +1,4 @@
-import StatisticService from "../services/statistic_service.js";
+import StatisticService from "../services/pitch_statistic_service.js";
 import StatEvolver from "../services/stat_evolver.js";
 
 describe("StatEvolver", function () {
