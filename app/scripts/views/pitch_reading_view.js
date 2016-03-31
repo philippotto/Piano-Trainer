@@ -11,6 +11,7 @@ import StaveRenderer from "./stave_renderer.js";
 import ClaviatureView from "./claviature_view";
 
 const successMp3Url = require("file!../../resources/success.mp3");
+const timeoutThreshold = 30000;
 
 export default class PitchReadingView extends Component {
 
@@ -92,6 +93,7 @@ export default class PitchReadingView extends Component {
     super(props, context);
     this.state = {
       errorMessage: null,
+      tookTooLong: false,
       ...(this.generateNewBarState())
     };
   }
@@ -124,6 +126,13 @@ export default class PitchReadingView extends Component {
               </div>
               <div className={claviatureContainerClasses}>
                 {miniClaviature}
+                <div className={classNames({
+                  message: true,
+                  hide: !this.state.tookTooLong
+                })}>
+                  Since you took more than {timeoutThreshold / 1000} seconds, we ignored this chord to avoid dragging down your statistics.
+                  Hopefully, you just made a break in between :)
+                </div>
                 <div className={classNames({
                   message: true,
                   hide: this.state.errorMessage === null
@@ -189,17 +198,12 @@ export default class PitchReadingView extends Component {
       time: new Date() - this.startDate,
     };
 
-    const timeThreshold = 30000;
-
-    if (event.time <= timeThreshold) {
+    const tookTooLong = event.time > timeoutThreshold;
+    if (!tookTooLong) {
       this.props.statisticService.register(event);
       this.onErrorResolve();
-    } else {
-      this.onError("Since you took more than " + timeThreshold / 1000 +
-        ` seconds, we ignored this chord to avoid dragging down your statistics.
-         Hopefully, you just made a break in between :)`
-      );
     }
+    this.setState({tookTooLong});
 
     if (this.state.currentChordIndex + 1 >= this.state.currentKeys.treble.length) {
       this.setState({
@@ -223,12 +227,16 @@ export default class PitchReadingView extends Component {
 
 
   onFailure() {
-    this.props.statisticService.register({
-      success: false,
-      keys: this.getAllCurrentKeys(),
-      time: new Date() - this.startDate,
-      keySignature: this.state.currentKeySignature,
-    });
+    const tookTooLong = event.time > timeoutThreshold;
+    if (!tookTooLong) {
+      this.props.statisticService.register({
+        success: false,
+        keys: this.getAllCurrentKeys(),
+        time: new Date() - this.startDate,
+        keySignature: this.state.currentKeySignature,
+      });
+    }
+    this.setState({tookTooLong});
     AnalyticsService.sendEvent('PitchReading', "failure");
   }
 

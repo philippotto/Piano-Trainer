@@ -245,6 +245,7 @@ export default class RhythmReadingView extends Component {
       <p>
          When you start the training, we will count in for 4 beats and afterwards
          you can tap the given rhythm (either use your 'space' button or your touchscreen).
+         Make sure your speakers are on so that you can hear the metronome.
         </p>
     </div>;
 
