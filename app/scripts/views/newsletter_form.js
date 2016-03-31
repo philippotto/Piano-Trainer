@@ -2,6 +2,16 @@ import React, {Component} from "react";
 import { Input } from 'react-bootstrap';
 
 export default class NewsLetterForm extends Component {
+
+  componentDidMount() {
+    // This avoids that global keyhandlers for keyboard navigation are triggered
+    // when email input is used.
+    const dontPropagate = (evt) => evt.stopPropagation();
+    this.refs.email.addEventListener("keypress", dontPropagate);
+    this.refs.email.addEventListener("keyup", dontPropagate);
+    this.refs.email.addEventListener("keydown", dontPropagate);
+  }
+
   render() {
     return (
       <div id="mc_embed_signup">
@@ -15,14 +25,17 @@ export default class NewsLetterForm extends Component {
           <div id="mc_embed_signup_scroll">
             <div className="row">
               <div className="col-md-8 col-xs-8">
-                <Input
-                  type="email"
-                  name="EMAIL"
-                  id="mce-EMAIL"
-                  placeholder="your@email.com"
-                  ref="input"
-                  groupClassName="group-class"
-                  labelClassName="label-class"/>
+                <div className="form-group group-class">
+                  <input
+                    type="email"
+                    name="EMAIL"
+                    id="mce-EMAIL"
+                    placeholder="your@email.com"
+                    ref="email"
+                    className="form-control"
+                    groupClassName="group-class"
+                    labelClassName="label-class"/>
+                </div>
               </div>
               <div className="col-md-4 col-xs-4">
                 <div id="mce-responses" className="clear">
