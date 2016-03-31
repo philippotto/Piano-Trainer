@@ -33,6 +33,13 @@
   transition: all 0.5s ease;
   margin-bottom: 25px;
   text-align: left;
+
+  // This is a workaround for numerical imprecisions which can cause an edge
+  // case in which the beat bars don't fit in one row.  Instead of wrapping them
+  // we force them to render in one row even if this means a overflow of a few
+  // pixels.
+  white-space: nowrap;
+  overflow: visible;
 }
 
 .beat-container.thin > div {
