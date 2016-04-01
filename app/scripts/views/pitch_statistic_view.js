@@ -76,6 +76,11 @@ export default class PitchStatisticView extends Component {
       axisX: {
         showGrid: false,
         showLabel: false
+      },
+      axisY: {
+        labelInterpolationFnc: function(value) {
+          return (value / 1000) + "s";
+        }
       }
     };
 

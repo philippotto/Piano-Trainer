@@ -126,6 +126,11 @@ export default class RhythmStatisticView extends Component {
       axisX: {
         showGrid: false,
         showLabel: false
+      },
+      axisY: {
+        labelInterpolationFnc: function(value) {
+          return value;
+        }
       }
     };
 
