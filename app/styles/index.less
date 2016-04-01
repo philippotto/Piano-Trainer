@@ -314,3 +314,34 @@ li.modeNavItem.active a:focus, li.modeNavItem.active a {
 .noPointerEvents {
   pointer-events: none;
 }
+
+.displayNone {
+  display: none;
+}
+
+
+
+.gameContainer {
+  white-space: nowrap;
+  overflow: hidden;
+  vertical-align: top;
+
+  .trainer {
+    vertical-align: top;
+    transition: margin-left 0.5s ease, max-height 0.5s ease;
+
+    display: inline-block;
+    white-space: initial;
+    max-height: 5000px;
+    width: 100%;
+  }
+
+  .trainerHidden1 {
+    margin-left: -100%;
+    max-height: 0px;
+  }
+  .trainerHidden2 {
+    margin-left: 100%;
+    max-height: 0px;
+  }
+}

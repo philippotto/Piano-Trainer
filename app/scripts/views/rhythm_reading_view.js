@@ -321,7 +321,7 @@ export default class RhythmReadingView extends Component {
       );
 
     return (
-      <div className="trainer">
+      <div>
         <div className="row center-lg center-md center-sm center-xs">
           <div className="col-lg col-md col-sm col-xs leftColumn">
             <div>

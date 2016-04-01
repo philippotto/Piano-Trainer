@@ -12,6 +12,7 @@ import RhythmStatisticService from "./services/rhythm_statistic_service.js";
 import AnalyticsService from "./services/analytics_service.js";
 import AppFreezer from "./AppFreezer.js";
 import { Nav, NavItem, Button, Input } from 'react-bootstrap';
+import classNames from 'classnames';
 
 const pianoBackgroundJpg = require("file!../images/piano-background.jpg");
 
@@ -37,19 +38,6 @@ export default class App extends Component {
   render() {
     const appState = AppFreezer.get();
 
-    const activeGame = this.state.activeGame === "pitch" ?
-      <PitchReadingView
-       statisticService={PitchStatisticService}
-       settings={appState.settings.pitchReading}
-       key="pitch_game"
-      /> :
-      <RhythmReadingView
-       statisticService={RhythmStatisticService}
-       settings={appState.settings.rhythmReading}
-       key="rhythm_game"
-      />;
-
-    // <div className="hr_gradient" />
     return (
       <div className="site">
         <div className="site-content">
@@ -72,7 +60,20 @@ export default class App extends Component {
           </div>
 
           <div className="gameContainer">
-            {activeGame}
+            <div className={classNames({trainer: true, "trainerHidden1": this.state.activeGame !== "pitch"})}>
+              <PitchReadingView
+               statisticService={PitchStatisticService}
+               settings={appState.settings.pitchReading}
+               key="pitch_game"
+              />
+            </div>
+            <div className={classNames({trainer: true, "trainerHidden2": this.state.activeGame === "pitch"})}>
+              <RhythmReadingView
+               statisticService={RhythmStatisticService}
+               settings={appState.settings.rhythmReading}
+               key="rhythm_game"
+              />
+            </div>
           </div>
         </div>
         <footer>

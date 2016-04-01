@@ -157,7 +157,7 @@ export default class PitchReadingView extends Component {
     };
 
     return (
-      <div className="trainer">
+      <div>
         <div className="row center-lg center-md center-sm center-xs">
           <div className="col-lg col-md col-sm col-xs leftColumn">
             <div>
@@ -170,7 +170,7 @@ export default class PitchReadingView extends Component {
 
                 <div className={classNames({
                   "row center-xs": true,
-                })} style={{marginTop: 20}}>
+                })}>
                   <div className="col-xs-12">
                     {welcomeText}
                     {startStopButton}
