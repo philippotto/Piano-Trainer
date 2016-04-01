@@ -41,11 +41,9 @@ export default class PitchStatisticView extends Component {
             </OverlayTrigger>
           </div>
           <div className="col-xs">
-            <OverlayTrigger placement="top" overlay={<Tooltip id="playedChordsAndNotes">Played chords / played notes</Tooltip>}>
+            <OverlayTrigger placement="top" overlay={<Tooltip id="playedChordsAndNotes">Played notes</Tooltip>}>
               <span className="stat-detail">
                 <i className="fa fa-music"></i>
-                <AnimatedNumber number={statistics.getTotalAmountOfChords()} />
-                 /
                 <AnimatedNumber number={statistics.getTotalAmountOfKeys()} />
               </span>
             </OverlayTrigger>
