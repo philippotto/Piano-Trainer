@@ -54,7 +54,7 @@ class PitchStatisticService {
   }
 
   rateEvent(event) {
-    return Math.round([
+    return 1 + Math.floor([
       event.success ? 10 : -0.1,
       event.keys.length,
       10e6 / Math.pow(event.time, 2),
