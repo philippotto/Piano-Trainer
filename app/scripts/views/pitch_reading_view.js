@@ -233,6 +233,7 @@ export default class PitchReadingView extends Component {
       keySignature: this.state.currentKeySignature,
       time: new Date() - this.startDate,
     };
+    this.startDate = new Date();
 
     this.props.statisticService.register(event);
     this.onErrorResolve();
