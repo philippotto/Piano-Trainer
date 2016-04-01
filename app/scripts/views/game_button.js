@@ -14,6 +14,9 @@ export default class GameButton extends Component {
 
   componentDidMount() {
     this.keyHandler = (event) => {
+      if (this.props.shortcutLetter === undefined) {
+        return;
+      }
       const isPrimaryAndEnter = this.props.primary && event.code === "Enter";
       const charCode = event.which || event.keyCode;
       const isShortcutLetter = String.fromCharCode(charCode) === this.props.shortcutLetter;
@@ -42,8 +45,8 @@ export default class GameButton extends Component {
       onClick={this.props.onClick}
       bsStyle={this.props.primary ? "success" : "default"}
       className="gameButton">
-      <span style={{fontSize: 18}}>{this.props.label}</span>
-      {subtext}
+      <span className="label">{this.props.label}</span>
+      <span className="subtext">{subtext}</span>
     </Button>;
   }
 }

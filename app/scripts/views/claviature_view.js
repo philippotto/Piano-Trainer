@@ -9,6 +9,7 @@ export default class ClaviatureView extends Component {
     keySignature: React.PropTypes.string,
     successCallback: React.PropTypes.func,
     failureCallback: React.PropTypes.func,
+    disabled: React.PropTypes.boolean,
   }
 
   constructor(props, context) {
@@ -75,7 +76,7 @@ export default class ClaviatureView extends Component {
       ["a#", "A# B♭", "black"],
       ["b", "B", "white"]
     ].map((args) => this.renderKey.apply(this, args));
-    return <div className="scale noselect">
+    return <div className={classNames({"scale noSelect": true, noPointerEvents: this.props.disabled})}>
       <ol>
         {keys}
       </ol>

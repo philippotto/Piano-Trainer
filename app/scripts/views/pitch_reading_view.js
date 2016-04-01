@@ -9,9 +9,9 @@ import MidiService from "../services/midi_service.js";
 import BarGenerator from "../services/bar_generator.js";
 import StaveRenderer from "./stave_renderer.js";
 import ClaviatureView from "./claviature_view";
+import GameButton from "./game_button.js";
 
 const successMp3Url = require("file!../../resources/success.mp3");
-const timeoutThreshold = 30000;
 
 export default class PitchReadingView extends Component {
 
@@ -93,9 +93,14 @@ export default class PitchReadingView extends Component {
     super(props, context);
     this.state = {
       errorMessage: null,
-      tookTooLong: false,
+      running: false,
       ...(this.generateNewBarState())
     };
+  }
+
+  startStopTraining() {
+    this.setState({running: !this.state.running});
+    this.startDate = new Date();
   }
 
   render() {
@@ -110,7 +115,46 @@ export default class PitchReadingView extends Component {
      keySignature={this.state.currentKeySignature}
      successCallback={this.onSuccess.bind(this)}
      failureCallback={this.onFailure.bind(this)}
+     disabled={!this.state.running}
     />;
+
+    const startStopButton = <GameButton
+      label={`${this.state.running ? "Stop" : "Start"} training`}
+      shortcutLetter='s'
+      primary
+      onClick={this.startStopTraining.bind(this)}
+    />;
+
+    const midiSetUpText = <p>
+      {`The generated notes will be so that you play only one note at a time.
+      If you want to practice chords, have a look into the `}
+      <a href="https://github.com/philippotto/Piano-Trainer#how-to-use">
+        Set Up
+      </a>
+      {" section to hook up your digital piano."}
+    </p>;
+
+    const welcomeText = this.state.running ? null : <div className={classNames({
+        welcomeText: true,
+      })}>
+      <h3>
+        Welcome to this pitch training!
+      </h3>
+      <p>
+         {"When you hit Start, notes will be displayed in the stave above. "}
+         {isMidiAvailable ?
+            "Since we found a connected piano, you can use it to play the notes. " :
+            "Just use the mini claviature below to play the notes. "
+         }
+         {"Don't worry about the rhythm or speed for now."}
+      </p>
+      {isMidiAvailable ? null : midiSetUpText}
+    </div>;
+
+    const emptyKeySet = {
+      treble: [],
+      bass: []
+    };
 
     return (
       <div className="trainer">
@@ -119,37 +163,27 @@ export default class PitchReadingView extends Component {
             <div>
               <div className="game-container content-box">
                 <StaveRenderer
-                  keys={this.state.currentKeys}
+                  keys={this.state.running ? this.state.currentKeys : emptyKeySet}
                   chordIndex={this.state.currentChordIndex}
                   keySignature={this.state.currentKeySignature}
                 />
+
+                <div className={classNames({
+                  "row center-xs": true,
+                })} style={{marginTop: 20}}>
+                  <div className="col-xs-12">
+                    {welcomeText}
+                    {startStopButton}
+                  </div>
+                </div>
               </div>
               <div className={claviatureContainerClasses}>
                 {miniClaviature}
                 <div className={classNames({
                   message: true,
-                  hide: !this.state.tookTooLong
-                })}>
-                  Since you took more than {timeoutThreshold / 1000} seconds, we ignored this chord to avoid dragging down your statistics.
-                  Hopefully, you just made a break in between :)
-                </div>
-                <div className={classNames({
-                  message: true,
                   hide: this.state.errorMessage === null
                 })}>
                   <h3>{this.state.errorMessage}</h3>
-                  <p>
-                    {`
-                      This training mode works best with a connected MIDI device.
-                      Since we can't find one, you can use the mini claviature above instead.
-                      The generated notes will be rather simple so that you play only one note at a time.
-                      If you want to practice chords, have a look into the
-                    `}
-                    <a href="https://github.com/philippotto/Piano-Trainer#how-to-use">
-                      Set Up
-                    </a>
-                    {" section to hook up your digital piano."}
-                  </p>
                 </div>
               </div>
             </div>
@@ -165,7 +199,6 @@ export default class PitchReadingView extends Component {
   }
 
   componentDidUpdate() {
-    this.startDate = new Date();
     this.midiService.setDesiredKeys(this.getAllCurrentKeys(), this.state.currentKeySignature);
   }
 
@@ -191,6 +224,9 @@ export default class PitchReadingView extends Component {
 
 
   onSuccess() {
+    if (!this.state.running) {
+      return;
+    }
     const event = {
       success: true,
       keys: this.getAllCurrentKeys(),
@@ -198,12 +234,8 @@ export default class PitchReadingView extends Component {
       time: new Date() - this.startDate,
     };
 
-    const tookTooLong = event.time > timeoutThreshold;
-    if (!tookTooLong) {
-      this.props.statisticService.register(event);
-      this.onErrorResolve();
-    }
-    this.setState({tookTooLong});
+    this.props.statisticService.register(event);
+    this.onErrorResolve();
 
     if (this.state.currentChordIndex + 1 >= this.state.currentKeys.treble.length) {
       this.setState({
@@ -227,18 +259,17 @@ export default class PitchReadingView extends Component {
 
 
   onFailure() {
-    const tookTooLong = event.time > timeoutThreshold;
-    if (!tookTooLong) {
-      this.props.statisticService.register({
-        success: false,
-        keys: this.getAllCurrentKeys(),
-        time: new Date() - this.startDate,
-        keySignature: this.state.currentKeySignature,
-      });
+    if (!this.state.running) {
+      return;
     }
-    this.setState({tookTooLong});
+
+    this.props.statisticService.register({
+      success: false,
+      keys: this.getAllCurrentKeys(),
+      time: new Date() - this.startDate,
+      keySignature: this.state.currentKeySignature,
+    });
     AnalyticsService.sendEvent('PitchReading', "failure");
   }
-
 
 }

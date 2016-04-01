@@ -268,6 +268,14 @@ li.modeNavItem.active a:focus, li.modeNavItem.active a {
     width: 80%;
     margin-bottom: 1rem;
   }
+  span.label {
+    font-size: 18px;
+  }
+  @media only screen and (max-height: 600px) {
+    span.subtext {
+      display: none;
+    }
+  }
 }
 
 .settingLine .settingUI {
@@ -294,11 +302,15 @@ li.modeNavItem.active a:focus, li.modeNavItem.active a {
 }
 
 
-.noselect {
+.noSelect {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+}
+
+.noPointerEvents {
+  pointer-events: none;
 }
