@@ -1,0 +1,27 @@
+.star-animation {
+  animation-duration: 1s;
+  animation-iteration-count: 1;
+  animation-timing-function: ease;
+}
+
+// define two different animation classes between which can be
+// changed alternatingly
+.star-animation-0 {
+  .star-animation;
+  animation-name: rotation-1;
+}
+
+.star-animation-1 {
+  .star-animation;
+  animation-name: rotation-2;
+}
+
+@keyframes rotation-1 {
+  from {transform: rotate(0deg); }
+  to {transform: rotate(360deg); }
+}
+
+@keyframes rotation-2 {
+  from {transform: rotate(0deg); }
+  to {transform: rotate(360deg); }
+}

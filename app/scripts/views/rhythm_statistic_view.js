@@ -3,6 +3,7 @@ import React, {Component} from "react";
 import { Tooltip, OverlayTrigger } from 'react-bootstrap';
 
 import AnimatedNumber from "./animated_number.js";
+import StarAnimation from "./star_animation.js";
 
 export default class RhythmStatisticView extends Component {
 
@@ -65,7 +66,7 @@ export default class RhythmStatisticView extends Component {
           <div className="col-xs">
             <OverlayTrigger placement="top" overlay={<Tooltip id="avgTime">Your current score</Tooltip>}>
               <span className="stat-detail">
-                <i className="fa fa-star"></i>
+                <StarAnimation number={statistics.getCurrentScore()} />
                 <AnimatedNumber number={statistics.getCurrentScore()} />
               </span>
             </OverlayTrigger>
