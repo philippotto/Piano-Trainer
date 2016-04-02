@@ -4,11 +4,17 @@ import { Tooltip, OverlayTrigger } from 'react-bootstrap';
 
 import AnimatedNumber from "./animated_number.js";
 import StarAnimation from "./star_animation.js";
+import PureRenderMixin from 'react-addons-pure-render-mixin';
 
 export default class RhythmStatisticView extends Component {
 
   propTypes: {
     statisticService: React.PropTypes.object.isRequired,
+  }
+
+  constructor(props) {
+    super(props);
+    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
   }
 
   getHumanReadableTime(milliseconds) {

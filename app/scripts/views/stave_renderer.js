@@ -2,6 +2,7 @@ import Vex from "vexflow";
 import React, {Component} from "react";
 import classNames from "classnames";
 import _ from "lodash";
+import PureRenderMixin from 'react-addons-pure-render-mixin';
 
 class StaveRenderer extends Component {
 
@@ -14,6 +15,11 @@ class StaveRenderer extends Component {
     chordIndex: React.PropTypes.number,
     keySignature: React.PropTypes.string,
     staveCount: React.PropTypes.number,
+  }
+
+  constructor(props) {
+    super(props);
+    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
   }
 
   render() {

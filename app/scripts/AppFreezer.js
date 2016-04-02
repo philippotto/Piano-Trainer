@@ -16,7 +16,7 @@ export default new Freezer({
     },
     rhythmReading: {
       barDuration: 3000,
-      labelBeats: false,
+      labelBeats: true,
       liveBeatBars: false,
       rests: true,
       restProbability: 0.2,
