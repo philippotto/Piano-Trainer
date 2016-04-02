@@ -9,6 +9,7 @@ export default class BeatVisualization extends Component {
 
   propTypes: {
     settings: React.PropTypes.object.isRequired,
+    barDuration: React.PropTypes.number.isRequired,
     currentRhythm: React.PropTypes.object.isRequired,
     beatHistory: React.PropTypes.object.isRequired,
     result: React.PropTypes.object.isRequired,
@@ -35,7 +36,7 @@ export default class BeatVisualization extends Component {
   };
 
   render() {
-    const barDuration = this.props.settings.barDuration;
+    const barDuration = this.props.barDuration;
     const conversionFactor = 100 / barDuration;
 
     const drawBeats = (beats, getColor, withBeatNames) => {

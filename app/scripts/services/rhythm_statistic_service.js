@@ -61,6 +61,9 @@ class RhythmStatisticService {
     return localStorage.setItem(localStorageRhythmStatsKey, JSON.stringify(this.stats));
   }
 
+  getLastBarDuration() {
+    return this.stats.slice(-1)[0].barDuration;
+  }
 
   getSuccessCount() {
     return _(this.stats).filter((el) => el.success).value().length;

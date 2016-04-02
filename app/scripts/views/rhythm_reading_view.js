@@ -93,17 +93,17 @@ export default class RhythmReadingView extends Component {
               settings
             );
 
-            this.setState({
-              phase: Phases.feedback,
-              result: result
-            });
-
             this.props.statisticService.register({
               success: result.success,
               durations: this.state.currentRhythm.durations,
               barDuration,
               liveBeatBars: settings.liveBeatBars,
               labelBeats: settings.labelBeats,
+            });
+
+            this.setState({
+              phase: Phases.feedback,
+              result: result
             });
 
             AnalyticsService.sendEvent('RhythmReading-Result', result.success);
@@ -278,6 +278,10 @@ export default class RhythmReadingView extends Component {
         <BeatVisualization
           currentRhythm={this.state.currentRhythm}
           settings={this.props.settings}
+          barDuration={this.state.phase === Phases.feedback ?
+            this.props.statisticService.getLastBarDuration() :
+            this.props.settings.barDuration
+          }
           beatHistory={this.beatHistory}
           result={this.state.result}
          />
