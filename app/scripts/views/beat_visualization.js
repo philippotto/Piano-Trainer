@@ -102,7 +102,8 @@ export default class BeatVisualization extends Component {
       thin: !this.props.settings.labelBeats
     });
 
-    return <div className={className}>
+    // uniqueId avoids that different beat bars are animated into each other
+    return <div key={_.uniqueId()} className={className}>
       <div className="expectedBeatBar">{expectedBeats}</div>
       <div className="actualBeatBar">{actualBeats}</div>
     </div>;

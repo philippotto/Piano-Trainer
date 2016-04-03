@@ -12,6 +12,7 @@ import GameButton from "./game_button.js";
 import RhythmSettingsView from "./rhythm_settings_view.js";
 import RhythmStatisticView from "./rhythm_statistic_view.js";
 import BeatVisualization from "./beat_visualization.js";
+import CollapsableContainer from "./collapsable_container.js";
 
 const keyup = "keyup";
 const keydown = "keydown";
@@ -234,27 +235,20 @@ export default class RhythmReadingView extends Component {
       hide: this.state.errorMessage === null
     });
 
-    const welcomeText = <div className={classNames({
-        welcomeText: true,
-        transition: true,
-        heightOut: this.state.phase !== Phases.welcome
-      })}>
-      <h3>
-        Welcome to this rhythm training!
-      </h3>
-      <p>
-         When you start the training, we will count in for 4 beats and afterwards
-         you can tap the given rhythm (either use your 'space' button or your touchscreen).
-         Make sure your speakers are on so that you can hear the metronome.
+    const welcomeText =
+      <CollapsableContainer collapsed={this.state.phase !== Phases.welcome}>
+        <h3>
+          Welcome to this rhythm training!
+        </h3>
+        <p>
+           When you start the training, we will count in for 4 beats and afterwards
+           you can tap the given rhythm (either use your 'space' button or your touchscreen).
+           Make sure your speakers are on so that you can hear the metronome.
         </p>
-    </div>;
+      </CollapsableContainer>;
 
     const feedbackSection =
-      <div className={classNames({
-        feedbackText: true,
-        transition: true,
-        heightOut: this.state.phase !== Phases.feedback
-      })}>
+      <CollapsableContainer collapsed={this.state.phase !== Phases.feedback}>
         <h2>
           {(this.state.result && this.state.result.success) ?
             "Yay! You nailed the rhythm!" :
@@ -264,17 +258,15 @@ export default class RhythmReadingView extends Component {
         <h4 style={{marginTop: 0}}>
         Have a look at your performance:
         </h4>
-      </div>;
+      </CollapsableContainer>;
 
     const beatBarSection =
-      <div className={classNames({
-        transition: true,
-        beatBarSection: true,
-        heightOut: !(
-          this.state.phase === Phases.feedback ||
-          (this.state.phase === Phases.running && this.props.settings.liveBeatBars)
-        )
-      })}>
+      <CollapsableContainer
+       freeze={true}
+       collapsed={!(
+         this.state.phase === Phases.feedback ||
+         (this.state.phase === Phases.running && this.props.settings.liveBeatBars)
+       )}>
         <BeatVisualization
           currentRhythm={this.state.currentRhythm}
           settings={this.props.settings}
@@ -285,19 +277,20 @@ export default class RhythmReadingView extends Component {
           beatHistory={this.beatHistory}
           result={this.state.result}
          />
-      </div>;
+      </CollapsableContainer>;
 
     console.log(this.state.currentRhythm.keys);
 
     const metronomeBeat =
-     <h2 className={classNames({
-      metronomeBeat: true,
-      transition: true,
-      heightOut: this.state.currentMetronomeBeat == -1,
-      opacityOut: (this.state.currentMetronomeBeat + 1) % 4 === 0
-     })}>
-      {this.state.currentMetronomeBeat + 1}
-    </h2>;
+     <CollapsableContainer
+      collapsed={this.state.currentMetronomeBeat == -1}
+      className={classNames({
+        opacityOut: (this.state.currentMetronomeBeat + 1) % 4 === 0
+      })}>
+       <h2>
+        {this.state.currentMetronomeBeat + 1}
+      </h2>
+    </CollapsableContainer>;
 
     const buttons =
       this.state.phase !== Phases.feedback ?
@@ -344,16 +337,13 @@ export default class RhythmReadingView extends Component {
                   {beatBarSection}
                 </div>
 
-                <div className={classNames({
-                  "row center-xs": true,
-                  transition: true,
-                  gameButtonBar: true,
-                  heightOut: this.state.phase === Phases.running
-                })} style={{marginTop: 20}}>
-                  <div className="col-xs-12">
-                    {buttons}
+                <CollapsableContainer collapsed={this.state.phase === Phases.running}>
+                  <div className="row center-xs" style={{marginTop: 20}}>
+                    <div className="col-xs-12">
+                      {buttons}
+                    </div>
                   </div>
-                </div>
+                </CollapsableContainer>
               </div>
             </div>
           </div>

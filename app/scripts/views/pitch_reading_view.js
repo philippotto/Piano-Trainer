@@ -10,6 +10,7 @@ import BarGenerator from "../services/bar_generator.js";
 import StaveRenderer from "./stave_renderer.js";
 import ClaviatureView from "./claviature_view";
 import GameButton from "./game_button.js";
+import CollapsableContainer from "./collapsable_container.js";
 
 const successMp3Url = require("file!../../resources/success.mp3");
 
@@ -134,22 +135,24 @@ export default class PitchReadingView extends Component {
       {" section to hook up your digital piano."}
     </p>;
 
-    const welcomeText = this.state.running ? null : <div className={classNames({
+    const welcomeText = <CollapsableContainer collapsed={this.state.running}>
+      <div className={classNames({
         welcomeText: true,
       })}>
-      <h3>
-        Welcome to this pitch training!
-      </h3>
-      <p>
-         {"When you hit Start, notes will be displayed in the stave above. "}
-         {isMidiAvailable ?
-            "Since we found a connected piano, you can use it to play the notes. " :
-            "Just use the mini claviature below to play the notes. "
-         }
-         {"Don't worry about the rhythm or speed for now."}
-      </p>
-      {isMidiAvailable ? null : midiSetUpText}
-    </div>;
+        <h3>
+          Welcome to this pitch training! {this.state.running + ""}
+        </h3>
+        <p>
+           {"When you hit Start, notes will be displayed in the stave above. "}
+           {isMidiAvailable ?
+              "Since we found a connected piano, you can use it to play the notes. " :
+              "Just use the mini claviature below to play the notes. "
+           }
+           {"Don't worry about the rhythm or speed for now."}
+        </p>
+        {isMidiAvailable ? null : midiSetUpText}
+      </div>
+    </CollapsableContainer>;
 
     const emptyKeySet = {
       treble: [],
