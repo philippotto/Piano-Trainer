@@ -19,6 +19,18 @@ export default class PitchReadingView extends Component {
   propTypes: {
     statisticService: React.PropTypes.object.isRequired,
     settings: React.PropTypes.object.isRequired,
+    isActive: React.PropTypes.bool.isRequired,
+  }
+
+
+  static childContextTypes = {
+    isInActiveView: React.PropTypes.bool
+  }
+
+  getChildContext() {
+    return {
+      isInActiveView: this.props.isActive
+    };
   }
 
   componentDidMount() {
@@ -160,7 +172,7 @@ export default class PitchReadingView extends Component {
     };
 
     return (
-      <div>
+      <div className={classNames({trainer: true, "trainerHidden1": !this.props.isActive})}>
         <div className="row center-lg center-md center-sm center-xs">
           <div className="col-lg col-md col-sm col-xs leftColumn">
             <div>

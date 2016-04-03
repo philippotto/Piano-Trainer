@@ -19,7 +19,7 @@ export default class SettingsView extends Component {
     onChange: PropTypes.func.isRequired,
     label: PropTypes.string,
     valueToString: PropTypes.func,
-    disabled: PropTypes.boolean,
+    disabled: PropTypes.bool,
   }
 
   constructor(props, context) {

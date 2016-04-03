@@ -9,7 +9,7 @@ export default class ClaviatureView extends Component {
     keySignature: React.PropTypes.string,
     successCallback: React.PropTypes.func,
     failureCallback: React.PropTypes.func,
-    disabled: React.PropTypes.boolean,
+    disabled: React.PropTypes.bool,
   }
 
   constructor(props, context) {

@@ -5,9 +5,9 @@ import _ from "lodash";
 export default class BeatVisualization extends Component {
 
   propTypes: {
-    collapsed: React.PropTypes.boolean.isRequired,
+    collapsed: React.PropTypes.bool.isRequired,
     maxHeight: React.PropTypes.number,
-    freeze: React.PropTypes.boolean,
+    freeze: React.PropTypes.bool,
     className: React.PropTypes.string,
   }
 

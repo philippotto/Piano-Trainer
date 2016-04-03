@@ -60,20 +60,18 @@ export default class App extends Component {
           </div>
 
           <div className="gameContainer">
-            <div className={classNames({trainer: true, "trainerHidden1": this.state.activeGame !== "pitch"})}>
-              <PitchReadingView
-               statisticService={PitchStatisticService}
-               settings={appState.settings.pitchReading}
-               key="pitch_game"
-              />
-            </div>
-            <div className={classNames({trainer: true, "trainerHidden2": this.state.activeGame === "pitch"})}>
-              <RhythmReadingView
-               statisticService={RhythmStatisticService}
-               settings={appState.settings.rhythmReading}
-               key="rhythm_game"
-              />
-            </div>
+            <PitchReadingView
+             statisticService={PitchStatisticService}
+             settings={appState.settings.pitchReading}
+             key="pitch_game"
+             isActive={this.state.activeGame === "pitch"}
+            />
+            <RhythmReadingView
+             statisticService={RhythmStatisticService}
+             settings={appState.settings.rhythmReading}
+             key="rhythm_game"
+             isActive={this.state.activeGame !== "pitch"}
+            />
           </div>
         </div>
         <footer>

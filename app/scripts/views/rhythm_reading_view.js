@@ -28,7 +28,8 @@ export default class RhythmReadingView extends Component {
 
   propTypes: {
     settings: React.PropTypes.object.isRequired,
-    statisticService: React.PropTypes.object.isRequired
+    statisticService: React.PropTypes.object.isRequired,
+    isActive: React.PropTypes.bool.isRequired,
   }
 
   constructor(props, context) {
@@ -41,6 +42,16 @@ export default class RhythmReadingView extends Component {
     };
     this.beatHistory = [];
     this.keyHandlers = {};
+  }
+
+  static childContextTypes = {
+    isInActiveView: React.PropTypes.bool
+  }
+
+  getChildContext() {
+    return {
+      isInActiveView: this.props.isActive
+    };
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -282,7 +293,7 @@ export default class RhythmReadingView extends Component {
       );
 
     return (
-      <div>
+      <div className={classNames({trainer: true, "trainerHidden2": !this.props.isActive})}>
         <div className="row center-lg center-md center-sm center-xs">
           <div className="col-lg col-md col-sm col-xs leftColumn">
             <div>
