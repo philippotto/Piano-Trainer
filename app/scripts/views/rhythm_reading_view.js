@@ -13,6 +13,7 @@ import RhythmSettingsView from "./rhythm_settings_view.js";
 import RhythmStatisticView from "./rhythm_statistic_view.js";
 import BeatVisualization from "./beat_visualization.js";
 import CollapsableContainer from "./collapsable_container.js";
+import MetronomeView from "./metronome_view.js";
 
 const keyup = "keyup";
 const keydown = "keydown";
@@ -36,7 +37,6 @@ export default class RhythmReadingView extends Component {
       errorMessage: null,
       result: null,
       currentRhythm: BarGenerator.generateEmptyRhythmBar(),
-      currentMetronomeBeat: -1,
       phase: Phases.welcome
     };
     this.beatHistory = [];
@@ -45,74 +45,41 @@ export default class RhythmReadingView extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (this.state.phase === Phases.running && prevState.phase !== Phases.running) {
-      this.playMetronome();
+      this.refs.metronome.playMetronome();
     } else {
       console.log("not running");
     }
   }
 
-  playMetronome() {
-    const beatLength = this.props.settings.barDuration / 4;
-    const delay = 100; // give the scheduler a bit of time to start the jam
-    const now = performance.now();
-    const startTime = now + delay;
-    console.log("startTime", startTime);
-    const beatAmount = 8;
-    const metronomeSoundLength = 180; // ms
-    // Not sure when exactly the metronome beat is anticipated by a human
-    // E.g. exactly on the first millisecond? For now I'm assuming at 1/3 of
-    // playing time.
-    const magicPercentileOfAudibleBeat = 0.33;
-    // this is the first beat of the actual bar
-    this.firstBarBeatTime = startTime + 4 * beatLength + metronomeSoundLength * magicPercentileOfAudibleBeat;
+  onMetronomeEnded() {
+    const settings = this.props.settings;
+    const barDuration = settings.barDuration;
+    const expectedTimes = RhythmChecker.convertDurationsToTimes(
+      this.state.currentRhythm.durations,
+      barDuration
+    );
+    this.fixBeatHistory();
 
-    _.range(beatAmount + 1).map((beatIndex) => {
-      const beatTime = startTime + beatIndex * beatLength;
-      const delay = beatTime - now;
+    const result = RhythmChecker.compare(
+      expectedTimes,
+      this.beatHistory,
+      settings
+    );
 
-      if (beatIndex < beatAmount) {
-        MetronomeService.play(delay);
-      }
-      setTimeout(
-        () => {
-          this.setState({
-            currentMetronomeBeat: beatIndex < 4 ? beatIndex : -1
-          });
-
-          if (beatIndex === beatAmount) {
-            const settings = this.props.settings;
-            const barDuration = settings.barDuration;
-            const expectedTimes = RhythmChecker.convertDurationsToTimes(
-              this.state.currentRhythm.durations,
-              barDuration
-            );
-            this.fixBeatHistory();
-
-            const result = RhythmChecker.compare(
-              expectedTimes,
-              this.beatHistory,
-              settings
-            );
-
-            this.props.statisticService.register({
-              success: result.success,
-              durations: this.state.currentRhythm.durations,
-              barDuration,
-              liveBeatBars: settings.liveBeatBars,
-              labelBeats: settings.labelBeats,
-            });
-
-            this.setState({
-              phase: Phases.feedback,
-              result: result
-            });
-
-            AnalyticsService.sendEvent('RhythmReading-Result', result.success);
-          }
-        },
-        delay
-      )
+    this.props.statisticService.register({
+      success: result.success,
+      durations: this.state.currentRhythm.durations,
+      barDuration,
+      liveBeatBars: settings.liveBeatBars,
+      labelBeats: settings.labelBeats,
     });
+
+    this.setState({
+      phase: Phases.feedback,
+      result: result
+    });
+
+    AnalyticsService.sendEvent('RhythmReading-Result', result.success);
   }
 
   fixBeatHistory() {
@@ -130,7 +97,8 @@ export default class RhythmReadingView extends Component {
     // we will add the up event to the beatHistory
     const lastBeat = this.beatHistory.slice(-1)[0];
     if (lastBeat.length === 1) {
-      lastBeat.push(performance.now() - this.firstBarBeatTime);
+      const firstBarBeatTime = this.refs.metronome.getFirstBarBeatTime();
+      lastBeat.push(performance.now() - firstBarBeatTime);
     }
   }
 
@@ -153,7 +121,8 @@ export default class RhythmReadingView extends Component {
           return;
         }
         // protocol beat
-        const newBeatTime = performance.now() - this.firstBarBeatTime;
+        const firstBarBeatTime = this.refs.metronome.getFirstBarBeatTime();
+        const newBeatTime = performance.now() - firstBarBeatTime;
         lastSpaceEvent = eventType;
 
         if (eventType === keydown) {
@@ -168,7 +137,7 @@ export default class RhythmReadingView extends Component {
           if (this.beatHistory.length === 0) {
             // Keydown event was not registered. Assume it was pressed on
             // firstBarBeatTime.
-            this.beatHistory.push([this.firstBarBeatTime]);
+            this.beatHistory.push([firstBarBeatTime]);
           }
           this.beatHistory.slice(-1)[0].push(newBeatTime);
         }
@@ -281,16 +250,11 @@ export default class RhythmReadingView extends Component {
 
     console.log(this.state.currentRhythm.keys);
 
-    const metronomeBeat =
-     <CollapsableContainer
-      collapsed={this.state.currentMetronomeBeat == -1}
-      className={classNames({
-        opacityOut: (this.state.currentMetronomeBeat + 1) % 4 === 0
-      })}>
-       <h2>
-        {this.state.currentMetronomeBeat + 1}
-      </h2>
-    </CollapsableContainer>;
+    const metronomeBeat = <MetronomeView
+      settings={this.props.settings}
+      ref="metronome"
+      onMetronomeEnded={this.onMetronomeEnded.bind(this)}
+    />;
 
     const buttons =
       this.state.phase !== Phases.feedback ?

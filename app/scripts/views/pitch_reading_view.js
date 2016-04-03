@@ -140,7 +140,7 @@ export default class PitchReadingView extends Component {
         welcomeText: true,
       })}>
         <h3>
-          Welcome to this pitch training! {this.state.running + ""}
+          Welcome to this pitch training!
         </h3>
         <p>
            {"When you hit Start, notes will be displayed in the stave above. "}
