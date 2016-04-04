@@ -46,11 +46,11 @@ export default class PitchReadingView extends Component {
     const debugMode = true;
     if (debugMode) {
       this.debugKeyUpCallback = (event) => {
-        const trueKeyCode = 84;
-        const falseKeyCode = 70;
-        if (event.keyCode === trueKeyCode) {
+        const yesKeyCode = 89;
+        const noKeyCode = 78;
+        if (event.keyCode === yesKeyCode) {
           this.onSuccess();
-        } else if (event.keyCode === falseKeyCode) {
+        } else if (event.keyCode === noKeyCode) {
           this.onFailure();
         }
       };

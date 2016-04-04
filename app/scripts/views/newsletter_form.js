@@ -7,9 +7,10 @@ export default class NewsLetterForm extends Component {
     // This avoids that global keyhandlers for keyboard navigation are triggered
     // when email input is used.
     const dontPropagate = (evt) => evt.stopPropagation();
-    this.refs.email.addEventListener("keypress", dontPropagate);
-    this.refs.email.addEventListener("keyup", dontPropagate);
-    this.refs.email.addEventListener("keydown", dontPropagate);
+    const email = this.refs.email;
+    email.addEventListener("keypress", dontPropagate);
+    email.addEventListener("keyup", dontPropagate);
+    email.addEventListener("keydown", dontPropagate);
   }
 
   render() {

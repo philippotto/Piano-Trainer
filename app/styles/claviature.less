@@ -55,7 +55,7 @@
     }
   }
 
-  li:active {
+  li:active, li.active {
     // by default all keys are wrong which is shown when clicked
     background: linear-gradient(to bottom, #B50C0C, #D81313 10%, #D20909);
     &.black-note {
@@ -63,7 +63,7 @@
       border-bottom-color: #5A0202;
     }
   }
-  li.green:active {
+  li.green:active, li.green.active {
     color: white;
     background: linear-gradient(to bottom, #158C0D, #2DAD3D 10%, #09A915);
     &.black-note {

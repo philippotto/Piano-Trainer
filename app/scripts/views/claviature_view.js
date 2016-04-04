@@ -15,10 +15,13 @@ export default class ClaviatureView extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      correctnessOfClickedKeys: {
-        // noteName -> true/false
-      }
-    };
+      // The key which is currently "clicked". Only used for keyboard navigation.
+      activeKey : null
+    }
+  }
+
+  static contextTypes = {
+    isInActiveView: React.PropTypes.bool
   }
 
   isNoteCorrect(noteName) {
@@ -33,6 +36,41 @@ export default class ClaviatureView extends Component {
     return success;
   }
 
+  componentDidMount() {
+    const keyHandler = (eventType, event) => {
+      if (!this.context.isInActiveView) {
+        return;
+      }
+
+      const charCode = event.which || event.keyCode;
+      const noteName = String.fromCharCode(charCode).toLowerCase();
+      if ("cdefgab".indexOf(noteName) === -1) {
+        return;
+      }
+      if (eventType === "keydown") {
+        this.setState({
+          activeKey : noteName
+        });
+      } else {
+        this.setState({
+          activeKey: null
+        });
+        this.onClick(noteName);
+      }
+    }
+    this.keyHandlers = {
+      keydown: keyHandler.bind(this, "keydown"),
+      keyup: keyHandler.bind(this, "keyup")
+    };
+    document.addEventListener("keydown", this.keyHandlers.keydown);
+    document.addEventListener("keyup", this.keyHandlers.keyup);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener("keydown", this.keyHandlers.keydown);
+    document.removeEventListener("keyup", this.keyHandlers.keyup);
+  }
+
   onClick(noteName) {
     const success = this.isNoteCorrect(noteName);
     if (success) {
@@ -40,20 +78,17 @@ export default class ClaviatureView extends Component {
     } else {
       this.props.failureCallback();
     }
-    this.setState({
-      correctnessOfClickedKeys: {
-        [noteName]: success
-      }
-    })
   }
 
   renderKey(keyName, keyLabel, color) {
     keyLabel = keyLabel || keyName;
     const className = classNames({
       "black-note": color === "black",
-      green: this.isNoteCorrect(keyName)
+      green: this.isNoteCorrect(keyName),
+      active: keyName === this.state.activeKey
     });
     return <li
+     ref={keyName}
      key={keyName}
      className={className}
      onClick={this.onClick.bind(this, keyName)}>
