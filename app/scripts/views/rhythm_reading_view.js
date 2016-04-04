@@ -278,7 +278,7 @@ export default class RhythmReadingView extends Component {
              label="Repeat this bar" shortcutLetter='r'
              onClick={this.repeatBar.bind(this)} />
             <GameButton
-             label="Continue with a new bar" shortcutLetter='c'
+             label="Start next bar" shortcutLetter='s'
              onClick={this.nextBar.bind(this)} primary />
           </div>
         :
