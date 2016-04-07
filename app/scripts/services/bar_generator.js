@@ -2,9 +2,7 @@ import _ from "lodash";
 
 import KeyConverter from "../services/key_converter.js";
 
-function getBaseNotes() {
-  return "cdefgab".split("");
-}
+const baseNotes = "cdefgab".split("");
 
 const options = {
   chordsPerBar: 4,
@@ -86,94 +84,88 @@ export default {
 
   generateBars: function(settings) {
     const isMidiAvailable = settings.midi.inputs.get().length > 0;
+    const onePerTime = isMidiAvailable;
 
-    const treble = this.generateBar("treble", settings, isMidiAvailable);
-    const bass = this.generateBar("bass", settings, isMidiAvailable);
+    const [trebleNotes, bassNotes] = _.unzip(_.range(0, options.chordsPerBar).map((index) => {
+      const [trebleAmount, bassAmount] = onePerTime ?
+        ["treble", "bass"].map((el) =>
+          _.random.apply(_, chordSizeRanges[clef])
+        ) :
+        _.sample([[0, 1], [1, 0]]);
 
-    if (!isMidiAvailable) {
-      // Only present either one treble note OR one bass note at a time.
-      // Just replace the current treble OR bass note with a rest for each beat.
-      _.range(0, options.chordsPerBar).map((chordIndex) => {
-        const clefs = ["treble", "bass"];
-        // clefIndex denotes the clef in which the note is replaced by a rest.
-        const clefIndex = _.sample([0, 1]);
+      const generatePossibleNotes = (levels) => {
+        return _.flatten(levels.map((noteLevel) =>
+          baseNotes.map((el) => el + "/" + noteLevel)
+        ));
+      };
 
-        const rest = new Vex.Flow.StaveNote({
-          clef: clefs[clefIndex],
-          keys: [clefIndex === 0 ? "a/4" : "c/3"],
-          duration: `${options.chordsPerBar}r`
-        });
+      return [
+        this.generateNotesForBeat("treble", trebleAmount,
+          generatePossibleNotes.bind(null, [4, 5])),
+        this.generateNotesForBeat("bass", bassAmount,
+          generatePossibleNotes.bind(null, [2, 3]))
+      ];
+    }));
 
-        [treble, bass][clefIndex][chordIndex] = rest;
-      });
-    }
-
-    return {treble, bass};
+    return {
+      treble: trebleNotes,
+      bass: bassNotes
+    };
   },
 
-  generateBar: function(clef, settings, isMidiAvailable) {
-    const chordSizeRanges = isMidiAvailable ?
-      settings.chordSizeRanges :
-      {
-        treble: [1, 1],
-        bass: [1, 1],
-      };
+  generateNote: function (possibleNotes) {
+    const randomNoteIndex = _.random(0, possibleNotes.length - 1);
+    const note = possibleNotes.splice(randomNoteIndex, 1)[0];
 
-    const baseModifiers = settings.useAccidentals ?
-      _.flatten([_.times(8, _.constant("")), "b", "#"])
-      : [""];
+    return note;
+  },
 
-    const generatedChords = _.range(0, options.chordsPerBar).map(() => {
-      const randomLevel = _.sample(options.levels[clef]);
+  generateNoteSet: function(amount, generatePossibleNotes) {
+    const possibleNotes = _.clone(generatePossibleNotes());
+    return _.times(amount, () => {
+      return this.generateNote(possibleNotes);
+    });
+  },
 
-      const generateNote = function (baseNotes) {
-        const randomNoteIndex = _.random(0, baseNotes.length - 1);
-        const note = baseNotes.splice(randomNoteIndex, 1)[0];
+  ensureInterval: function(keyStrings) {
+    const keyNumbers = keyStrings.map((keyString) => {
+      return KeyConverter.getKeyNumberForKeyString(keyString, "C");
+    });
+    return options.maximumInterval >= _.max(keyNumbers) - _.min(keyNumbers);
+  },
 
-        const modifier = _.sample(baseModifiers);
-        return {note, modifier};
-      };
-
-      const generateNoteSet = () => {
-        const baseNotes = getBaseNotes();
-        return _.times(_.random.apply(_, chordSizeRanges[clef]), () => {
-          return generateNote(baseNotes);
-        });
-      };
-
-      const noteObjectToKeyString = ({note, modifier}) => note + modifier + "/" + randomLevel;
-
-      const ensureInterval = (keyObjects) => {
-        const keyNumbers = keyObjects.map((keyObject) => {
-          return KeyConverter.getKeyNumberForKeyString(noteObjectToKeyString(keyObject), "C");
-        });
-        return options.maximumInterval >= _.max(keyNumbers) - _.min(keyNumbers);
-      };
-
-      let randomNoteSet = generateNoteSet();
-      while (!ensureInterval(randomNoteSet)) {
-        randomNoteSet = generateNoteSet();
-      }
-
-      const staveChord = new Vex.Flow.StaveNote({
+  generateNotesForBeat(clef, amount, generatePossibleNotes) {
+    if (amount === 0) {
+      const rest = new Vex.Flow.StaveNote({
         clef: clef,
-        keys: randomNoteSet.map(noteObjectToKeyString).sort((keyA, keyB) => {
-          return KeyConverter.getKeyNumberForKeyString(keyA, "C") -
-            KeyConverter.getKeyNumberForKeyString(keyB, "C");
-        }),
-        duration: `${options.chordsPerBar}`
+        keys: [clef === "treble" ? "a/4" : "c/3"],
+        duration: `${options.chordsPerBar}r`
       });
+      return rest;
+    }
 
-      randomNoteSet.forEach(({note, modifier}, index) => {
-        if (modifier) {
-          staveChord.addAccidental(index, new Vex.Flow.Accidental(modifier));
-        }
-      });
+    let randomNoteSet = this.generateNoteSet(amount, generatePossibleNotes);
+    while (!this.ensureInterval(randomNoteSet)) {
+      randomNoteSet = this.generateNoteSet(amount, generatePossibleNotes);
+    }
 
-      return staveChord;
+    const staveChord = new Vex.Flow.StaveNote({
+      clef: clef,
+      keys: randomNoteSet.sort((keyA, keyB) => {
+        return KeyConverter.getKeyNumberForKeyString(keyA, "C") -
+          KeyConverter.getKeyNumberForKeyString(keyB, "C");
+      }),
+      duration: `${options.chordsPerBar}`
     });
 
-    return generatedChords;
+    randomNoteSet.forEach(({note, modifier}, index) => {
+      if (modifier) {
+        staveChord.addAccidental(index, new Vex.Flow.Accidental(modifier));
+      }
+    });
+
+    return staveChord;
+
   }
 
 }

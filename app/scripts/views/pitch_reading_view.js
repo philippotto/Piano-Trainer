@@ -76,11 +76,10 @@ export default class PitchReadingView extends Component {
 
       let shouldRegenerateAll = prevSettings.useAccidentals !== nextSettings.useAccidentals;
 
-      if (shouldRegenerateAll || nextChordSizeRanges.treble !== chordSizeRanges.treble) {
-        treble = BarGenerator.generateBar("treble", nextSettings);
-      }
-      if (shouldRegenerateAll || nextChordSizeRanges.bass !== chordSizeRanges.bass) {
-        bass = BarGenerator.generateBar("bass", nextSettings);
+      if (shouldRegenerateAll ||
+        nextChordSizeRanges.treble !== chordSizeRanges.treble ||
+        nextChordSizeRanges.bass !== chordSizeRanges.bass) {
+        bass = BarGenerator.generateBars(nextSettings);
       }
       if (shouldRegenerateAll || !_.isEqual(prevSettings.keySignature, nextSettings.keySignature)) {
         keySignature = BarGenerator.generateKeySignature(nextSettings);
