@@ -29,7 +29,7 @@ export default class PitchSettingsView extends Component {
         });
       }
 
-      AnalyticsService.sendEvent('PitchReading-Settings', stateKey + " - " + JSON.stringify(newValue));
+      AnalyticsService.sendEvent('RhythmReading-Settings', stateKey + " - " + JSON.stringify(newValue));
     };
   }
 

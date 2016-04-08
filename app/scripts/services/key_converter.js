@@ -64,6 +64,20 @@ function initializeKeyMap() {
 
 const KeyConverter = {
 
+  getPitchRangeInclusive: function(keyA, keyB, includeAccidentals) {
+    const keyArray = _.values(keyMap);
+    return keyArray.slice(
+      keyArray.indexOf(keyA),
+      keyArray.indexOf(keyB) + 1
+    ).filter((el) =>
+      includeAccidentals || !this.hasAccidental(el)
+    );
+  },
+
+  hasAccidental: function(keyString) {
+    return keyString.indexOf("#") > -1 || keyString.slice(1).indexOf("b") > -1;
+  },
+
   getKeyNumberForCanonicalKeyString: function (keyString) {
     return parseInt(_.findKey(keyMap, (key) => key === keyString), 10);
   },

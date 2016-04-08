@@ -77,6 +77,9 @@ class PitchStatisticService {
     return _.sum(array) / (array.length || 1);
   }
 
+  getAllEvents() {
+    return this.stats;
+  }
 
   getAverageTimeOfLast(n = 10) {
     return this.computeAverage(this.getLastTimes(n));
@@ -104,6 +107,14 @@ class PitchStatisticService {
     return _.filter(this.stats, (el) => el.success).length / this.stats.length;
   }
 
+  calculateMissingSuccessfulNotes() {
+    const desiredSuccessRate = 0.9
+    const currentSuccessCount = this.stats.filter((el) => el.success).length;
+    const currentFailureCount = this.stats.length - currentSuccessCount;
+    // t = (1 - sr) / sr * f
+    const desiredSuccessCount = (desiredSuccessRate * currentFailureCount) / (1 - desiredSuccessRate);
+    return Math.ceil(desiredSuccessCount - currentSuccessCount);
+  }
 
   getLastDays() {
     return _(this.stats).filter((el) => el.success).groupBy(function (el) {

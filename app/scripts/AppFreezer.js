@@ -3,6 +3,12 @@ import Freezer from "freezer-js";
 export default new Freezer({
   settings: {
     pitchReading: {
+      useAutomaticDifficulty: true,
+      automaticDifficulty: {
+        accuracyGoal: 0.85,
+        timeGoal: 2000,
+        amount: 5
+      },
       chordSizeRanges: {
         treble: [1, 3],
         bass: [1, 3],

@@ -7,10 +7,12 @@ import PitchSettingsView from "../views/pitch_settings_view.js";
 import AnalyticsService from "../services/analytics_service.js";
 import MidiService from "../services/midi_service.js";
 import BarGenerator from "../services/bar_generator.js";
+import LevelService from "../services/level_service.js";
 import StaveRenderer from "./stave_renderer.js";
 import ClaviatureView from "./claviature_view";
 import GameButton from "./game_button.js";
 import CollapsableContainer from "./collapsable_container.js";
+import LevelView from "./level_view.js";
 
 const successMp3Url = require("file!../../resources/success.mp3");
 
@@ -70,16 +72,16 @@ export default class PitchReadingView extends Component {
       const nextChordSizeRanges = nextSettings.chordSizeRanges;
       const chordSizeRanges = prevSettings.chordSizeRanges;
 
-      let treble = this.state.currentKeys.treble;
-      let bass = this.state.currentKeys.bass;
+      let newCurrentKeys = this.state.currentKeys;
       let keySignature = this.state.currentKeySignature;
 
-      let shouldRegenerateAll = prevSettings.useAccidentals !== nextSettings.useAccidentals;
+      let shouldRegenerateAll = prevSettings.useAccidentals !== nextSettings.useAccidentals
+        || prevSettings.useAutomaticDifficulty !== nextSettings.useAutomaticDifficulty;
 
       if (shouldRegenerateAll ||
         nextChordSizeRanges.treble !== chordSizeRanges.treble ||
         nextChordSizeRanges.bass !== chordSizeRanges.bass) {
-        bass = BarGenerator.generateBars(nextSettings);
+        newCurrentKeys = this.generateNewBars(nextSettings);
       }
       if (shouldRegenerateAll || !_.isEqual(prevSettings.keySignature, nextSettings.keySignature)) {
         keySignature = BarGenerator.generateKeySignature(nextSettings);
@@ -87,16 +89,23 @@ export default class PitchReadingView extends Component {
 
       this.setState({
         currentChordIndex: 0,
-        currentKeys: {treble, bass},
+        currentKeys: newCurrentKeys,
         currentKeySignature: keySignature,
       });
     }
   }
 
+  generateNewBars(settings) {
+    const levelIndex =
+      LevelService.getLevelOfUser(this.props.statisticService.getAllEvents()) + 1;
+    const level = LevelService.getLevelByIndex(levelIndex);
+    return BarGenerator.generateBars(settings, settings.useAutomaticDifficulty ? level : null);
+  }
+
   generateNewBarState() {
     return {
       currentChordIndex: 0,
-      currentKeys: BarGenerator.generateBars(this.props.settings),
+      currentKeys: this.generateNewBars(this.props.settings),
       currentKeySignature: BarGenerator.generateKeySignature(this.props.settings)
     };
   }
@@ -165,6 +174,10 @@ export default class PitchReadingView extends Component {
       </div>
     </CollapsableContainer>;
 
+    const levelView = <CollapsableContainer collapsed={!(this.state.running && this.props.settings.useAutomaticDifficulty)}>
+      <LevelView statisticService={this.props.statisticService} />
+    </CollapsableContainer>;
+
     const emptyKeySet = {
       treble: [],
       bass: []
@@ -187,6 +200,7 @@ export default class PitchReadingView extends Component {
                 })}>
                   <div className="col-xs-12">
                     {welcomeText}
+                    {levelView}
                     {startStopButton}
                   </div>
                 </div>
