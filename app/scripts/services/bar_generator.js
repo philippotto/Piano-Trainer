@@ -1,6 +1,7 @@
 import _ from "lodash";
 
 import KeyConverter from "../services/key_converter.js";
+import LevelService from "../services/level_service.js";
 
 const baseNotes = "cdefgab".split("");
 
@@ -11,6 +12,20 @@ const options = {
     treble: [4, 5]
   },
   maximumInterval: 12
+};
+
+function sampleWithoutReplacement(options) {
+  const randomOptionIndex = _.random(0, options.length - 1);
+  const option = options.splice(randomOptionIndex, 1)[0];
+  return option;
+}
+
+function randomInvokeAOrB(probability, functionA, functionB) {
+  if (Math.random() < probability) {
+    return functionA();
+  } else {
+    return functionB();
+  }
 };
 
 export default {
@@ -120,7 +135,10 @@ export default {
     const [trebleNotes, bassNotes] = _.unzip(_.range(0, options.chordsPerBar).map((index) => {
       const generatePossibleNotes = (clef) => {
         if (level) {
-          return level.keys[clef];
+          return {
+            new: level.keys[clef],
+            old: LevelService.getAllNotesUntilLevelIndex(level.index, clef)
+          };
         }
         const levels = clef === "treble" ? [4, 5] : [2, 3];
         return _.flatten(levels.map((noteLevel) =>
@@ -139,8 +157,8 @@ export default {
       // if length === 0 then amounts cannot be more than 0
 
       return [
-        this.generateNotesForBeat("treble", trebleAmount, possibleTrebleNotes),
-        this.generateNotesForBeat("bass", bassAmount, possibleBassNotes)
+        this.generateNotesForBeat(settings, "treble", trebleAmount, possibleTrebleNotes),
+        this.generateNotesForBeat(settings, "bass", bassAmount, possibleBassNotes)
       ];
     }));
 
@@ -150,17 +168,29 @@ export default {
     };
   },
 
-  generateNote: function (possibleNotes) {
-    const randomNoteIndex = _.random(0, possibleNotes.length - 1);
-    const note = possibleNotes.splice(randomNoteIndex, 1)[0];
+  generateNoteSet: function(settings, amount, _possibleNotes) {
+    if (_.isArray(_possibleNotes)) {
+      const possibleNotes = _.clone(_possibleNotes);
 
-    return note;
-  },
+      return _.times(amount, () => {
+        return sampleWithoutReplacement(possibleNotes);
+      });
+    }
 
-  generateNoteSet: function(amount, _possibleNotes) {
-    const possibleNotes = _.clone(_possibleNotes);
+    const newPossibleNotes = _.clone(_possibleNotes.new);
+    const oldPossibleNotes = _.clone(_possibleNotes.old);
+
     return _.times(amount, () => {
-      return this.generateNote(possibleNotes);
+      const bothOptionsAreNotEmpty = newPossibleNotes.length > 0 && oldPossibleNotes.length > 0;
+      const newNoteProbability = bothOptionsAreNotEmpty ?
+        settings.automaticDifficulty.newNotesShare :
+        (newPossibleNotes.length > 0 ? 1 : 0);
+
+      return randomInvokeAOrB(
+        newNoteProbability,
+        () => sampleWithoutReplacement(newPossibleNotes),
+        () => sampleWithoutReplacement(oldPossibleNotes)
+      )
     });
   },
 
@@ -171,7 +201,7 @@ export default {
     return options.maximumInterval >= _.max(keyNumbers) - _.min(keyNumbers);
   },
 
-  generateNotesForBeat(clef, amount, possibleNotes) {
+  generateNotesForBeat(settings, clef, amount, possibleNotes) {
     if (amount === 0) {
       const rest = new Vex.Flow.StaveNote({
         clef: clef,
@@ -181,9 +211,9 @@ export default {
       return rest;
     }
 
-    let randomNoteSet = this.generateNoteSet(amount, possibleNotes);
+    let randomNoteSet = this.generateNoteSet(settings, amount, possibleNotes);
     while (!this.ensureInterval(randomNoteSet)) {
-      randomNoteSet = this.generateNoteSet(amount, possibleNotes);
+      randomNoteSet = this.generateNoteSet(settings, amount, possibleNotes);
     }
 
     const staveChord = new Vex.Flow.StaveNote({

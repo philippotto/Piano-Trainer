@@ -18,7 +18,6 @@ export default class LevelView extends Component {
   }
 
   componentDidUpdate() {
-    console.log("draw pie chart", this.props.pieParts);
     new Chartist.Pie(this.refs.chart, {
       series: this.props.pieParts
     }, {

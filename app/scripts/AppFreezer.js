@@ -7,7 +7,8 @@ export default new Freezer({
       automaticDifficulty: {
         accuracyGoal: 0.85,
         timeGoal: 2000,
-        amount: 5
+        amount: 5,
+        newNotesShare: 0.6,
       },
       chordSizeRanges: {
         treble: [1, 3],

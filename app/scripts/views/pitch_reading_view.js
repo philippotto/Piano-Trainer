@@ -12,7 +12,6 @@ import StaveRenderer from "./stave_renderer.js";
 import ClaviatureView from "./claviature_view";
 import GameButton from "./game_button.js";
 import CollapsableContainer from "./collapsable_container.js";
-import LevelView from "./level_view.js";
 
 const successMp3Url = require("file!../../resources/success.mp3");
 
@@ -65,6 +64,10 @@ export default class PitchReadingView extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    function checkIfSomePropChanged(oldObj, newObj, keys) {
+      return keys.some((key) => _.at(oldObj, key) !== _.at(newObj, key));
+    }
+
     const nextSettings = nextProps.settings;
     const prevSettings = this.props.settings;
 
@@ -75,8 +78,11 @@ export default class PitchReadingView extends Component {
       let newCurrentKeys = this.state.currentKeys;
       let keySignature = this.state.currentKeySignature;
 
-      let shouldRegenerateAll = prevSettings.useAccidentals !== nextSettings.useAccidentals
-        || prevSettings.useAutomaticDifficulty !== nextSettings.useAutomaticDifficulty;
+      let shouldRegenerateAll = checkIfSomePropChanged(
+        prevSettings,
+        nextSettings,
+        ["useAccidentals", "useAutomaticDifficulty", "automaticDifficulty.newNotesShare"]
+      );
 
       if (shouldRegenerateAll ||
         nextChordSizeRanges.treble !== chordSizeRanges.treble ||
@@ -174,10 +180,6 @@ export default class PitchReadingView extends Component {
       </div>
     </CollapsableContainer>;
 
-    const levelView = <CollapsableContainer collapsed={!(this.state.running && this.props.settings.useAutomaticDifficulty)}>
-      <LevelView statisticService={this.props.statisticService} />
-    </CollapsableContainer>;
-
     const emptyKeySet = {
       treble: [],
       bass: []
@@ -200,7 +202,6 @@ export default class PitchReadingView extends Component {
                 })}>
                   <div className="col-xs-12">
                     {welcomeText}
-                    {levelView}
                     {startStopButton}
                   </div>
                 </div>
@@ -218,7 +219,9 @@ export default class PitchReadingView extends Component {
           </div>
           <div className="col-lg-4 col-md-12 col-sm-12 col-xs-12 rightColumn">
             <PitchSettingsView settings={this.props.settings} />
-            <PitchStatisticView statisticService={this.props.statisticService} />
+            <PitchStatisticView
+              statisticService={this.props.statisticService}
+              settings={this.props.settings} />
           </div>
           <audio ref="successPlayer" hidden="true" src={successMp3Url} controls preload="auto" autobuffer />
         </div>

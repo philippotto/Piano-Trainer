@@ -60,10 +60,13 @@ const LevelService = {
   getLevelByIndex(index) {
     return Levels[index];
   },
-  getAllNotesUntilLevelIndex(levelIndex) {
+  getAllNotesUntilLevelIndex(levelIndex, optClef) {
     return _.flatten(
       _.range(levelIndex).map((levelIndex) => {
         const keys = Levels[levelIndex].keys;
+        if (optClef) {
+          return keys[optClef];
+        }
         return [].concat(keys.treble, keys.bass);
       })
     );
@@ -143,7 +146,6 @@ const LevelService = {
         }
       };
     });
-    console.log("evaluation",  evaluation);
     const goodEnoughPartition = _.partition(evaluation, (el) => el.isGoodEnough);
     return {
       goodEnoughKeys: goodEnoughPartition[0],

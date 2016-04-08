@@ -1,6 +1,8 @@
 import Chartist from "Chartist";
 import React, {Component} from "react";
 import { Tooltip, OverlayTrigger } from 'react-bootstrap';
+import LevelView from "./level_view.js";
+import CollapsableContainer from "./collapsable_container.js";
 
 import AnimatedNumber from "./animated_number.js";
 import StarAnimation from "./star_animation.js";
@@ -9,6 +11,7 @@ export default class PitchStatisticView extends Component {
 
   propTypes: {
     statisticService: React.PropTypes.object.isRequired,
+    settings: React.PropTypes.object.isRequired,
   }
 
   render() {
@@ -58,6 +61,9 @@ export default class PitchStatisticView extends Component {
             </OverlayTrigger>
           </div>
         </div>
+        <CollapsableContainer collapsed={!this.props.settings.useAutomaticDifficulty}>
+          <LevelView statisticService={this.props.statisticService} />
+        </CollapsableContainer>
       </div>
     );
   }

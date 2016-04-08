@@ -71,6 +71,7 @@ export default class PitchSettingsView extends Component {
     const useAutomaticDifficulty = this.props.settings.useAutomaticDifficulty;
 
     const accuracyStateChanger = this.buildStateChanger("automaticDifficulty.accuracyGoal");
+    const newNotesShareStateChanger = this.buildStateChanger("automaticDifficulty.newNotesShare");
 
     const automaticDifficultySection = <div>
       <RangeSettingComponent
@@ -78,6 +79,7 @@ export default class PitchSettingsView extends Component {
         rangeMax={10000}
         values={this.props.settings.automaticDifficulty.timeGoal}
         onChange={this.buildStateChanger("automaticDifficulty.timeGoal")}
+        valueToString={(el) => `${el}ms`}
         label={"Time goal"}
       />
       <RangeSettingComponent
@@ -87,6 +89,14 @@ export default class PitchSettingsView extends Component {
         onChange={(value) => accuracyStateChanger(value / 100)}
         valueToString={(el) => `${el}%`}
         label={"Accuracy goal"}
+      />
+      <RangeSettingComponent
+        rangeMin={10}
+        rangeMax={100}
+        values={this.props.settings.automaticDifficulty.newNotesShare * 100}
+        onChange={(value) => newNotesShareStateChanger(value / 100)}
+        valueToString={(el) => `${el}%`}
+        label={"Share of new notes"}
       />
     </div>;
 
