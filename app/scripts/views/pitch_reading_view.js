@@ -98,6 +98,7 @@ export default class PitchReadingView extends Component {
         currentKeys: newCurrentKeys,
         currentKeySignature: keySignature,
       });
+      this.startDate = new Date();
     }
   }
 

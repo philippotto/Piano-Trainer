@@ -131,7 +131,7 @@ export default class PitchSettingsView extends Component {
       <div className="settings content-box">
         <h3 style={{marginTop: -5}}>Settings</h3>
         {deviceSelector}
-        <SettingLine className="setting_checkbox" label="Automatic Difficulty:">
+        <SettingLine className="setting_checkbox" label="Automatic difficulty:">
           <input
            type="checkbox"
            checked={useAutomaticDifficulty}
