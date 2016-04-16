@@ -41,13 +41,24 @@ class StaveRenderer extends Component {
   }
 
 
-  setCanvasExtent(canvas, width, height) {
-    canvas.width = width;
-    canvas.height = height;
-    canvas.style.width = width;
-    canvas.style.height = height;
+  setCanvasExtent(canvas, width, height, ratio) {
+    canvas.width = ratio * width;
+    canvas.height = ratio * height;
+    canvas.style.width = width + "px";
+    canvas.style.height = height + "px";
+    canvas.getContext("2d").setTransform(ratio, 0, 0, ratio, 0, 0);
   }
 
+  getPixelRatio() {
+    const ctx = this.ctx,
+      dpr = window.devicePixelRatio || 1,
+      bsr = ctx.webkitBackingStorePixelRatio ||
+            ctx.mozBackingStorePixelRatio ||
+            ctx.msBackingStorePixelRatio ||
+            ctx.oBackingStorePixelRatio ||
+            ctx.backingStorePixelRatio || 1;
+    return dpr / bsr;
+  }
 
   draw() {
     const canvas = this.refs.canvas;
@@ -67,7 +78,8 @@ class StaveRenderer extends Component {
 
     ctx.clear();
 
-    this.setCanvasExtent(canvas, width, height);
+    const ratio = this.getPixelRatio();
+    this.setCanvasExtent(canvas, width, height, ratio);
 
     const rightHandStave = new Vex.Flow.Stave(10, 0, staveWidth);
     rightHandStave
