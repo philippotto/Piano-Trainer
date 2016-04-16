@@ -98,23 +98,43 @@ export default {
   },
 
   getClefAmounts: function(settings, onePerTime, level) {
-    if (onePerTime) {
-      let lengths = level ? {
-        treble: level.keys.treble.length,
-        bass: level.keys.bass.length
-      } : {
-        treble: _.max(settings.chordSizeRanges.treble),
-        bass: _.max(settings.chordSizeRanges.bass)
+    const getTrebleProbability = () => {
+      const amounts = {
+        new: level.keys.treble.concat(level.keys.bass).length,
+        old: LevelService.getAllNotesUntilLevelIndex(level.index).length,
+        trebleAndNew: level.keys.treble.length,
+        trebleAndOld: LevelService.getAllNotesUntilLevelIndex(level.index, "treble").length
+      }
+      const frequencies = {
+        new: settings.automaticDifficulty.newNotesShare,
+        trebleGivenNew: amounts.trebleAndNew / amounts.new,
+        trebleGivenOld: amounts.trebleAndOld / amounts.old,
       };
+      const trebleProbability =
+        frequencies.trebleGivenNew * frequencies.new +
+        frequencies.trebleGivenOld * (1 - frequencies.new);
+      return trebleProbability;
+    }
 
-      if (lengths.treble > 0 && lengths.bass > 0) {
-        return _.sample([[0, 1], [1, 0]]);
-      } else {
-        if (lengths.treble === 0) {
-          return [0, 1];
-        } else {
+    if (onePerTime) {
+      if (level) {
+        const trebleProbability = getTrebleProbability();
+        if (Math.random() <= trebleProbability) {
           return [1, 0];
         }
+        return [0, 1];
+      } else {
+        const lengths = {
+          treble: _.max(settings.chordSizeRanges.treble),
+          bass: _.max(settings.chordSizeRanges.bass)
+        };
+        if (lengths.treble > 0 && lengths.bass > 0) {
+          return _.sample([0, 1], [1, 0])
+        }
+        if (lengths.treble === 0) {
+          return [0, 1];
+        }
+        return [1, 0];
       }
     } else {
       if (level) {
