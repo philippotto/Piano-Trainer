@@ -45,9 +45,9 @@ var path = require('path');
 module.exports = {
   entry: './app/scripts/index.js',
   output: {
-    path: path.join(__dirname, 'dist/es6'),
+    path: path.join(__dirname, 'dist/Piano-Trainer'),
     filename: 'bundle.js',
-    publicPath: '/Piano-Trainer/es6/'
+    publicPath: '/Piano-Trainer/'
   },
   resolve: {
     extensions: ['', '.js']
