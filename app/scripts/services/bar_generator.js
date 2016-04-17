@@ -134,7 +134,7 @@ export default {
           bass: _.max(settings.chordSizeRanges.bass)
         };
         if (lengths.treble > 0 && lengths.bass > 0) {
-          return _.sample([0, 1], [1, 0])
+          return _.sample([[0, 1], [1, 0]]);
         }
         if (lengths.treble === 0) {
           return [0, 1];
