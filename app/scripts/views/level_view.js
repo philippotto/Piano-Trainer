@@ -38,15 +38,16 @@ export default class LevelView extends Component {
         return [timeProgress, accuracyProgress, amountProgress].map((el) => el / 3);
       })).map((el) => el / evaluation.notGoodEnoughKeys.length * (1 - goodEnoughProgress));
 
-      const pieParts = _.compact([goodEnoughProgress].concat(notGoodEnoughEvaluations));
-      if (pieParts.length > 0) {
+      const pieParts = [_.sum([goodEnoughProgress].concat(notGoodEnoughEvaluations))];
+      if (pieParts[0] > 0) {
         content = <PieChart pieParts={pieParts} />;
       } else {
         content = <div>
+          <PieChart pieParts={[1]} />
           <h4>
             Congratulations! You reached the next level!
           </h4>
-          <p>Complete this bar to see the new level.</p>
+          <p>The new level contains some new notes.</p>
         </div>;
       }
     } else {

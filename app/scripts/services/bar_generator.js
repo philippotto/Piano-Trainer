@@ -104,11 +104,16 @@ export default {
         old: LevelService.getAllNotesUntilLevelIndex(level.index).length,
         trebleAndNew: level.keys.treble.length,
         trebleAndOld: LevelService.getAllNotesUntilLevelIndex(level.index, "treble").length
+      };
+      if (amounts.new === amounts.trebleAndNew && amounts.old === amounts.trebleAndOld) {
+        // there are no bass notes
+        return 1;
       }
+
       const frequencies = {
         new: settings.automaticDifficulty.newNotesShare,
-        trebleGivenNew: amounts.trebleAndNew / amounts.new,
-        trebleGivenOld: amounts.trebleAndOld / amounts.old,
+        trebleGivenNew: amounts.trebleAndNew / (amounts.new || 1),
+        trebleGivenOld: amounts.trebleAndOld / (amounts.old || 1),
       };
       const trebleProbability =
         frequencies.trebleGivenNew * frequencies.new +
