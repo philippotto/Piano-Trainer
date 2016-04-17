@@ -207,15 +207,17 @@ export default class PitchReadingView extends Component {
                   </div>
                 </div>
               </div>
-              <div className={claviatureContainerClasses}>
-                {miniClaviature}
-                <div className={classNames({
-                  message: true,
-                  hide: this.state.errorMessage === null
-                })}>
-                  <h3>{this.state.errorMessage}</h3>
+              <CollapsableContainer collapsed={!(this.state.errorMessage !== null || miniClaviature)}>
+                <div className={claviatureContainerClasses}>
+                  {miniClaviature}
+                  <div className={classNames({
+                    message: true,
+                    hide: this.state.errorMessage === null
+                  })}>
+                    <h3>{this.state.errorMessage}</h3>
+                  </div>
                 </div>
-              </div>
+              </CollapsableContainer>
             </div>
           </div>
           <div className="col-lg-4 col-md-12 col-sm-12 col-xs-12 rightColumn">
