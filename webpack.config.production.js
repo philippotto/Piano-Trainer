@@ -47,7 +47,7 @@ module.exports = {
   output: {
     path: path.join(__dirname, 'dist/Piano-Trainer'),
     filename: 'bundle.js',
-    publicPath: '/Piano-Trainer/'
+    publicPath: './'
   },
   resolve: {
     extensions: ['', '.js']
