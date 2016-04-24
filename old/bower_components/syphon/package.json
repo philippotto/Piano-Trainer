@@ -1,8 +1,0 @@
-{
-  "name": "Backbone.syphon",
-  "version": "0.4.1",
-  "dependencies": {
-    "grunt": "*",
-    "grunt-rigger": "*"
-  }
-}
