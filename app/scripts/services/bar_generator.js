@@ -146,7 +146,7 @@ export default {
         // todo: handle possibility that a level doesn't demand the onePerTime limit
         return this.getClefAmounts(settings, true, level);
       } else {
-        return ["treble", "bass"].map((el) =>
+        return ["treble", "bass"].map((clef) =>
           _.random.apply(_, settings.chordSizeRanges[clef])
         );
       }
