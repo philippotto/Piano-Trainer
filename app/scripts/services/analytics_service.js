@@ -1,5 +1,5 @@
 export default {
-  sendEvent: function(eventCategory, eventAction) {
+  sendEvent: function(eventCategory, eventAction, eventValue) {
     if (window.location.hostname === "localhost" || typeof ga === "undefined") {
       return;
     }
@@ -7,7 +7,8 @@ export default {
     ga('send', {
       hitType: 'event',
       eventCategory,
-      eventAction
+      eventAction,
+      eventValue,
     });
   }
 }

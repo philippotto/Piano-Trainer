@@ -127,6 +127,10 @@ export default class PitchReadingView extends Component {
   }
 
   startStopTraining() {
+    AnalyticsService.sendEvent(
+      'PitchReading',
+      this.state.running ? "Stop" : "Start"
+    );
     this.setState({running: !this.state.running});
     this.startDate = new Date();
   }
@@ -138,13 +142,16 @@ export default class PitchReadingView extends Component {
     });
 
     const isMidiAvailable = this.props.settings.midi.inputs.get().length > 0;
-    const miniClaviature = isMidiAvailable ? null : <ClaviatureView
-     desiredKeys={this.getAllCurrentKeys()}
-     keySignature={this.state.currentKeySignature}
-     successCallback={this.onSuccess.bind(this)}
-     failureCallback={this.onFailure.bind(this)}
-     disabled={!this.state.running}
-    />;
+    const noErrors = this.state.errorMessage !== null;
+    const miniClaviature = (isMidiAvailable && noErrors)
+     ? null :
+     <ClaviatureView
+       desiredKeys={this.getAllCurrentKeys()}
+       keySignature={this.state.currentKeySignature}
+       successCallback={this.onSuccess.bind(this)}
+       failureCallback={this.onFailure.bind(this)}
+       disabled={!this.state.running}
+      />;
 
     const startStopButton = <GameButton
       label={`${this.state.running ? "Stop" : "Start"} training`}
@@ -207,7 +214,7 @@ export default class PitchReadingView extends Component {
                   </div>
                 </div>
               </div>
-              <CollapsableContainer collapsed={!(this.state.errorMessage !== null || miniClaviature)}>
+              <CollapsableContainer collapsed={!miniClaviature}>
                 <div className={claviatureContainerClasses}>
                   {miniClaviature}
                   <div className={classNames({
@@ -270,11 +277,9 @@ export default class PitchReadingView extends Component {
     this.startDate = new Date();
 
     this.props.statisticService.register(event);
-    this.onErrorResolve();
 
     if (this.state.currentChordIndex + 1 >= this.state.currentKeys.treble.length) {
       this.setState({
-        errorMessage: null,
         ...(this.generateNewBarState())
       });
     } else {

@@ -117,6 +117,8 @@ export default class RhythmReadingView extends Component {
     let lastSpaceEvent = keyup;
     const keyHandler = (eventType, event) => {
       const spaceCode = 32;
+      AnalyticsService.sendEvent('RhythmReading', "keyPress", event.keyCode);
+
       if (event.keyCode !== spaceCode && event.type.indexOf("touch") === -1) {
         return;
       }
@@ -188,6 +190,7 @@ export default class RhythmReadingView extends Component {
     if (this.state.phase === Phases.running) {
       return;
     }
+    AnalyticsService.sendEvent('RhythmReading', "repeatBar");
     this.beatHistory = [];
     this.setState({
       phase: Phases.running,
@@ -199,6 +202,7 @@ export default class RhythmReadingView extends Component {
     if (this.state.phase === Phases.running) {
       return;
     }
+    AnalyticsService.sendEvent('RhythmReading', "nextBar");
     this.beatHistory = [];
     const newRhythm = BarGenerator.generateRhythmBar(this.props.settings);
 
