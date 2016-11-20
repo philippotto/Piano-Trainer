@@ -1,3 +1,4 @@
+import AnalyticsService from "../services/analytics_service.js";
 import Freezer from "freezer-js";
 import AppFreezer from "../AppFreezer.js";
 import KeyConverter from "../services/key_converter.js";
@@ -36,6 +37,7 @@ export default class MidiService {
     }
 
     if (!navigator.requestMIDIAccess) {
+      AnalyticsService.sendEvent('MidiService', "no-browser-support");
       this.errorCallback("Your browser doesn't seem to support MIDI Access.");
       return;
     }
@@ -45,6 +47,7 @@ export default class MidiService {
     this.promise.then(
       this.onMidiAccess.bind(this),
       () => {
+        AnalyticsService.sendEvent('MidiService', "problem-requesting-midi");
         this.errorCallback("There was a problem while requesting MIDI access.", arguments);
       }
     );
@@ -116,6 +119,7 @@ export default class MidiService {
       inputs.push(input.value);
     }
     if (inputs.length === 0) {
+      AnalyticsService.sendEvent('MidiService', "no-midi-device-found");
       this.errorCallback("No MIDI device found.");
       return;
     }
@@ -137,6 +141,7 @@ export default class MidiService {
     })
 
     console.log("Midi access received. Available inputs", inputs, "Chosen input:", input);
+    AnalyticsService.sendEvent('MidiService', "available inputs", inputs.length);
   }
 
   unlistenToInputs(inputs) {
@@ -153,6 +158,7 @@ export default class MidiService {
           console.log("Receiving events...");
         } else {
           console.warn("Firing error callback");
+          AnalyticsService.sendEvent('MidiService', "no-messages");
           this.errorCallback(`
             A MIDI device could be found, but it doesn't send any messages.
             Did you press a key, yet? A browser restart could help.
