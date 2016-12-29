@@ -2,6 +2,7 @@ import _ from "lodash";
 
 import KeyConverter from "../services/key_converter.js";
 import LevelService from "../services/level_service.js";
+import Vex from "vexflow";
 
 const baseNotes = "cdefgab".split("");
 
