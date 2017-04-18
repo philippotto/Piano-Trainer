@@ -96,6 +96,10 @@ const LevelService = {
     //    average time of < Y s
     //    success rate > Z
 
+    // only consider the last 1500 events for performance reasons
+    // 1500 picked for 12 semitones in an octave * 100 success events / 0.8 for 80% success rate
+    let eventsToAssess = events.slice(-1500);
+
     const thresholdSettings = AppFreezer.get().settings.pitchReading.automaticDifficulty;
 
     optThresholds = optThresholds || {
@@ -103,7 +107,11 @@ const LevelService = {
       accuracy: thresholdSettings.accuracyGoal,
       time: thresholdSettings.timeGoal
     };
-    const unfoldedEvents = _.flatMap(events, (event) => {
+
+    const filteredEvents = eventsToAssess.filter((event) =>
+      event.keys.some(this.levelContainsKey.bind(this, level))
+    );
+    const unfoldedEvents = _.flatMap(filteredEvents, (event) => {
       return event.keys.map((key) => {
         const subEvent = {
           ...event,
@@ -113,19 +121,15 @@ const LevelService = {
         return subEvent;
       });
     });
-    const filteredEvents = unfoldedEvents.filter((event) =>
-      this.levelContainsKey(level, event.key)
-    );
-
-    const eventsByKey = _.groupBy(filteredEvents, "key");
+    const eventsByKey = _.groupBy(unfoldedEvents, "key");
     if (_.size(eventsByKey) < this.getNotesOfLevel(level)) {
       return false;
     }
     const evaluation = _.map(eventsByKey, (events, key) => {
-      const successPartition = _.partition(events, "success")[0];
+      const successPartition = _.partition(eventsToAssess, "success")[0];
 
-      const eventsLength = events.length;
-      const accuracy = successPartition.length / events.length;
+      const eventsLength = eventsToAssess.length;
+      const accuracy = successPartition.length / eventsToAssess.length;
       const time = _.sum(successPartition.map((el) => el.time)) / successPartition.length;
 
       const meetsLength = eventsLength >= optThresholds.amount;
