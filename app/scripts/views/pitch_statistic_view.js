@@ -1,6 +1,6 @@
 import Chartist from "Chartist";
-import React, {Component} from "react";
-import { Tooltip, OverlayTrigger } from 'react-bootstrap';
+import React, { Component } from "react";
+import { Tooltip, OverlayTrigger } from "react-bootstrap";
 import LevelView from "./level_view.js";
 import CollapsableContainer from "./collapsable_container.js";
 
@@ -8,11 +8,10 @@ import AnimatedNumber from "./animated_number.js";
 import StarAnimation from "./star_animation.js";
 
 export default class PitchStatisticView extends Component {
-
   propTypes: {
     statisticService: React.PropTypes.object.isRequired,
-    settings: React.PropTypes.object.isRequired,
-  }
+    settings: React.PropTypes.object.isRequired
+  };
 
   render() {
     const statistics = this.props.statisticService;
@@ -22,7 +21,7 @@ export default class PitchStatisticView extends Component {
 
     return (
       <div className="graph-stats content-box">
-        <div ref="chart" className="semi-transparent ct-chart ct-major-eleventh"></div>
+        <div ref="chart" className="semi-transparent ct-chart ct-major-eleventh" />
 
         <div className="row around-xs">
           <div className="col-xs">
@@ -36,17 +35,18 @@ export default class PitchStatisticView extends Component {
           <div className="col-xs">
             <OverlayTrigger placement="top" overlay={<Tooltip id="avgTime">Average time</Tooltip>}>
               <span className="stat-detail">
-                <i className="fa fa-clock-o"></i>
+                <i className="fa fa-clock-o" />
                 <AnimatedNumber
-                 number={statistics.getAverageTimeOfLast(100) / 1000}
-                 formatter={(el) => el.toFixed(2) + "s"} />
+                  number={statistics.getAverageTimeOfLast(100) / 1000}
+                  formatter={el => el.toFixed(2) + "s"}
+                />
               </span>
             </OverlayTrigger>
           </div>
           <div className="col-xs">
             <OverlayTrigger placement="top" overlay={<Tooltip id="playedChordsAndNotes">Played notes</Tooltip>}>
               <span className="stat-detail">
-                <i className="fa fa-music"></i>
+                <i className="fa fa-music" />
                 <AnimatedNumber number={statistics.getTotalAmountOfKeys()} />
               </span>
             </OverlayTrigger>
@@ -54,8 +54,8 @@ export default class PitchStatisticView extends Component {
           <div className="col-xs">
             <OverlayTrigger placement="top" overlay={<Tooltip id="successRate">Success rate</Tooltip>}>
               <span className="stat-detail">
-                <i className="fa fa-trophy"></i>
-                <AnimatedNumber number={statistics.getSuccessRate()} formatter={(el) => el.toFixed(2) * 100} />
+                <i className="fa fa-trophy" />
+                <AnimatedNumber number={statistics.getSuccessRate()} formatter={el => el.toFixed(2) * 100} />
                 %
               </span>
             </OverlayTrigger>
@@ -85,7 +85,7 @@ export default class PitchStatisticView extends Component {
       },
       axisY: {
         labelInterpolationFnc: function(value) {
-          return (value / 1000) + "s";
+          return value / 1000 + "s";
         }
       }
     };

@@ -4,11 +4,11 @@ export default {
       return;
     }
 
-    ga('send', {
-      hitType: 'event',
+    ga("send", {
+      hitType: "event",
       eventCategory,
       eventAction,
-      eventValue,
+      eventValue
     });
   }
-}
+};

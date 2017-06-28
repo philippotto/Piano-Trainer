@@ -9,15 +9,8 @@ function getMidiSettings() {
 }
 
 export default class MidiService {
-
   constructor(opts) {
-    const {
-      successCallback,
-      failureCallback,
-      errorCallback,
-      errorResolveCallback,
-      mocked,
-    } = opts;
+    const { successCallback, failureCallback, errorCallback, errorResolveCallback, mocked } = opts;
 
     this.successCallback = successCallback;
     this.failureCallback = failureCallback;
@@ -37,20 +30,16 @@ export default class MidiService {
     }
 
     if (!navigator.requestMIDIAccess) {
-      AnalyticsService.sendEvent('MidiService', "no-browser-support");
+      AnalyticsService.sendEvent("MidiService", "no-browser-support");
       this.errorCallback("Your browser doesn't seem to support MIDI Access.");
       return;
     }
 
-
-    this.promise = navigator.requestMIDIAccess({sysexEnabled: true});
-    this.promise.then(
-      this.onMidiAccess.bind(this),
-      () => {
-        AnalyticsService.sendEvent('MidiService', "problem-requesting-midi");
-        this.errorCallback("There was a problem while requesting MIDI access.", arguments);
-      }
-    );
+    this.promise = navigator.requestMIDIAccess({ sysexEnabled: true });
+    this.promise.then(this.onMidiAccess.bind(this), () => {
+      AnalyticsService.sendEvent("MidiService", "problem-requesting-midi");
+      this.errorCallback("There was a problem while requesting MIDI access.", arguments);
+    });
   }
 
   initializeInputStates() {
@@ -65,11 +54,10 @@ export default class MidiService {
     this.desiredInputState = {};
   }
 
-
   setDesiredKeys(keys, keySignature) {
     this.desiredInputState = {};
 
-    keys.map((key) => {
+    keys.map(key => {
       const number = KeyConverter.getKeyNumberForKeyString(key, keySignature);
       this.desiredInputState[number] = true;
     });
@@ -84,7 +72,6 @@ export default class MidiService {
 
     this.checkEqual(intensity);
   }
-
 
   checkEqual(intensity) {
     if (_.isEqual(this.currentInputState, this.desiredInputState)) {
@@ -119,7 +106,7 @@ export default class MidiService {
       inputs.push(input.value);
     }
     if (inputs.length === 0) {
-      AnalyticsService.sendEvent('MidiService', "no-midi-device-found");
+      AnalyticsService.sendEvent("MidiService", "no-midi-device-found");
       this.errorCallback("No MIDI device found.");
       return;
     }
@@ -128,45 +115,43 @@ export default class MidiService {
 
     getMidiSettings().set({
       inputs: Freezer.createLeaf(inputs),
-      activeInputIndex: 0,
+      activeInputIndex: 0
     });
 
-    AppFreezer.on('input:changed', (newIndex) => {
+    AppFreezer.on("input:changed", newIndex => {
       const midiSettings = getMidiSettings();
       midiSettings.set({
-        activeInputIndex: newIndex,
+        activeInputIndex: newIndex
       });
       this.unlistenToInputs(midiSettings.inputs.get());
       this.listenToInput(midiSettings.inputs.get()[newIndex]);
-    })
+    });
 
     console.log("Midi access received. Available inputs", inputs, "Chosen input:", input);
-    AnalyticsService.sendEvent('MidiService', "available inputs", inputs.length);
+    AnalyticsService.sendEvent("MidiService", "available inputs", inputs.length);
   }
 
   unlistenToInputs(inputs) {
-    inputs.forEach((input) => input.onmidimessage = null);
+    inputs.forEach(input => (input.onmidimessage = null));
   }
 
   listenToInput(input) {
     input.onmidimessage = null;
     input.onmidimessage = this.onMidiMessage.bind(this);
 
-    setTimeout(
-      () => {
-        if (this.receivingMidiMessages) {
-          console.log("Receiving events...");
-        } else {
-          console.warn("Firing error callback");
-          AnalyticsService.sendEvent('MidiService', "no-messages");
-          this.errorCallback(`
+    setTimeout(() => {
+      if (this.receivingMidiMessages) {
+        console.log("Receiving events...");
+      } else {
+        console.warn("Firing error callback");
+        AnalyticsService.sendEvent("MidiService", "no-messages");
+        this.errorCallback(`
             A MIDI device could be found, but it doesn't send any messages.
             Did you press a key, yet? A browser restart could help.
           `);
-          this.errorCallbackFired = true;
-        }
-      }, 2000
-    );
+        this.errorCallbackFired = true;
+      }
+    }, 2000);
   }
 
   onMidiMessage(msg) {

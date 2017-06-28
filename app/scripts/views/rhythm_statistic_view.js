@@ -1,16 +1,15 @@
 import Chartist from "Chartist";
-import React, {Component} from "react";
-import { Tooltip, OverlayTrigger } from 'react-bootstrap';
+import React, { Component } from "react";
+import { Tooltip, OverlayTrigger } from "react-bootstrap";
 
 import AnimatedNumber from "./animated_number.js";
 import StarAnimation from "./star_animation.js";
-import PureRenderMixin from 'react-addons-pure-render-mixin';
+import PureRenderMixin from "react-addons-pure-render-mixin";
 
 export default class RhythmStatisticView extends Component {
-
   propTypes: {
-    statisticService: React.PropTypes.object.isRequired,
-  }
+    statisticService: React.PropTypes.object.isRequired
+  };
 
   constructor(props) {
     super(props);
@@ -25,24 +24,25 @@ export default class RhythmStatisticView extends Component {
         unit: "y"
       },
       {
-        amount: Math.floor((seconds % 31536000) / 86400),
+        amount: Math.floor(seconds % 31536000 / 86400),
         unit: "d"
       },
       {
-        amount: Math.floor(((seconds % 31536000) % 86400) / 3600),
+        amount: Math.floor(seconds % 31536000 % 86400 / 3600),
         unit: "h"
       },
       {
-        amount: Math.floor((((seconds % 31536000) % 86400) % 3600) / 60),
+        amount: Math.floor(seconds % 31536000 % 86400 % 3600 / 60),
         unit: "m"
       },
       {
-        amount: (((seconds % 31536000) % 86400) % 3600) % 60,
+        amount: seconds % 31536000 % 86400 % 3600 % 60,
         unit: "s"
-      },
-    ].filter((el) => el.amount !== 0)
-     .map((el) => `${Math.ceil(el.amount)} ${el.unit}`)
-     .join(" ");
+      }
+    ]
+      .filter(el => el.amount !== 0)
+      .map(el => `${Math.ceil(el.amount)} ${el.unit}`)
+      .join(" ");
   }
 
   componentDidMount() {
@@ -67,7 +67,7 @@ export default class RhythmStatisticView extends Component {
 
     return (
       <div className="graph-stats content-box">
-        <div ref="chart" className="semi-transparent ct-chart ct-major-eleventh"></div>
+        <div ref="chart" className="semi-transparent ct-chart ct-major-eleventh" />
         <div className="row around-xs">
           <div className="col-xs">
             <OverlayTrigger placement="top" overlay={<Tooltip id="avgTime">Your current score</Tooltip>}>
@@ -80,15 +80,18 @@ export default class RhythmStatisticView extends Component {
           <div className="col-xs">
             <OverlayTrigger placement="top" overlay={<Tooltip id="avgTime">Total time you played rhythms</Tooltip>}>
               <span className="stat-detail">
-                <i className="fa fa-clock-o"></i>
+                <i className="fa fa-clock-o" />
                 <AnimatedNumber number={statistics.getTotalRhythmTime()} formatter={this.getHumanReadableTime} />
               </span>
             </OverlayTrigger>
           </div>
           <div className="col-xs">
-            <OverlayTrigger placement="top" overlay={<Tooltip id="playedChordsAndNotes">Played bars / played beats</Tooltip>}>
+            <OverlayTrigger
+              placement="top"
+              overlay={<Tooltip id="playedChordsAndNotes">Played bars / played beats</Tooltip>}
+            >
               <span className="stat-detail">
-                <i className="fa fa-music"></i>
+                <i className="fa fa-music" />
                 <AnimatedNumber number={statistics.getTotalAmountOfRhythms()} />
                 /
                 <AnimatedNumber number={statistics.getTotalAmountOfBeats()} />
@@ -98,7 +101,7 @@ export default class RhythmStatisticView extends Component {
           <div className="col-xs">
             <OverlayTrigger placement="top" overlay={<Tooltip id="successRate">Success rate</Tooltip>}>
               <span className="stat-detail">
-                <i className="fa fa-trophy"></i>
+                <i className="fa fa-trophy" />
                 <AnimatedNumber number={statistics.getSuccessRate() * 100} />
                 %
               </span>
@@ -117,7 +120,7 @@ export default class RhythmStatisticView extends Component {
     const scoreBeforeLastHundred = currentScore - _.sum(lastScores);
 
     const scoreDevelopmentValues = [scoreBeforeLastHundred];
-    lastScores.forEach((el) => {
+    lastScores.forEach(el => {
       scoreDevelopmentValues.push(el + scoreDevelopmentValues.slice(-1)[0]);
     });
 

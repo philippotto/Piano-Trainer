@@ -6,18 +6,22 @@ let audioBuffer;
 
 function loadMp3() {
   const request = new XMLHttpRequest();
-  request.open('GET', successMp3Url, true);
-  request.responseType = 'arraybuffer';
+  request.open("GET", successMp3Url, true);
+  request.responseType = "arraybuffer";
 
   request.onload = function() {
     const audioData = request.response;
 
-    audioCtx.decodeAudioData(audioData, function(buffer) {
-      audioBuffer = buffer;
+    audioCtx.decodeAudioData(
+      audioData,
+      function(buffer) {
+        audioBuffer = buffer;
       },
-      function(e){"Error with decoding audio data" + e.err}
+      function(e) {
+        "Error with decoding audio data" + e.err;
+      }
     );
-  }
+  };
 
   request.send();
 }

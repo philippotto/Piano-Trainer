@@ -1,18 +1,13 @@
 import LevelService from "../services/level_service.js";
 
-describe("LevelService", function () {
+describe("LevelService", function() {
+  it("getAllNotesUntilLevel", function() {
+    expect(LevelService.getAllNotesUntilLevelIndex(1)).toEqual(["c/4", "d/4", "e/4"]);
 
-  it("getAllNotesUntilLevel", function () {
-    expect(
-      LevelService.getAllNotesUntilLevelIndex(1)
-    ).toEqual(["c/4", "d/4", "e/4"]);
-
-    expect(
-      LevelService.getAllNotesUntilLevelIndex(2)
-    ).toEqual(["c/4", "d/4", "e/4", "f/4", "g/4", "a/4"]);
+    expect(LevelService.getAllNotesUntilLevelIndex(2)).toEqual(["c/4", "d/4", "e/4", "f/4", "g/4", "a/4"]);
   });
 
-  it("isInLevel", function () {
+  it("isInLevel", function() {
     const events = [
       {
         success: true,
@@ -45,5 +40,4 @@ describe("LevelService", function () {
     });
     expect(negativeEvaluation.isInLevel).toBe(false);
   });
-
 });

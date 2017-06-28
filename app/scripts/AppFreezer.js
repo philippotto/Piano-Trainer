@@ -7,17 +7,17 @@ let defaultSettings = {
       accuracyGoal: 0.85,
       timeGoal: 2000,
       amount: 5,
-      newNotesShare: 0.6,
+      newNotesShare: 0.6
     },
     chordSizeRanges: {
       treble: [1, 3],
-      bass: [1, 3],
+      bass: [1, 3]
     },
     keySignature: [7, 7],
     useAccidentals: false,
     midi: {
       inputs: Freezer.createLeaf([]),
-      activeInputIndex: 0,
+      activeInputIndex: 0
     }
   },
   rhythmReading: {
@@ -29,7 +29,7 @@ let defaultSettings = {
     eighthNotes: true,
     sixteenthNotes: false,
     dottedNotes: false,
-    triplets: false,
+    triplets: false
   }
 };
 
@@ -44,7 +44,7 @@ const AppFreezer = new Freezer({
   settings: defaultSettings
 });
 
-AppFreezer.on('update', () => {
+AppFreezer.on("update", () => {
   const settingsJson = JSON.stringify(AppFreezer.get().settings.toJS());
   localStorage.setItem("SheetMusicTutor-settings", settingsJson);
 });

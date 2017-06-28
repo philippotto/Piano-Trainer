@@ -1,21 +1,20 @@
 import Vex from "vexflow";
-import React, {Component} from "react";
+import React, { Component } from "react";
 import classNames from "classnames";
 import _ from "lodash";
-import PureRenderMixin from 'react-addons-pure-render-mixin';
+import PureRenderMixin from "react-addons-pure-render-mixin";
 
 class StaveRenderer extends Component {
-
   static defaultProps = {
     staveCount: 2
-  }
+  };
 
   propTypes: {
     keys: React.PropTypes.array,
     chordIndex: React.PropTypes.number,
     keySignature: React.PropTypes.string,
-    staveCount: React.PropTypes.number,
-  }
+    staveCount: React.PropTypes.number
+  };
 
   constructor(props) {
     super(props);
@@ -40,7 +39,6 @@ class StaveRenderer extends Component {
     window.addEventListener("resize", this.debouncedResizeHandler);
   }
 
-
   setCanvasExtent(canvas, width, height, ratio) {
     canvas.width = ratio * width;
     canvas.height = ratio * height;
@@ -52,11 +50,13 @@ class StaveRenderer extends Component {
   getPixelRatio() {
     const ctx = this.ctx,
       dpr = window.devicePixelRatio || 1,
-      bsr = ctx.webkitBackingStorePixelRatio ||
-            ctx.mozBackingStorePixelRatio ||
-            ctx.msBackingStorePixelRatio ||
-            ctx.oBackingStorePixelRatio ||
-            ctx.backingStorePixelRatio || 1;
+      bsr =
+        ctx.webkitBackingStorePixelRatio ||
+        ctx.mozBackingStorePixelRatio ||
+        ctx.msBackingStorePixelRatio ||
+        ctx.oBackingStorePixelRatio ||
+        ctx.backingStorePixelRatio ||
+        1;
     return dpr / bsr;
   }
 
@@ -65,9 +65,7 @@ class StaveRenderer extends Component {
     this.renderer = new Vex.Flow.Renderer(canvas, Vex.Flow.Renderer.Backends.CANVAS);
     this.ctx = this.renderer.getContext();
 
-    const windowWidth = window.innerWidth
-      || document.documentElement.clientWidth
-      || document.body.clientWidth;
+    const windowWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
 
     const widthThreshold = 600;
     const margin = 20;
@@ -82,16 +80,10 @@ class StaveRenderer extends Component {
     this.setCanvasExtent(canvas, width, height, ratio);
 
     const rightHandStave = new Vex.Flow.Stave(10, 0, staveWidth);
-    rightHandStave
-      .addClef("treble")
-      .setKeySignature(this.props.keySignature)
-      .setContext(ctx);
+    rightHandStave.addClef("treble").setKeySignature(this.props.keySignature).setContext(ctx);
 
     const leftHandStave = new Vex.Flow.Stave(10, 80, staveWidth);
-    leftHandStave
-      .addClef("bass")
-      .setKeySignature(this.props.keySignature)
-      .setContext(ctx);
+    leftHandStave.addClef("bass").setKeySignature(this.props.keySignature).setContext(ctx);
 
     this.colorizeKeys();
 
@@ -104,20 +96,17 @@ class StaveRenderer extends Component {
     });
   }
 
-
   colorizeKeys() {
-    Object.keys(this.props.keys).map((key) => {
+    Object.keys(this.props.keys).map(key => {
       const clef = this.props.keys[key];
       clef.forEach((staveNote, index) => {
         const color = index < this.props.chordIndex ? "#398439" : "black";
-        _.range(staveNote.getKeys().length).map((noteIndex) => {
-          staveNote.setKeyStyle(noteIndex, {fillStyle: color});
+        _.range(staveNote.getKeys().length).map(noteIndex => {
+          staveNote.setKeyStyle(noteIndex, { fillStyle: color });
         });
       });
     });
   }
-
 }
-
 
 export default StaveRenderer;

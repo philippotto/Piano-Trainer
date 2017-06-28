@@ -1,5 +1,5 @@
-import React, {Component} from "react";
-import {Motion, spring} from 'react-motion';
+import React, { Component } from "react";
+import { Motion, spring } from "react-motion";
 
 export default class StarAnimation extends Component {
   constructor() {
@@ -18,6 +18,6 @@ export default class StarAnimation extends Component {
   }
   render() {
     const className = "fa fa-star star-animation-" + this.state.animationCount % 2;
-    return <i className={className} />
+    return <i className={className} />;
   }
 }

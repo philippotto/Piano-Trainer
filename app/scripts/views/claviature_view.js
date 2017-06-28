@@ -1,32 +1,31 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import KeyConverter from "../services/key_converter.js";
 import classNames from "classnames";
 
 export default class ClaviatureView extends Component {
-
   propTypes: {
     desiredKeys: React.PropTypes.array,
     keySignature: React.PropTypes.string,
     successCallback: React.PropTypes.func,
     failureCallback: React.PropTypes.func,
-    disabled: React.PropTypes.bool,
-  }
+    disabled: React.PropTypes.bool
+  };
 
   constructor(props, context) {
     super(props, context);
     this.state = {
       // The key which is currently "clicked". Only used for keyboard navigation.
-      activeKey : null
-    }
+      activeKey: null
+    };
   }
 
   static contextTypes = {
     isInActiveView: React.PropTypes.bool
-  }
+  };
 
   isNoteCorrect(noteName) {
     let success = false;
-    this.props.desiredKeys.map((key) => {
+    this.props.desiredKeys.map(key => {
       const keyNumber = KeyConverter.getKeyNumberForKeyString(key, this.props.keySignature);
       const keyString = KeyConverter.getKeyStringForKeyNumber(keyNumber);
       const desiredNoteName = KeyConverter.getNoteFromKeyString(keyString);
@@ -49,7 +48,7 @@ export default class ClaviatureView extends Component {
       }
       if (eventType === "keydown") {
         this.setState({
-          activeKey : noteName
+          activeKey: noteName
         });
       } else {
         this.setState({
@@ -57,7 +56,7 @@ export default class ClaviatureView extends Component {
         });
         this.onClick(noteName);
       }
-    }
+    };
     this.keyHandlers = {
       keydown: keyHandler.bind(this, "keydown"),
       keyup: keyHandler.bind(this, "keyup")
@@ -87,13 +86,11 @@ export default class ClaviatureView extends Component {
       green: this.isNoteCorrect(keyName),
       active: keyName === this.state.activeKey
     });
-    return <li
-     ref={keyName}
-     key={keyName}
-     className={className}
-     onClick={this.onClick.bind(this, keyName)}>
-      {keyLabel}
-    </li>
+    return (
+      <li ref={keyName} key={keyName} className={className} onClick={this.onClick.bind(this, keyName)}>
+        {keyLabel}
+      </li>
+    );
   }
 
   render() {
@@ -110,12 +107,13 @@ export default class ClaviatureView extends Component {
       ["a", "A", "white"],
       ["a#", "A# B♭", "black"],
       ["b", "B", "white"]
-    ].map((args) => this.renderKey.apply(this, args));
-    return <div className={classNames({"scale noSelect": true, noPointerEvents: this.props.disabled})}>
-      <ol>
-        {keys}
-      </ol>
-    </div>;
+    ].map(args => this.renderKey.apply(this, args));
+    return (
+      <div className={classNames({ "scale noSelect": true, noPointerEvents: this.props.disabled })}>
+        <ol>
+          {keys}
+        </ol>
+      </div>
+    );
   }
 }
-

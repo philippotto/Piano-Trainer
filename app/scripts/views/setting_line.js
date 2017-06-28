@@ -1,18 +1,15 @@
-import React, {Component, PropTypes} from "react";
+import React, { Component, PropTypes } from "react";
 import _ from "lodash";
 
-
 export default class SettingLine extends Component {
-
   static defaultProps = {
     label: ""
-  }
+  };
 
   propTypes: {
     label: PropTypes.string,
-    className: PropTypes.string,
-
-  }
+    className: PropTypes.string
+  };
 
   constructor(props, context) {
     super(props, context);
@@ -25,7 +22,7 @@ export default class SettingLine extends Component {
     }
     return (
       <div className={className}>
-        <div className="col-lg-6 col-md-6 col-sm-6 col-xs-12" style={{textAlign: "left"}}>
+        <div className="col-lg-6 col-md-6 col-sm-6 col-xs-12" style={{ textAlign: "left" }}>
           {this.props.label}
         </div>
         <div className="settingUI col-lg-6 col-md-6 col-sm-6 col-xs-12">
