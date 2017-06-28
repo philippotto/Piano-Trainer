@@ -3,7 +3,8 @@ import classNames from "classnames";
 import _ from "lodash";
 
 export default class BeatVisualization extends Component {
-  propTypes: {
+  static propTypes = {
+    children: React.PropTypes.node,
     collapsed: React.PropTypes.bool.isRequired,
     maxHeight: React.PropTypes.number,
     freeze: React.PropTypes.bool,

@@ -6,7 +6,8 @@ import MetronomeService from "../services/metronome_service.js";
 import CollapsableContainer from "./collapsable_container.js";
 
 export default class MetronomeView extends Component {
-  propTypes: {
+  static propTypes = {
+    onMetronomeEnded: React.PropTypes.func,
     settings: React.PropTypes.object.isRequired,
     statisticService: React.PropTypes.object.isRequired
   };
@@ -59,7 +60,7 @@ export default class MetronomeView extends Component {
   render() {
     return (
       <CollapsableContainer
-        collapsed={this.state.currentMetronomeBeat == -1}
+        collapsed={this.state.currentMetronomeBeat === -1}
         className={classNames({
           opacityOut: (this.state.currentMetronomeBeat + 1) % 4 === 0
         })}

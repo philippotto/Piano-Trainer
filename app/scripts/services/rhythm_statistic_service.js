@@ -14,7 +14,7 @@ class RhythmStatisticService {
 
   off(event, callback) {
     if (callback) {
-      this.callbacks = this.callbacks.filter(el => el != callback);
+      this.callbacks = this.callbacks.filter(el => el !== callback);
     } else {
       this.callbacks = [];
     }

@@ -1,5 +1,3 @@
-import _ from "lodash";
-
 export default {
   convertDurationsToTimes: function(durations, barDuration) {
     const times = [];
@@ -69,7 +67,7 @@ export default {
 
     if (givenTimes.length > expectedTimes.length) {
       beatEvaluations = beatEvaluations.concat(
-        givenTimes.slice(expectedTimes.length).map(el => ({ superfluous: true, correct: false }))
+        givenTimes.slice(expectedTimes.length).map(() => ({ superfluous: true, correct: false }))
       );
     }
 

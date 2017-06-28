@@ -2,12 +2,14 @@ import React, { Component } from "react";
 import PureRenderMixin from "react-addons-pure-render-mixin";
 import RangeSettingComponent from "./range_setting_component";
 import SettingLine from "./setting_line";
-import KeyConverter from "../services/key_converter";
-import AppFreezer from "../AppFreezer.js";
 import AnalyticsService from "../services/analytics_service.js";
 import _ from "lodash";
 
 export default class PitchSettingsView extends Component {
+  static propTypes = {
+    settings: React.PropTypes.object
+  };
+
   constructor(props, context) {
     super(props, context);
     this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);

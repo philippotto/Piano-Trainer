@@ -5,7 +5,7 @@ import _ from "lodash";
 import RhythmChecker from "../services/rhythm_checker.js";
 
 export default class BeatVisualization extends Component {
-  propTypes: {
+  static propTypes = {
     settings: React.PropTypes.object.isRequired,
     barDuration: React.PropTypes.number.isRequired,
     currentRhythm: React.PropTypes.object.isRequired,

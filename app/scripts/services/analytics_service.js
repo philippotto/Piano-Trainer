@@ -1,3 +1,4 @@
+/* global ga */
 export default {
   sendEvent: function(eventCategory, eventAction, eventValue) {
     if (window.location.hostname === "localhost" || typeof ga === "undefined") {

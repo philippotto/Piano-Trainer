@@ -7,6 +7,10 @@ import _ from "lodash";
 import AnalyticsService from "../services/analytics_service.js";
 
 export default class PitchSettingsView extends Component {
+  static propTypes = {
+    settings: React.PropTypes.object
+  };
+
   constructor(props, context) {
     super(props, context);
   }
@@ -37,8 +41,8 @@ export default class PitchSettingsView extends Component {
     };
   }
 
-  onMidiSelectChange(event) {
-    AppFreezer.trigger("input:changed", parseInt(this.refs.midiSelect.value));
+  onMidiSelectChange() {
+    AppFreezer.trigger("input:changed", parseInt(this.refs.midiSelect.value, 10));
   }
 
   render() {

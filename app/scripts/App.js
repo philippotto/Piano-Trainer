@@ -11,8 +11,7 @@ import PitchStatisticService from "./services/pitch_statistic_service.js";
 import RhythmStatisticService from "./services/rhythm_statistic_service.js";
 import AnalyticsService from "./services/analytics_service.js";
 import AppFreezer from "./AppFreezer.js";
-import { Nav, NavItem, Button, Input } from "react-bootstrap";
-import classNames from "classnames";
+import { Nav, NavItem } from "react-bootstrap";
 
 const pianoBackgroundJpg = require("file!../images/piano-background.jpg");
 

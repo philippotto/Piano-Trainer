@@ -1,11 +1,10 @@
-import Chartist from "Chartist";
+import _ from "lodash";
 import React, { Component } from "react";
-import { Tooltip, OverlayTrigger } from "react-bootstrap";
 import LevelService from "../services/level_service.js";
 import PieChart from "../views/pie_chart.js";
 
 export default class LevelView extends Component {
-  propTypes: {
+  static propTypes = {
     statisticService: React.PropTypes.object.isRequired
   };
 

@@ -11,7 +11,7 @@ export default class SettingsView extends Component {
     label: ""
   };
 
-  propTypes: {
+  static propTypes = {
     rangeMin: PropTypes.number.isRequired,
     rangeMax: PropTypes.number.isRequired,
     values: PropTypes.array,

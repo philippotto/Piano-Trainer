@@ -8,7 +8,7 @@ import AnimatedNumber from "./animated_number.js";
 import StarAnimation from "./star_animation.js";
 
 export default class PitchStatisticView extends Component {
-  propTypes: {
+  static propTypes = {
     statisticService: React.PropTypes.object.isRequired,
     settings: React.PropTypes.object.isRequired
   };

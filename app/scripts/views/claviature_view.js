@@ -3,7 +3,7 @@ import KeyConverter from "../services/key_converter.js";
 import classNames from "classnames";
 
 export default class ClaviatureView extends Component {
-  propTypes: {
+  static propTypes = {
     desiredKeys: React.PropTypes.array,
     keySignature: React.PropTypes.string,
     successCallback: React.PropTypes.func,

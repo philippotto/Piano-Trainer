@@ -1,3 +1,4 @@
+import _ from "lodash";
 // Runs evolutions on statistic objects, so that we can update the schema
 
 const evolutions = [

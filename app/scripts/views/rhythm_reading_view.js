@@ -1,10 +1,8 @@
 import React, { Component } from "react";
 import classNames from "classnames";
-import _ from "lodash";
 
 import BarGenerator from "../services/bar_generator.js";
 import RhythmChecker from "../services/rhythm_checker.js";
-import MetronomeService from "../services/metronome_service.js";
 import AnalyticsService from "../services/analytics_service.js";
 
 import StaveRenderer from "./stave_renderer.js";
@@ -25,7 +23,7 @@ const Phases = {
 };
 
 export default class RhythmReadingView extends Component {
-  propTypes: {
+  static propTypes = {
     settings: React.PropTypes.object.isRequired,
     statisticService: React.PropTypes.object.isRequired,
     isActive: React.PropTypes.bool.isRequired
@@ -204,10 +202,6 @@ export default class RhythmReadingView extends Component {
   }
 
   render() {
-    const messageContainerClasses = classNames({
-      hide: this.state.errorMessage === null
-    });
-
     const welcomeText = (
       <CollapsableContainer collapsed={this.state.phase !== Phases.welcome}>
         <h3>Welcome to this rhythm training!</h3>

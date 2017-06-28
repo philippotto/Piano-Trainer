@@ -16,7 +16,7 @@ import CollapsableContainer from "./collapsable_container.js";
 const successMp3Url = require("file!../../resources/success.mp3");
 
 export default class PitchReadingView extends Component {
-  propTypes: {
+  static propTypes = {
     statisticService: React.PropTypes.object.isRequired,
     settings: React.PropTypes.object.isRequired,
     isActive: React.PropTypes.bool.isRequired

@@ -146,7 +146,7 @@ export default {
     const onePerTime = !isMidiAvailable;
 
     const [trebleNotes, bassNotes] = _.unzip(
-      _.range(0, options.chordsPerBar).map(index => {
+      _.range(0, options.chordsPerBar).map(() => {
         const generatePossibleNotes = clef => {
           if (level) {
             return {

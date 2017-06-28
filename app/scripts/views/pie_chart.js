@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import PureRenderMixin from "react-addons-pure-render-mixin";
 
 export default class LevelView extends Component {
-  propTypes: {
+  static propTypes = {
     pieParts: React.PropTypes.array.isRequired
   };
 

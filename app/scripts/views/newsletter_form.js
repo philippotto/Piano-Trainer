@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { Input } from "react-bootstrap";
 
 export default class NewsLetterForm extends Component {
   componentDidMount() {

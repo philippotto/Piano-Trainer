@@ -1,12 +1,12 @@
 import React, { Component, PropTypes } from "react";
-import _ from "lodash";
 
 export default class SettingLine extends Component {
   static defaultProps = {
     label: ""
   };
 
-  propTypes: {
+  static propTypes = {
+    children: PropTypes.node,
     label: PropTypes.string,
     className: PropTypes.string
   };

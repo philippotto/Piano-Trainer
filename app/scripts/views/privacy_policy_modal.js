@@ -2,6 +2,10 @@ import React, { Component } from "react";
 import { Modal, Button } from "react-bootstrap";
 
 export default class PrivacyPolicyModal extends Component {
+  static propTypes = {
+    onHide: React.PropTypes.func.isRequired
+  };
+
   render() {
     return (
       <Modal {...this.props} bsSize="large" aria-labelledby="contained-modal-title-lg">

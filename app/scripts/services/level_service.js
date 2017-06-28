@@ -61,8 +61,8 @@ const LevelService = {
   },
   getAllNotesUntilLevelIndex(levelIndex, optClef) {
     return _.flatten(
-      _.range(levelIndex).map(levelIndex => {
-        const keys = Levels[levelIndex].keys;
+      _.range(levelIndex).map(index => {
+        const keys = Levels[index].keys;
         if (optClef) {
           return keys[optClef];
         }

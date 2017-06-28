@@ -44,17 +44,17 @@ function initializeKeyMap() {
     .concat(_.flatten(_.times(octaveCount, () => octaveNotes)))
     .concat([octaveNotes[0]]);
 
-  const keyMap = {};
+  const newKeyMap = {};
 
   for (let index = 0, key; index < claviature.length; index++) {
     key = claviature[index];
     const offsettedIndex = index + claviatureOffset;
     const nr = Math.floor((offsettedIndex + octaveNoteLength) / octaveNoteLength);
 
-    keyMap[index + 21] = key + "/" + nr;
+    newKeyMap[index + 21] = key + "/" + nr;
   }
 
-  return keyMap;
+  return newKeyMap;
 }
 
 const KeyConverter = {

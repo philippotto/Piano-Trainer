@@ -1,7 +1,10 @@
 import React, { Component } from "react";
-import { Motion, spring } from "react-motion";
 
 export default class StarAnimation extends Component {
+  static propTypes = {
+    number: React.PropTypes.number
+  };
+
   constructor() {
     super();
     this.state = {

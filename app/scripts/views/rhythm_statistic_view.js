@@ -1,13 +1,14 @@
 import Chartist from "Chartist";
 import React, { Component } from "react";
 import { Tooltip, OverlayTrigger } from "react-bootstrap";
+import _ from "lodash";
 
 import AnimatedNumber from "./animated_number.js";
 import StarAnimation from "./star_animation.js";
 import PureRenderMixin from "react-addons-pure-render-mixin";
 
 export default class RhythmStatisticView extends Component {
-  propTypes: {
+  static propTypes = {
     statisticService: React.PropTypes.object.isRequired
   };
 
