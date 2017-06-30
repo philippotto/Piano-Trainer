@@ -41,47 +41,43 @@
  */
 
 /* eslint-disable no-var */
-var webpack = require('webpack');
-var path = require('path');
+var webpack = require("webpack");
+var path = require("path");
 var port = 1234;
 
 module.exports = {
   port: port,
-  entry: [
-    'webpack-dev-server/client?http://localhost:' + port,
-    'webpack/hot/dev-server',
-    './app/scripts/index.js'
-  ],
+  entry: ["webpack-dev-server/client?http://localhost:" + port, "webpack/hot/dev-server", "./app/scripts/index.js"],
   output: {
     path: path.resolve(__dirname, "build"),
-    filename: 'bundle.js',
-    publicPath: '/'
+    filename: "bundle.js",
+    publicPath: "/"
   },
   resolve: {
-    extensions: ['', '.js']
+    extensions: ["", ".js"]
   },
   resolveLoader: {
-    root: path.join(__dirname, 'node_modules')
+    root: path.join(__dirname, "node_modules")
   },
-  devtool: 'inline-source-map',
-  plugins: [
-    new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoErrorsPlugin()
-  ],
+  devtool: "inline-source-map",
+  plugins: [new webpack.HotModuleReplacementPlugin(), new webpack.NoErrorsPlugin()],
   module: {
     loaders: [
       {
         test: /\.jsx?$/,
-        loaders: ['babel'],
-        include: path.join(__dirname, 'app', 'scripts')
+        loaders: ["babel"],
+        include: path.join(__dirname, "app", "scripts")
       },
       {
         test: /\.less$/,
-        loader: "style!css!less",
+        loader: "style!css!less"
       },
-      { test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: "url-loader?limit=10000&minetype=application/font-woff" },
+      {
+        test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+        loader: "url-loader?limit=10000&minetype=application/font-woff"
+      },
       { test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: "file-loader" },
-      { test: /\.html/, loader: 'file?name=[name].[ext]' },
+      { test: /\.html/, loader: "file?name=[name].[ext]" }
     ]
   }
 };

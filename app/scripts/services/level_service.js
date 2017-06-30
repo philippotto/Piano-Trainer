@@ -9,14 +9,14 @@ const levelGroups = [
     base: {
       clef: "treble",
       signature: "C",
-      accidentals: false,
+      accidentals: false
     },
     sublevels: [
       r("c/4", "e/4"),
       r("f/4", "a/4"),
       r("b/4", "d/5"),
       r("e/5", "g/5"),
-      r("a/5", "c/6"),
+      r("a/5", "c/6")
 
       // very high and very low end should also go here
     ]
@@ -25,26 +25,26 @@ const levelGroups = [
     base: {
       clef: "bass",
       signature: "C",
-      accidentals: false,
+      accidentals: false
     },
     sublevels: [
       r("c/2", "e/2"),
       r("f/2", "a/2"),
       r("b/2", "d/3"),
       r("e/3", "g/3"),
-      r("a/3", "c/4"),
+      r("a/3", "c/4")
 
       // very high and very low end should also go here
     ]
   }
 ];
 
-const Levels = _.flatMap(levelGroups, (levelGroup) => {
-  return levelGroup.sublevels.map((sublevel) => {
+const Levels = _.flatMap(levelGroups, levelGroup => {
+  return levelGroup.sublevels.map(sublevel => {
     const level = _.assign({}, levelGroup.base, {
       keys: {
-        "treble": levelGroup.base.clef === "treble" ? sublevel : [],
-        "bass": levelGroup.base.clef === "bass" ? sublevel : [],
+        treble: levelGroup.base.clef === "treble" ? sublevel : [],
+        bass: levelGroup.base.clef === "bass" ? sublevel : []
       }
     });
     delete level.clef;
@@ -55,15 +55,14 @@ Levels.forEach((level, index) => {
   level.index = index;
 });
 
-
 const LevelService = {
   getLevelByIndex(index) {
     return Levels[index];
   },
   getAllNotesUntilLevelIndex(levelIndex, optClef) {
     return _.flatten(
-      _.range(levelIndex).map((levelIndex) => {
-        const keys = Levels[levelIndex].keys;
+      _.range(levelIndex).map(index => {
+        const keys = Levels[index].keys;
         if (optClef) {
           return keys[optClef];
         }
@@ -74,8 +73,7 @@ const LevelService = {
   getLevelOfUser(events) {
     // check for each level if the user meets all necessary conditions
     let levelIndex = 0;
-    while (levelIndex < Levels.length
-      && this.isInLevelIndex(events, levelIndex)) {
+    while (levelIndex < Levels.length && this.isInLevelIndex(events, levelIndex)) {
       levelIndex++;
     }
     return levelIndex - 1;
@@ -108,11 +106,9 @@ const LevelService = {
       time: thresholdSettings.timeGoal
     };
 
-    const filteredEvents = eventsToAssess.filter((event) =>
-      event.keys.some(this.levelContainsKey.bind(this, level))
-    );
-    const unfoldedEvents = _.flatMap(filteredEvents, (event) => {
-      return event.keys.map((key) => {
+    const filteredEvents = eventsToAssess.filter(event => event.keys.some(this.levelContainsKey.bind(this, level)));
+    const unfoldedEvents = _.flatMap(filteredEvents, event => {
+      return event.keys.map(key => {
         const subEvent = {
           ...event,
           key
@@ -130,7 +126,7 @@ const LevelService = {
 
       const eventsLength = eventsToAssess.length;
       const accuracy = successPartition.length / eventsToAssess.length;
-      const time = _.sum(successPartition.map((el) => el.time)) / successPartition.length;
+      const time = _.sum(successPartition.map(el => el.time)) / successPartition.length;
 
       const meetsLength = eventsLength >= optThresholds.amount;
       const meetsAccuracy = accuracy >= optThresholds.accuracy;
@@ -142,7 +138,7 @@ const LevelService = {
         meetsAccuracy,
         meetsTime,
         isGoodEnough: meetsLength && meetsAccuracy && meetsTime,
-        details : {
+        details: {
           eventsLength,
           time,
           accuracy,
@@ -150,7 +146,7 @@ const LevelService = {
         }
       };
     });
-    const goodEnoughPartition = _.partition(evaluation, (el) => el.isGoodEnough);
+    const goodEnoughPartition = _.partition(evaluation, el => el.isGoodEnough);
     return {
       goodEnoughKeys: goodEnoughPartition[0],
       notGoodEnoughKeys: goodEnoughPartition[1],

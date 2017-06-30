@@ -1,9 +1,7 @@
 import KeyConverter from "../services/key_converter.js";
 
-describe("KeyConverter", function () {
-
-  it("resolves a simple note", function () {
-
+describe("KeyConverter", function() {
+  it("resolves a simple note", function() {
     const numberA0 = KeyConverter.getKeyNumberForKeyString("a/0", "C");
     expect(numberA0).toBe(21);
 
@@ -20,8 +18,7 @@ describe("KeyConverter", function () {
     expect(numberB3).toBe(58);
   });
 
-  it("gets key strings for a number", function () {
-
+  it("gets key strings for a number", function() {
     const aSharp0 = KeyConverter.getKeyStringForKeyNumber("22");
     expect(aSharp0).toBe("a#/0");
 
@@ -29,14 +26,11 @@ describe("KeyConverter", function () {
     expect(b7).toBe("b/7");
   });
 
-  it("gets scales for an arbitrary base", function () {
-
-    const cScale = KeyConverter.getScaleKeysForBase("c/4")
-      .map(KeyConverter.getKeyStringForKeyNumber);
+  it("gets scales for an arbitrary base", function() {
+    const cScale = KeyConverter.getScaleKeysForBase("c/4").map(KeyConverter.getKeyStringForKeyNumber);
     expect(cScale).toEqual(["c/4", "d/4", "e/4", "f/4", "g/4", "a/4", "b/4"]);
 
-    const fSharpScale = KeyConverter.getScaleKeysForBase("f#/4")
-      .map(KeyConverter.getKeyStringForKeyNumber);
+    const fSharpScale = KeyConverter.getScaleKeysForBase("f#/4").map(KeyConverter.getKeyStringForKeyNumber);
 
     const expectedFSharpScale = ["f#/4", "g#/4", "a#/4", "b/4", "c#/5", "d#/5", "e#/5"];
     const normalizedFSharpScale = expectedFSharpScale.map(KeyConverter.getCanonicalKeyString, KeyConverter);
@@ -44,17 +38,15 @@ describe("KeyConverter", function () {
     expect(fSharpScale).toEqual(normalizedFSharpScale);
   });
 
-  it("can generate notes outside a given scale", function () {
-
+  it("can generate notes outside a given scale", function() {
     const actualNonC = KeyConverter.getNotesOutsideScale("c/4");
     expect(actualNonC).toEqual(["c#", "d#", "f#", "g#", "a#"]);
 
     const actualNonB = KeyConverter.getNotesOutsideScale("b/4");
-    expect(actualNonB).toEqual(["c", "d", "f", "g", "a",]);
+    expect(actualNonB).toEqual(["c", "d", "f", "g", "a"]);
   });
 
-  it("gets the canonical form of a key", function () {
-
+  it("gets the canonical form of a key", function() {
     const c4 = KeyConverter.getCanonicalKeyString("c/4");
     expect(c4).toBe("c/4");
 
@@ -64,5 +56,4 @@ describe("KeyConverter", function () {
     const cFlat = KeyConverter.getCanonicalKeyString("cb/4");
     expect(cFlat).toBe("b/3");
   });
-
 });

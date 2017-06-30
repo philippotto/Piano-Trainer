@@ -1,7 +1,7 @@
 /* eslint-disable no-var, strict */
-var webpack = require('webpack');
-var WebpackDevServer = require('webpack-dev-server');
-var config = require('./webpack.config');
+var webpack = require("webpack");
+var WebpackDevServer = require("webpack-dev-server");
+var config = require("./webpack.config");
 var port = config.port;
 
 new WebpackDevServer(webpack(config), {
@@ -9,9 +9,9 @@ new WebpackDevServer(webpack(config), {
   contentBase: "./app/",
   hot: true,
   historyApiFallback: true
-}).listen(port, 'localhost', function (err) {
-    if (err) {
-      console.log(err);
-    }
-    console.log('Listening at localhost:' + port);
-  });
+}).listen(port, "localhost", function(err) {
+  if (err) {
+    console.log(err);
+  }
+  console.log("Listening at localhost:" + port);
+});

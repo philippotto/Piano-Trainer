@@ -1,7 +1,10 @@
-import React, {Component} from "react";
-import {Motion, spring} from 'react-motion';
+import React, { Component } from "react";
 
 export default class StarAnimation extends Component {
+  static propTypes = {
+    number: React.PropTypes.number
+  };
+
   constructor() {
     super();
     this.state = {
@@ -18,6 +21,6 @@ export default class StarAnimation extends Component {
   }
   render() {
     const className = "fa fa-star star-animation-" + this.state.animationCount % 2;
-    return <i className={className} />
+    return <i className={className} />;
   }
 }

@@ -1,22 +1,16 @@
-import _ from "lodash";
-
 export default {
-
   convertDurationsToTimes: function(durations, barDuration) {
     const times = [];
     let lastTick = 0;
 
-    const inversedDurations = durations.map((el) => 1 / el);
+    const inversedDurations = durations.map(el => 1 / el);
 
     for (let i = 0; i < inversedDurations.length; i++) {
       const currentDuration = inversedDurations[i];
       let newLastTick;
       if (currentDuration > 0) {
         newLastTick = lastTick + currentDuration;
-        times.push([
-          lastTick * barDuration,
-          newLastTick * barDuration
-        ]);
+        times.push([lastTick * barDuration, newLastTick * barDuration]);
       } else {
         newLastTick = lastTick + Math.abs(currentDuration);
       }
@@ -24,7 +18,6 @@ export default {
     }
     return times;
   },
-
 
   /*
      returns an evaluationObject which holds
@@ -74,14 +67,14 @@ export default {
 
     if (givenTimes.length > expectedTimes.length) {
       beatEvaluations = beatEvaluations.concat(
-        givenTimes.slice(expectedTimes.length).map((el) => ({superfluous: true, correct: false}))
+        givenTimes.slice(expectedTimes.length).map(() => ({ superfluous: true, correct: false }))
       );
     }
 
     return {
       beatEvaluations,
       missesBeat,
-      success: beatEvaluations.every((el) => el.correct) && !missesBeat,
+      success: beatEvaluations.every(el => el.correct) && !missesBeat
     };
   },
 

@@ -39,28 +39,28 @@
  */
 
 /* eslint-disable no-var */
-var webpack = require('webpack');
-var path = require('path');
+var webpack = require("webpack");
+var path = require("path");
 
 module.exports = {
-  entry: './app/scripts/index.js',
+  entry: "./app/scripts/index.js",
   output: {
-    path: path.join(__dirname, 'dist/Piano-Trainer'),
-    filename: 'bundle.js',
-    publicPath: './'
+    path: path.join(__dirname, "dist/Piano-Trainer"),
+    filename: "bundle.js",
+    publicPath: "./"
   },
   resolve: {
-    extensions: ['', '.js']
+    extensions: ["", ".js"]
   },
   resolveLoader: {
-    root: path.join(__dirname, 'node_modules')
+    root: path.join(__dirname, "node_modules")
   },
-  devtool: 'source-map',
+  devtool: "source-map",
   plugins: [
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.DefinePlugin({
-      'process.env': {
-        'NODE_ENV': JSON.stringify('production')
+      "process.env": {
+        NODE_ENV: JSON.stringify("production")
       }
     }),
     new webpack.optimize.UglifyJsPlugin({
@@ -73,16 +73,19 @@ module.exports = {
     loaders: [
       {
         test: /\.jsx?$/,
-        loaders: ['babel'],
-        include: path.join(__dirname, 'app', 'scripts')
+        loaders: ["babel"],
+        include: path.join(__dirname, "app", "scripts")
       },
       {
         test: /\.less$/,
-        loader: "style!css!less",
+        loader: "style!css!less"
       },
-      { test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: "url-loader?limit=10000&minetype=application/font-woff" },
+      {
+        test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+        loader: "url-loader?limit=10000&minetype=application/font-woff"
+      },
       { test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: "file-loader" },
-      { test: /\.html/, loader: 'file?name=[name].[ext]' },
+      { test: /\.html/, loader: "file?name=[name].[ext]" }
     ]
   }
 };

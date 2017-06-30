@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import classNames from "classnames";
 import _ from "lodash";
 
@@ -16,17 +16,15 @@ import CollapsableContainer from "./collapsable_container.js";
 const successMp3Url = require("file!../../resources/success.mp3");
 
 export default class PitchReadingView extends Component {
-
-  propTypes: {
+  static propTypes = {
     statisticService: React.PropTypes.object.isRequired,
     settings: React.PropTypes.object.isRequired,
-    isActive: React.PropTypes.bool.isRequired,
-  }
-
+    isActive: React.PropTypes.bool.isRequired
+  };
 
   static childContextTypes = {
     isInActiveView: React.PropTypes.bool
-  }
+  };
 
   getChildContext() {
     return {
@@ -39,14 +37,14 @@ export default class PitchReadingView extends Component {
       successCallback: this.onSuccess.bind(this),
       failureCallback: this.onFailure.bind(this),
       errorCallback: this.onError.bind(this),
-      errorResolveCallback: this.onErrorResolve.bind(this),
+      errorResolveCallback: this.onErrorResolve.bind(this)
     });
     this.startDate = new Date();
     this.midiService.setDesiredKeys(this.getAllCurrentKeys(), this.state.currentKeySignature);
 
     const debugMode = true;
     if (debugMode) {
-      this.debugKeyUpCallback = (event) => {
+      this.debugKeyUpCallback = event => {
         const yesKeyCode = 89;
         const noKeyCode = 78;
         if (event.keyCode === yesKeyCode) {
@@ -65,7 +63,7 @@ export default class PitchReadingView extends Component {
 
   componentWillReceiveProps(nextProps) {
     function checkIfSomePropChanged(oldObj, newObj, keys) {
-      return keys.some((key) => _.at(oldObj, key) !== _.at(newObj, key));
+      return keys.some(key => _.at(oldObj, key) !== _.at(newObj, key));
     }
 
     const nextSettings = nextProps.settings;
@@ -78,15 +76,17 @@ export default class PitchReadingView extends Component {
       let newCurrentKeys = this.state.currentKeys;
       let keySignature = this.state.currentKeySignature;
 
-      let shouldRegenerateAll = checkIfSomePropChanged(
-        prevSettings,
-        nextSettings,
-        ["useAccidentals", "useAutomaticDifficulty", "automaticDifficulty.newNotesShare"]
-      );
+      let shouldRegenerateAll = checkIfSomePropChanged(prevSettings, nextSettings, [
+        "useAccidentals",
+        "useAutomaticDifficulty",
+        "automaticDifficulty.newNotesShare"
+      ]);
 
-      if (shouldRegenerateAll ||
+      if (
+        shouldRegenerateAll ||
         nextChordSizeRanges.treble !== chordSizeRanges.treble ||
-        nextChordSizeRanges.bass !== chordSizeRanges.bass) {
+        nextChordSizeRanges.bass !== chordSizeRanges.bass
+      ) {
         newCurrentKeys = this.generateNewBars(nextSettings);
       }
       if (shouldRegenerateAll || !_.isEqual(prevSettings.keySignature, nextSettings.keySignature)) {
@@ -96,15 +96,14 @@ export default class PitchReadingView extends Component {
       this.setState({
         currentChordIndex: 0,
         currentKeys: newCurrentKeys,
-        currentKeySignature: keySignature,
+        currentKeySignature: keySignature
       });
       this.startDate = new Date();
     }
   }
 
   generateNewBars(settings) {
-    const levelIndex =
-      LevelService.getLevelOfUser(this.props.statisticService.getAllEvents()) + 1;
+    const levelIndex = LevelService.getLevelOfUser(this.props.statisticService.getAllEvents()) + 1;
     const level = LevelService.getLevelByIndex(levelIndex);
     return BarGenerator.generateBars(settings, settings.useAutomaticDifficulty ? level : null);
   }
@@ -122,16 +121,13 @@ export default class PitchReadingView extends Component {
     this.state = {
       errorMessage: null,
       running: false,
-      ...(this.generateNewBarState())
+      ...this.generateNewBarState()
     };
   }
 
   startStopTraining() {
-    AnalyticsService.sendEvent(
-      'PitchReading',
-      this.state.running ? "Stop" : "Start"
-    );
-    this.setState({running: !this.state.running});
+    AnalyticsService.sendEvent("PitchReading", this.state.running ? "Stop" : "Start");
+    this.setState({ running: !this.state.running });
     this.startDate = new Date();
   }
 
@@ -143,50 +139,54 @@ export default class PitchReadingView extends Component {
 
     const isMidiAvailable = this.props.settings.midi.inputs.get().length > 0;
     const noErrors = this.state.errorMessage !== null;
-    const miniClaviature = (isMidiAvailable && noErrors)
-     ? null :
-     <ClaviatureView
-       desiredKeys={this.getAllCurrentKeys()}
-       keySignature={this.state.currentKeySignature}
-       successCallback={this.onSuccess.bind(this)}
-       failureCallback={this.onFailure.bind(this)}
-       disabled={!this.state.running}
-      />;
+    const miniClaviature =
+      isMidiAvailable && noErrors
+        ? null
+        : <ClaviatureView
+            desiredKeys={this.getAllCurrentKeys()}
+            keySignature={this.state.currentKeySignature}
+            successCallback={this.onSuccess.bind(this)}
+            failureCallback={this.onFailure.bind(this)}
+            disabled={!this.state.running}
+          />;
 
-    const startStopButton = <GameButton
-      label={`${this.state.running ? "Stop" : "Start"} training`}
-      shortcutLetter='s'
-      primary
-      onClick={this.startStopTraining.bind(this)}
-    />;
+    const startStopButton = (
+      <GameButton
+        label={`${this.state.running ? "Stop" : "Start"} training`}
+        shortcutLetter="s"
+        primary
+        onClick={this.startStopTraining.bind(this)}
+      />
+    );
 
-    const midiSetUpText = <p>
-      {`The generated notes will be so that you play only one note at a time.
+    const midiSetUpText = (
+      <p>
+        {`The generated notes will be so that you play only one note at a time.
       If you want to practice chords, have a look into the `}
-      <a href="https://github.com/philippotto/Piano-Trainer#how-to-use">
-        Set Up
-      </a>
-      {" section to hook up your digital piano."}
-    </p>;
+        <a href="https://github.com/philippotto/Piano-Trainer#how-to-use">Set Up</a>
+        {" section to hook up your digital piano."}
+      </p>
+    );
 
-    const welcomeText = <CollapsableContainer collapsed={this.state.running}>
-      <div className={classNames({
-        welcomeText: true,
-      })}>
-        <h3>
-          Welcome to this pitch training!
-        </h3>
-        <p>
-           {"When you hit Start, notes will be displayed in the stave above. "}
-           {isMidiAvailable ?
-              "Since we found a connected piano, you can use it to play the notes. " :
-              "Just use the mini claviature below to play the notes. "
-           }
-           {"Don't worry about the rhythm or speed for now."}
-        </p>
-        {isMidiAvailable ? null : midiSetUpText}
-      </div>
-    </CollapsableContainer>;
+    const welcomeText = (
+      <CollapsableContainer collapsed={this.state.running}>
+        <div
+          className={classNames({
+            welcomeText: true
+          })}
+        >
+          <h3>Welcome to this pitch training!</h3>
+          <p>
+            {"When you hit Start, notes will be displayed in the stave above. "}
+            {isMidiAvailable
+              ? "Since we found a connected piano, you can use it to play the notes. "
+              : "Just use the mini claviature below to play the notes. "}
+            {"Don't worry about the rhythm or speed for now."}
+          </p>
+          {isMidiAvailable ? null : midiSetUpText}
+        </div>
+      </CollapsableContainer>
+    );
 
     const emptyKeySet = {
       treble: [],
@@ -194,7 +194,7 @@ export default class PitchReadingView extends Component {
     };
 
     return (
-      <div className={classNames({trainer: true, "trainerHidden1": !this.props.isActive})}>
+      <div className={classNames({ trainer: true, trainerHidden1: !this.props.isActive })}>
         <div className="row center-lg center-md center-sm center-xs">
           <div className="col-lg col-md col-sm col-xs leftColumn">
             <div>
@@ -205,9 +205,11 @@ export default class PitchReadingView extends Component {
                   keySignature={this.state.currentKeySignature}
                 />
 
-                <div className={classNames({
-                  "row center-xs": true,
-                })}>
+                <div
+                  className={classNames({
+                    "row center-xs": true
+                  })}
+                >
                   <div className="col-xs-12">
                     {welcomeText}
                     {startStopButton}
@@ -217,11 +219,15 @@ export default class PitchReadingView extends Component {
               <CollapsableContainer collapsed={!miniClaviature}>
                 <div className={claviatureContainerClasses}>
                   {miniClaviature}
-                  <div className={classNames({
-                    message: true,
-                    hide: this.state.errorMessage === null
-                  })}>
-                    <h3>{this.state.errorMessage}</h3>
+                  <div
+                    className={classNames({
+                      message: true,
+                      hide: this.state.errorMessage === null
+                    })}
+                  >
+                    <h3>
+                      {this.state.errorMessage}
+                    </h3>
                   </div>
                 </div>
               </CollapsableContainer>
@@ -229,9 +235,7 @@ export default class PitchReadingView extends Component {
           </div>
           <div className="col-lg-4 col-md-12 col-sm-12 col-xs-12 rightColumn">
             <PitchSettingsView settings={this.props.settings} />
-            <PitchStatisticView
-              statisticService={this.props.statisticService}
-              settings={this.props.settings} />
+            <PitchStatisticView statisticService={this.props.statisticService} settings={this.props.settings} />
           </div>
           <audio ref="successPlayer" hidden="true" src={successMp3Url} controls preload="auto" autobuffer />
         </div>
@@ -243,26 +247,26 @@ export default class PitchReadingView extends Component {
     this.midiService.setDesiredKeys(this.getAllCurrentKeys(), this.state.currentKeySignature);
   }
 
-
   onError(msg) {
     console.error.apply(console, arguments);
-    this.setState({errorMessage: msg});
+    this.setState({ errorMessage: msg });
   }
-
 
   onErrorResolve() {
-    this.setState({errorMessage: null});
+    this.setState({ errorMessage: null });
   }
-
 
   getAllCurrentKeys() {
-    return _.compact(_.flatten(["treble", "bass"].map((clef) => {
-      const note = this.state.currentKeys[clef][this.state.currentChordIndex];
-      // Ignore rests
-      return note.noteType !== "r" ? note.getKeys() : null;
-    })));
+    return _.compact(
+      _.flatten(
+        ["treble", "bass"].map(clef => {
+          const note = this.state.currentKeys[clef][this.state.currentChordIndex];
+          // Ignore rests
+          return note.noteType !== "r" ? note.getKeys() : null;
+        })
+      )
+    );
   }
-
 
   onSuccess() {
     if (!this.state.running) {
@@ -272,7 +276,7 @@ export default class PitchReadingView extends Component {
       success: true,
       keys: this.getAllCurrentKeys(),
       keySignature: this.state.currentKeySignature,
-      time: new Date() - this.startDate,
+      time: new Date() - this.startDate
     };
     this.startDate = new Date();
 
@@ -280,23 +284,21 @@ export default class PitchReadingView extends Component {
 
     if (this.state.currentChordIndex + 1 >= this.state.currentKeys.treble.length) {
       this.setState({
-        ...(this.generateNewBarState())
+        ...this.generateNewBarState()
       });
     } else {
       this.setState({
-        currentChordIndex: this.state.currentChordIndex + 1,
+        currentChordIndex: this.state.currentChordIndex + 1
       });
     }
 
     this.playSuccessSound();
-    AnalyticsService.sendEvent('PitchReading', "success");
+    AnalyticsService.sendEvent("PitchReading", "success");
   }
-
 
   playSuccessSound() {
     this.refs.successPlayer.play();
   }
-
 
   onFailure() {
     if (!this.state.running) {
@@ -307,9 +309,8 @@ export default class PitchReadingView extends Component {
       success: false,
       keys: this.getAllCurrentKeys(),
       time: new Date() - this.startDate,
-      keySignature: this.state.currentKeySignature,
+      keySignature: this.state.currentKeySignature
     });
-    AnalyticsService.sendEvent('PitchReading', "failure");
+    AnalyticsService.sendEvent("PitchReading", "failure");
   }
-
 }

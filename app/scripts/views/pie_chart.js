@@ -1,12 +1,11 @@
 import Chartist from "Chartist";
-import React, {Component} from "react";
-import PureRenderMixin from 'react-addons-pure-render-mixin';
+import React, { Component } from "react";
+import PureRenderMixin from "react-addons-pure-render-mixin";
 
 export default class LevelView extends Component {
-
-  propTypes: {
-    pieParts: React.PropTypes.array.isRequired,
-  }
+  static propTypes = {
+    pieParts: React.PropTypes.array.isRequired
+  };
 
   constructor(props, context) {
     super(props, context);
@@ -18,17 +17,18 @@ export default class LevelView extends Component {
   }
 
   componentDidUpdate() {
-    new Chartist.Pie(this.refs.chart, {
-      series: this.props.pieParts
-    }, {
-      donut: true,
-      donutWidth: 30,
-      startAngle: 0,
-      total: 1,
-      showLabel: false
-    });
+    new Chartist.Pie(
+      this.refs.chart,
+      {
+        series: this.props.pieParts
+      },
+      {
+        donut: true,
+        donutWidth: 30,
+        startAngle: 0,
+        total: 1,
+        showLabel: false
+      }
+    );
   }
 }
-
-
-

@@ -1,23 +1,25 @@
-import _ from "lodash";
-
 const successMp3Url = require("file!../../resources/success.mp3");
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 let audioBuffer;
 
 function loadMp3() {
   const request = new XMLHttpRequest();
-  request.open('GET', successMp3Url, true);
-  request.responseType = 'arraybuffer';
+  request.open("GET", successMp3Url, true);
+  request.responseType = "arraybuffer";
 
   request.onload = function() {
     const audioData = request.response;
 
-    audioCtx.decodeAudioData(audioData, function(buffer) {
-      audioBuffer = buffer;
+    audioCtx.decodeAudioData(
+      audioData,
+      function(buffer) {
+        audioBuffer = buffer;
       },
-      function(e){"Error with decoding audio data" + e.err}
+      function(e) {
+        console.error("Error with decoding audio data" + e.err);
+      }
     );
-  }
+  };
 
   request.send();
 }
@@ -34,8 +36,9 @@ export default {
   play: function(delay) {
     const source = this.createAudioNode();
     source.start(audioCtx.currentTime + delay / 1000);
+    return source;
   },
-  stop: function() {
+  stop: function(source) {
     source.stop(0);
   }
 };

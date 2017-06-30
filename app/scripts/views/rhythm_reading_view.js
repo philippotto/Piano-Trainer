@@ -1,10 +1,8 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import classNames from "classnames";
-import _ from "lodash";
 
 import BarGenerator from "../services/bar_generator.js";
 import RhythmChecker from "../services/rhythm_checker.js";
-import MetronomeService from "../services/metronome_service.js";
 import AnalyticsService from "../services/analytics_service.js";
 
 import StaveRenderer from "./stave_renderer.js";
@@ -21,16 +19,15 @@ const keydown = "keydown";
 const Phases = {
   welcome: "welcome",
   running: "running",
-  feedback: "feedback",
+  feedback: "feedback"
 };
 
 export default class RhythmReadingView extends Component {
-
-  propTypes: {
+  static propTypes = {
     settings: React.PropTypes.object.isRequired,
     statisticService: React.PropTypes.object.isRequired,
-    isActive: React.PropTypes.bool.isRequired,
-  }
+    isActive: React.PropTypes.bool.isRequired
+  };
 
   constructor(props, context) {
     super(props, context);
@@ -46,7 +43,7 @@ export default class RhythmReadingView extends Component {
 
   static childContextTypes = {
     isInActiveView: React.PropTypes.bool
-  }
+  };
 
   getChildContext() {
     return {
@@ -65,24 +62,17 @@ export default class RhythmReadingView extends Component {
   onMetronomeEnded() {
     const settings = this.props.settings;
     const barDuration = settings.barDuration;
-    const expectedTimes = RhythmChecker.convertDurationsToTimes(
-      this.state.currentRhythm.durations,
-      barDuration
-    );
+    const expectedTimes = RhythmChecker.convertDurationsToTimes(this.state.currentRhythm.durations, barDuration);
     this.fixBeatHistory();
 
-    const result = RhythmChecker.compare(
-      expectedTimes,
-      this.beatHistory,
-      settings
-    );
+    const result = RhythmChecker.compare(expectedTimes, this.beatHistory, settings);
 
     this.props.statisticService.register({
       success: result.success,
       durations: this.state.currentRhythm.durations,
       barDuration,
       liveBeatBars: settings.liveBeatBars,
-      labelBeats: settings.labelBeats,
+      labelBeats: settings.labelBeats
     });
 
     this.setState({
@@ -90,7 +80,7 @@ export default class RhythmReadingView extends Component {
       result: result
     });
 
-    AnalyticsService.sendEvent('RhythmReading-Result', result.success);
+    AnalyticsService.sendEvent("RhythmReading-Result", result.success);
   }
 
   fixBeatHistory() {
@@ -117,7 +107,7 @@ export default class RhythmReadingView extends Component {
     let lastSpaceEvent = keyup;
     const keyHandler = (eventType, event) => {
       const spaceCode = 32;
-      AnalyticsService.sendEvent('RhythmReading', "keyPress", event.keyCode);
+      AnalyticsService.sendEvent("RhythmReading", "keyPress", event.keyCode);
 
       if (event.keyCode !== spaceCode && event.type.indexOf("touch") === -1) {
         return;
@@ -154,21 +144,19 @@ export default class RhythmReadingView extends Component {
           }
           this.beatHistory.slice(-1)[0].push(newBeatTime);
         }
-      } else {
-        if (lastSpaceEvent === keydown && eventType === keyup) {
-          lastSpaceEvent = keyup;
-          return;
-        }
+      } else if (lastSpaceEvent === keydown && eventType === keyup) {
+        lastSpaceEvent = keyup;
+        return;
       }
-    }
+    };
 
-    [keydown, keyup].forEach((eventType) => {
+    [keydown, keyup].forEach(eventType => {
       this.keyHandlers[eventType] = keyHandler.bind(null, eventType);
       document.addEventListener(eventType, this.keyHandlers[eventType]);
       document.addEventListener(eventType === keydown ? "touchstart" : "touchend", this.keyHandlers[eventType]);
     });
 
-    this.keyHandlers.contextmenu = (event) => {
+    this.keyHandlers.contextmenu = event => {
       if (this.state.phase === Phases.running) {
         // Circumvent long taps triggering a context menu.
         event.preventDefault();
@@ -179,7 +167,7 @@ export default class RhythmReadingView extends Component {
   }
 
   componentWillUnmount() {
-    [keydown, keyup].forEach((eventType) => {
+    [keydown, keyup].forEach(eventType => {
       document.removeEventListener(eventType, this.keyHandlers[eventType]);
       document.removeEventListener(eventType === keydown ? "touchstart" : "touchend", this.keyHandlers[eventType]);
     });
@@ -190,11 +178,11 @@ export default class RhythmReadingView extends Component {
     if (this.state.phase === Phases.running) {
       return;
     }
-    AnalyticsService.sendEvent('RhythmReading', "repeatBar");
+    AnalyticsService.sendEvent("RhythmReading", "repeatBar");
     this.beatHistory = [];
     this.setState({
       phase: Phases.running,
-      result: null,
+      result: null
     });
   }
 
@@ -202,102 +190,89 @@ export default class RhythmReadingView extends Component {
     if (this.state.phase === Phases.running) {
       return;
     }
-    AnalyticsService.sendEvent('RhythmReading', "nextBar");
+    AnalyticsService.sendEvent("RhythmReading", "nextBar");
     this.beatHistory = [];
     const newRhythm = BarGenerator.generateRhythmBar(this.props.settings);
 
     this.setState({
       phase: Phases.running,
       result: null,
-      currentRhythm: newRhythm,
+      currentRhythm: newRhythm
     });
   }
 
-
   render() {
-    const messageContainerClasses = classNames({
-      hide: this.state.errorMessage === null
-    });
-
-    const welcomeText =
+    const welcomeText = (
       <CollapsableContainer collapsed={this.state.phase !== Phases.welcome}>
-        <h3>
-          Welcome to this rhythm training!
-        </h3>
+        <h3>Welcome to this rhythm training!</h3>
         <p>
-           When you start the training, we will count in for 4 beats and afterwards
-           you can tap the given rhythm (either use your 'space' button or your touchscreen).
-           Make sure your speakers are on so that you can hear the metronome.
+          When you start the training, we will count in for 4 beats and afterwards you can tap the given rhythm (either
+          use your 'space' button or your touchscreen). Make sure your speakers are on so that you can hear the
+          metronome.
         </p>
-      </CollapsableContainer>;
+      </CollapsableContainer>
+    );
 
-    const feedbackSection =
+    const feedbackSection = (
       <CollapsableContainer collapsed={this.state.phase !== Phases.feedback}>
         <h2>
-          {(this.state.result && this.state.result.success) ?
-            "Yay! You nailed the rhythm!" :
-            "Oh no, you didn't get the rhythm right :("
-          }
+          {this.state.result && this.state.result.success
+            ? "Yay! You nailed the rhythm!"
+            : "Oh no, you didn't get the rhythm right :("}
         </h2>
-        <h4 style={{marginTop: 0}}>
-        Have a look at your performance:
-        </h4>
-      </CollapsableContainer>;
+        <h4 style={{ marginTop: 0 }}>Have a look at your performance:</h4>
+      </CollapsableContainer>
+    );
 
-    const beatBarSection =
+    const beatBarSection = (
       <CollapsableContainer
-       freeze={true}
-       collapsed={!(
-         this.state.phase === Phases.feedback ||
-         (this.state.phase === Phases.running && this.props.settings.liveBeatBars)
-       )}>
+        freeze={true}
+        collapsed={
+          !(
+            this.state.phase === Phases.feedback ||
+            (this.state.phase === Phases.running && this.props.settings.liveBeatBars)
+          )
+        }
+      >
         <BeatVisualization
           currentRhythm={this.state.currentRhythm}
           settings={this.props.settings}
-          barDuration={this.state.phase === Phases.feedback ?
-            this.props.statisticService.getLastBarDuration() :
-            this.props.settings.barDuration
+          barDuration={
+            this.state.phase === Phases.feedback
+              ? this.props.statisticService.getLastBarDuration()
+              : this.props.settings.barDuration
           }
           beatHistory={this.beatHistory}
           result={this.state.result}
-         />
-      </CollapsableContainer>;
+        />
+      </CollapsableContainer>
+    );
 
     console.log(this.state.currentRhythm.keys);
 
-    const metronomeBeat = <MetronomeView
-      settings={this.props.settings}
-      ref="metronome"
-      onMetronomeEnded={this.onMetronomeEnded.bind(this)}
-    />;
+    const metronomeBeat = (
+      <MetronomeView
+        settings={this.props.settings}
+        ref="metronome"
+        onMetronomeEnded={this.onMetronomeEnded.bind(this)}
+      />
+    );
 
     const buttons =
-      this.state.phase !== Phases.feedback ?
-        <GameButton
-           label="Start training" shortcutLetter='s' primary
-           onClick={this.nextBar.bind(this)} />
-      : (this.state.result.success ?
-          <div>
-            <GameButton
-             label="Repeat this bar" shortcutLetter='r'
-             onClick={this.repeatBar.bind(this)} />
-            <GameButton
-             label="Start next bar" shortcutLetter='s'
-             onClick={this.nextBar.bind(this)} primary />
-          </div>
-        :
-          <div>
-            <GameButton
-             label="Repeat this bar" shortcutLetter='r'
-             onClick={this.repeatBar.bind(this)} primary />
-            <GameButton
-             label="Skip this bar" shortcutLetter='s'
-             onClick={this.nextBar.bind(this)} />
-          </div>
-      );
+      this.state.phase !== Phases.feedback
+        ? <GameButton label="Start training" shortcutLetter="s" primary onClick={this.nextBar.bind(this)} />
+        : this.state.result.success
+          ? <div>
+              <GameButton label="Repeat this bar" shortcutLetter="r" onClick={this.repeatBar.bind(this)} />
+              <GameButton label="Start next bar" shortcutLetter="s" onClick={this.nextBar.bind(this)} primary />
+            </div>
+          : <div>
+              <GameButton label="Repeat this bar" shortcutLetter="r" onClick={this.repeatBar.bind(this)} primary />
+              <GameButton label="Skip this bar" shortcutLetter="s" onClick={this.nextBar.bind(this)} />
+            </div>;
 
     return (
-      <div className={classNames({trainer: true, "trainerHidden2": !this.props.isActive})}>
+      <div className={classNames({ trainer: true, trainerHidden2: !this.props.isActive })}>
         <div className="row center-lg center-md center-sm center-xs">
           <div className="col-lg col-md col-sm col-xs leftColumn">
             <div>
@@ -309,7 +284,7 @@ export default class RhythmReadingView extends Component {
                   staveCount={1}
                 />
 
-                <div style={{textAlign: "center"}}>
+                <div style={{ textAlign: "center" }}>
                   {metronomeBeat}
                   {welcomeText}
                   {feedbackSection}
@@ -317,7 +292,7 @@ export default class RhythmReadingView extends Component {
                 </div>
 
                 <CollapsableContainer collapsed={this.state.phase === Phases.running}>
-                  <div className="row center-xs" style={{marginTop: 20}}>
+                  <div className="row center-xs" style={{ marginTop: 20 }}>
                     <div className="col-xs-12">
                       {buttons}
                     </div>
@@ -334,5 +309,4 @@ export default class RhythmReadingView extends Component {
       </div>
     );
   }
-
 }

@@ -24,17 +24,13 @@ function sampleWithoutReplacement(options) {
 function randomInvokeAOrB(probability, functionA, functionB) {
   if (Math.random() < probability) {
     return functionA();
-  } else {
-    return functionB();
   }
-};
+  return functionB();
+}
 
 export default {
-
   generateKeySignature: function(settings) {
-    const keySignatureIndex = _.sample(
-      _.range(settings.keySignature[0], settings.keySignature[1] + 1)
-    );
+    const keySignatureIndex = _.sample(_.range(settings.keySignature[0], settings.keySignature[1] + 1));
     return KeyConverter.keySignatureValueToString(keySignatureIndex);
   },
 
@@ -49,18 +45,14 @@ export default {
   },
 
   generateRhythmBar: function(settings) {
-    const calcBarLength = (durations) => {
-      return durations.map((el) => 1 / Math.abs(el)).reduce((a, b) => a + b, 0);
-    }
+    const calcBarLength = durations => {
+      return durations.map(el => 1 / Math.abs(el)).reduce((a, b) => a + b, 0);
+    };
 
     const generateRandomDurations = () => {
       const durations = [];
-      while (calcBarLength(durations) < 1)  {
-        const possibleNotes = _.flatten([
-          [4, 2],
-          settings.eighthNotes ? 8 : null,
-          settings.sixteenthNotes ? 16 : null,
-        ]);
+      while (calcBarLength(durations) < 1) {
+        const possibleNotes = _.flatten([[4, 2], settings.eighthNotes ? 8 : null, settings.sixteenthNotes ? 16 : null]);
 
         let newDuration = _.sample(possibleNotes);
         if (settings.rests && Math.random() < settings.restProbability) {
@@ -72,21 +64,22 @@ export default {
       }
 
       return _.shuffle(durations);
-    }
+    };
 
     let durations = generateRandomDurations();
-    while (durations.every((el) => el < 0)) {
+    while (durations.every(el => el < 0)) {
       durations = generateRandomDurations();
     }
 
     // durations = [4, 2, -4, 4];
 
-    const staveNotes = durations.map((duration) =>
-      new Vex.Flow.StaveNote({
-        clef: "treble",
-        keys: ["a/4"],
-        duration: duration > 0 ? `${duration}` : `${duration}r`
-      })
+    const staveNotes = durations.map(
+      duration =>
+        new Vex.Flow.StaveNote({
+          clef: "treble",
+          keys: ["a/4"],
+          duration: duration > 0 ? `${duration}` : `${duration}r`
+        })
     );
 
     return {
@@ -114,13 +107,12 @@ export default {
       const frequencies = {
         new: settings.automaticDifficulty.newNotesShare,
         trebleGivenNew: amounts.trebleAndNew / (amounts.new || 1),
-        trebleGivenOld: amounts.trebleAndOld / (amounts.old || 1),
+        trebleGivenOld: amounts.trebleAndOld / (amounts.old || 1)
       };
       const trebleProbability =
-        frequencies.trebleGivenNew * frequencies.new +
-        frequencies.trebleGivenOld * (1 - frequencies.new);
+        frequencies.trebleGivenNew * frequencies.new + frequencies.trebleGivenOld * (1 - frequencies.new);
       return trebleProbability;
-    }
+    };
 
     if (onePerTime) {
       if (level) {
@@ -129,64 +121,59 @@ export default {
           return [1, 0];
         }
         return [0, 1];
-      } else {
-        const lengths = {
-          treble: _.max(settings.chordSizeRanges.treble),
-          bass: _.max(settings.chordSizeRanges.bass)
-        };
-        if (lengths.treble > 0 && lengths.bass > 0) {
-          return _.sample([[0, 1], [1, 0]]);
-        }
-        if (lengths.treble === 0) {
-          return [0, 1];
-        }
-        return [1, 0];
       }
-    } else {
-      if (level) {
-        // todo: handle possibility that a level doesn't demand the onePerTime limit
-        return this.getClefAmounts(settings, true, level);
-      } else {
-        return ["treble", "bass"].map((clef) =>
-          _.random.apply(_, settings.chordSizeRanges[clef])
-        );
+      const lengths = {
+        treble: _.max(settings.chordSizeRanges.treble),
+        bass: _.max(settings.chordSizeRanges.bass)
+      };
+      if (lengths.treble > 0 && lengths.bass > 0) {
+        return _.sample([[0, 1], [1, 0]]);
       }
+      if (lengths.treble === 0) {
+        return [0, 1];
+      }
+      return [1, 0];
     }
+    if (level) {
+      // todo: handle possibility that a level doesn't demand the onePerTime limit
+      return this.getClefAmounts(settings, true, level);
+    }
+    return ["treble", "bass"].map(clef => _.random.apply(_, settings.chordSizeRanges[clef]));
   },
 
   generateBars: function(settings, level) {
     const isMidiAvailable = settings.midi.inputs.get().length > 0;
     const onePerTime = !isMidiAvailable;
 
-    const [trebleNotes, bassNotes] = _.unzip(_.range(0, options.chordsPerBar).map((index) => {
-      const generatePossibleNotes = (clef) => {
-        if (level) {
-          return {
-            new: level.keys[clef],
-            old: LevelService.getAllNotesUntilLevelIndex(level.index, clef)
-          };
-        }
-        const levels = clef === "treble" ? [4, 5] : [2, 3];
-        return _.flatten(levels.map((noteLevel) =>
-          baseNotes.map((el) => el + "/" + noteLevel)
-        ));
-      };
+    const [trebleNotes, bassNotes] = _.unzip(
+      _.range(0, options.chordsPerBar).map(() => {
+        const generatePossibleNotes = clef => {
+          if (level) {
+            return {
+              new: level.keys[clef],
+              old: LevelService.getAllNotesUntilLevelIndex(level.index, clef)
+            };
+          }
+          const levels = clef === "treble" ? [4, 5] : [2, 3];
+          return _.flatten(levels.map(noteLevel => baseNotes.map(el => el + "/" + noteLevel)));
+        };
 
-      const [possibleTrebleNotes, possibleBassNotes] = [
-        generatePossibleNotes("treble"),
-        generatePossibleNotes("bass")
-      ];
+        const [possibleTrebleNotes, possibleBassNotes] = [
+          generatePossibleNotes("treble"),
+          generatePossibleNotes("bass")
+        ];
 
-      const [trebleAmount, bassAmount] = this.getClefAmounts(settings, onePerTime, level);
+        const [trebleAmount, bassAmount] = this.getClefAmounts(settings, onePerTime, level);
 
-      // trebleAmount bassAmount
-      // if length === 0 then amounts cannot be more than 0
+        // trebleAmount bassAmount
+        // if length === 0 then amounts cannot be more than 0
 
-      return [
-        this.generateNotesForBeat(settings, "treble", trebleAmount, possibleTrebleNotes),
-        this.generateNotesForBeat(settings, "bass", bassAmount, possibleBassNotes)
-      ];
-    }));
+        return [
+          this.generateNotesForBeat(settings, "treble", trebleAmount, possibleTrebleNotes),
+          this.generateNotesForBeat(settings, "bass", bassAmount, possibleBassNotes)
+        ];
+      })
+    );
 
     return {
       treble: trebleNotes,
@@ -208,20 +195,20 @@ export default {
 
     return _.times(amount, () => {
       const bothOptionsAreNotEmpty = newPossibleNotes.length > 0 && oldPossibleNotes.length > 0;
-      const newNoteProbability = bothOptionsAreNotEmpty ?
-        settings.automaticDifficulty.newNotesShare :
-        (newPossibleNotes.length > 0 ? 1 : 0);
+      const newNoteProbability = bothOptionsAreNotEmpty
+        ? settings.automaticDifficulty.newNotesShare
+        : newPossibleNotes.length > 0 ? 1 : 0;
 
       return randomInvokeAOrB(
         newNoteProbability,
         () => sampleWithoutReplacement(newPossibleNotes),
         () => sampleWithoutReplacement(oldPossibleNotes)
-      )
+      );
     });
   },
 
   ensureInterval: function(keyStrings) {
-    const keyNumbers = keyStrings.map((keyString) => {
+    const keyNumbers = keyStrings.map(keyString => {
       return KeyConverter.getKeyNumberForKeyString(keyString, "C");
     });
     return options.maximumInterval >= _.max(keyNumbers) - _.min(keyNumbers);
@@ -245,20 +232,17 @@ export default {
     const staveChord = new Vex.Flow.StaveNote({
       clef: clef,
       keys: randomNoteSet.sort((keyA, keyB) => {
-        return KeyConverter.getKeyNumberForKeyString(keyA, "C") -
-          KeyConverter.getKeyNumberForKeyString(keyB, "C");
+        return KeyConverter.getKeyNumberForKeyString(keyA, "C") - KeyConverter.getKeyNumberForKeyString(keyB, "C");
       }),
       duration: `${options.chordsPerBar}`
     });
 
-    randomNoteSet.forEach(({note, modifier}, index) => {
+    randomNoteSet.forEach(({ note, modifier }, index) => {
       if (modifier) {
         staveChord.addAccidental(index, new Vex.Flow.Accidental(modifier));
       }
     });
 
     return staveChord;
-
   }
-
-}
+};
