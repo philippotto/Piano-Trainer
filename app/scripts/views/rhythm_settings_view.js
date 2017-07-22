@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import PureRenderMixin from "react-addons-pure-render-mixin";
 import RangeSettingComponent from "./range_setting_component";
 import SettingLine from "./setting_line";
 import AnalyticsService from "../services/analytics_service.js";
@@ -12,7 +11,6 @@ export default class PitchSettingsView extends Component {
 
   constructor(props, context) {
     super(props, context);
-    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
   }
 
   buildStateChanger(stateKey) {

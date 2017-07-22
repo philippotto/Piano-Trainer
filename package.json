@@ -21,10 +21,9 @@
     "freezer-js": "git+https://github.com/philippotto/freezer.git#native-object-handling-build",
     "html-loader": "^0.4.3",
     "lodash": "^4.5.1",
-    "react": "^0.14.5",
-    "react-addons-pure-render-mixin": "^0.14.8",
+    "react": "^15.6.1",
     "react-bootstrap": "^0.28.3",
-    "react-dom": "^0.14.5",
+    "react-dom": "^15.6.1",
     "react-motion": "^0.4.2",
     "react-range-slider-bem": "^0.2.11",
     "vexflow": "^1.2.41"

@@ -1,15 +1,13 @@
 import Chartist from "Chartist";
-import React, { Component } from "react";
-import PureRenderMixin from "react-addons-pure-render-mixin";
+import React, { PureComponent } from "react";
 
-export default class LevelView extends Component {
+export default class LevelView extends PureComponent {
   static propTypes = {
     pieParts: React.PropTypes.array.isRequired
   };
 
   constructor(props, context) {
     super(props, context);
-    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
   }
 
   render() {

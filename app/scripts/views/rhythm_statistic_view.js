@@ -5,7 +5,6 @@ import _ from "lodash";
 
 import AnimatedNumber from "./animated_number.js";
 import StarAnimation from "./star_animation.js";
-import PureRenderMixin from "react-addons-pure-render-mixin";
 
 export default class RhythmStatisticView extends Component {
   static propTypes = {
@@ -14,7 +13,6 @@ export default class RhythmStatisticView extends Component {
 
   constructor(props) {
     super(props);
-    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
   }
 
   getHumanReadableTime(milliseconds) {
