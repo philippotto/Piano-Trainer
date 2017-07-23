@@ -1,5 +1,6 @@
 import Vex from "vexflow";
 import React, { PureComponent } from "react";
+import PropTypes from "prop-types";
 import _ from "lodash";
 
 class StaveRenderer extends PureComponent {
@@ -8,10 +9,10 @@ class StaveRenderer extends PureComponent {
   };
 
   static propTypes = {
-    keys: React.PropTypes.objectOf(React.PropTypes.array),
-    chordIndex: React.PropTypes.number,
-    keySignature: React.PropTypes.string,
-    staveCount: React.PropTypes.number
+    keys: PropTypes.objectOf(PropTypes.array),
+    chordIndex: PropTypes.number,
+    keySignature: PropTypes.string,
+    staveCount: PropTypes.number
   };
 
   constructor(props) {
@@ -19,7 +20,14 @@ class StaveRenderer extends PureComponent {
   }
 
   render() {
-    return <canvas ref="canvas" id="canvas" />;
+    return (
+      <canvas
+        ref={c => {
+          this.canvas = c;
+        }}
+        id="canvas"
+      />
+    );
   }
 
   componentDidUpdate() {
@@ -58,7 +66,7 @@ class StaveRenderer extends PureComponent {
   }
 
   draw() {
-    const canvas = this.refs.canvas;
+    const canvas = this.canvas;
     this.renderer = new Vex.Flow.Renderer(canvas, Vex.Flow.Renderer.Backends.CANVAS);
     this.ctx = this.renderer.getContext();
 

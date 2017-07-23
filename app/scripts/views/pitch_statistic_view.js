@@ -1,5 +1,6 @@
 import Chartist from "Chartist";
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { Tooltip, OverlayTrigger } from "react-bootstrap";
 import LevelView from "./level_view.js";
 import CollapsableContainer from "./collapsable_container.js";
@@ -9,8 +10,8 @@ import StarAnimation from "./star_animation.js";
 
 export default class PitchStatisticView extends Component {
   static propTypes = {
-    statisticService: React.PropTypes.object.isRequired,
-    settings: React.PropTypes.object.isRequired
+    statisticService: PropTypes.object.isRequired,
+    settings: PropTypes.object.isRequired
   };
 
   render() {
@@ -21,7 +22,12 @@ export default class PitchStatisticView extends Component {
 
     return (
       <div className="graph-stats content-box">
-        <div ref="chart" className="semi-transparent ct-chart ct-major-eleventh" />
+        <div
+          ref={c => {
+            this.chart = c;
+          }}
+          className="semi-transparent ct-chart ct-major-eleventh"
+        />
 
         <div className="row around-xs">
           <div className="col-xs">
@@ -90,8 +96,8 @@ export default class PitchStatisticView extends Component {
       }
     };
 
-    if (statistics.getSuccessCount() > 1) {
-      Chartist.Line(this.refs.chart, data, options);
+    if (this.chart && statistics.getSuccessCount() > 1) {
+      Chartist.Line(this.chart, data, options);
     }
   }
 }

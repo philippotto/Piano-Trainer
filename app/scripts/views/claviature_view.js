@@ -1,14 +1,15 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import KeyConverter from "../services/key_converter.js";
 import classNames from "classnames";
 
 export default class ClaviatureView extends Component {
   static propTypes = {
-    desiredKeys: React.PropTypes.array,
-    keySignature: React.PropTypes.string,
-    successCallback: React.PropTypes.func,
-    failureCallback: React.PropTypes.func,
-    disabled: React.PropTypes.bool
+    desiredKeys: PropTypes.array,
+    keySignature: PropTypes.string,
+    successCallback: PropTypes.func,
+    failureCallback: PropTypes.func,
+    disabled: PropTypes.bool
   };
 
   constructor(props, context) {
@@ -20,7 +21,7 @@ export default class ClaviatureView extends Component {
   }
 
   static contextTypes = {
-    isInActiveView: React.PropTypes.bool
+    isInActiveView: PropTypes.bool
   };
 
   isNoteCorrect(noteName) {

@@ -1,9 +1,10 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { Modal, Button } from "react-bootstrap";
 
 export default class PrivacyPolicyModal extends Component {
   static propTypes = {
-    onHide: React.PropTypes.func.isRequired
+    onHide: PropTypes.func.isRequired
   };
 
   render() {

@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import RangeSettingComponent from "./range_setting_component";
 import SettingLine from "./setting_line";
 import AnalyticsService from "../services/analytics_service.js";
@@ -6,7 +7,7 @@ import _ from "lodash";
 
 export default class PitchSettingsView extends Component {
   static propTypes = {
-    settings: React.PropTypes.object
+    settings: PropTypes.object
   };
 
   constructor(props, context) {

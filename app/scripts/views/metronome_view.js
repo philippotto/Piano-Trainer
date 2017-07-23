@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import classNames from "classnames";
 import _ from "lodash";
 
@@ -7,9 +8,9 @@ import CollapsableContainer from "./collapsable_container.js";
 
 export default class MetronomeView extends Component {
   static propTypes = {
-    onMetronomeEnded: React.PropTypes.func,
-    settings: React.PropTypes.object.isRequired,
-    statisticService: React.PropTypes.object.isRequired
+    onMetronomeEnded: PropTypes.func,
+    settings: PropTypes.object.isRequired,
+    statisticService: PropTypes.object.isRequired
   };
 
   constructor(props, context) {

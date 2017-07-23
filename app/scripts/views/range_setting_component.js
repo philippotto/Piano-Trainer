@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import RangeSlider from "react-range-slider-bem";
 import SettingLine from "./setting_line";
 import _ from "lodash";
@@ -23,18 +24,20 @@ export default class SettingsView extends Component {
 
   constructor(props, context) {
     super(props, context);
-    this.receiveValueAsProps(this.props);
-  }
-
-  receiveValueAsProps(props) {
-    let values = _.isArray(props.values) ? props.values : [props.values];
     this.state = {
-      values: values.map(el => el * multiplier)
+      values: this.valuesFromProps(this.props)
     };
   }
 
+  valuesFromProps(props) {
+    let values = _.isArray(props.values) ? props.values : [props.values];
+    return values.map(el => el * multiplier);
+  }
+
   componentWillReceiveProps(newProps) {
-    this.receiveValueAsProps(newProps);
+    this.setState = {
+      values: this.valuesFromProps(newProps)
+    };
   }
 
   onChange(event, index, values) {

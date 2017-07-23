@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import RangeSettingComponent from "./range_setting_component";
 import SettingLine from "./setting_line";
 import KeyConverter from "../services/key_converter";
@@ -8,7 +9,7 @@ import AnalyticsService from "../services/analytics_service.js";
 
 export default class PitchSettingsView extends Component {
   static propTypes = {
-    settings: React.PropTypes.object
+    settings: PropTypes.object
   };
 
   constructor(props, context) {
@@ -42,7 +43,7 @@ export default class PitchSettingsView extends Component {
   }
 
   onMidiSelectChange() {
-    AppFreezer.trigger("input:changed", parseInt(this.refs.midiSelect.value, 10));
+    AppFreezer.trigger("input:changed", parseInt(this.midiSelect.value, 10));
   }
 
   render() {
@@ -56,7 +57,9 @@ export default class PitchSettingsView extends Component {
             name="select"
             onChange={this.onMidiSelectChange.bind(this)}
             defaultValue={midiSettings.currentInput}
-            ref="midiSelect"
+            ref={c => {
+              this.midiSelect = c;
+            }}
           >
             {midiInputs.map((el, index) => {
               return (

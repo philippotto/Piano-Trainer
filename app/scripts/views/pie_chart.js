@@ -1,9 +1,10 @@
 import Chartist from "Chartist";
+import PropTypes from "prop-types";
 import React, { PureComponent } from "react";
 
 export default class LevelView extends PureComponent {
   static propTypes = {
-    pieParts: React.PropTypes.array.isRequired
+    pieParts: PropTypes.array.isRequired
   };
 
   constructor(props, context) {
@@ -11,12 +12,19 @@ export default class LevelView extends PureComponent {
   }
 
   render() {
-    return <div ref="chart" className="semi-transparent ct-chart ct-major-eleventh" />;
+    return (
+      <div
+        ref={c => {
+          this.chart = c;
+        }}
+        className="semi-transparent ct-chart ct-major-eleventh"
+      />
+    );
   }
 
   componentDidUpdate() {
     new Chartist.Pie(
-      this.refs.chart,
+      this.chart,
       {
         series: this.props.pieParts
       },

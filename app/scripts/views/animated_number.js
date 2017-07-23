@@ -1,10 +1,11 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { Motion, spring } from "react-motion";
 
 export default class AnimatedNumber extends Component {
   static propTypes = {
-    formatter: React.PropTypes.func,
-    number: React.PropTypes.number
+    formatter: PropTypes.func,
+    number: PropTypes.number
   };
   render() {
     const formatter = this.props.formatter;

@@ -1,8 +1,9 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 
 export default class StarAnimation extends Component {
   static propTypes = {
-    number: React.PropTypes.number
+    number: PropTypes.number
   };
 
   constructor() {

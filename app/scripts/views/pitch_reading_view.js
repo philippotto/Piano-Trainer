@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import classNames from "classnames";
 import _ from "lodash";
 
@@ -17,13 +18,13 @@ const successMp3Url = require("file!../../resources/success.mp3");
 
 export default class PitchReadingView extends Component {
   static propTypes = {
-    statisticService: React.PropTypes.object.isRequired,
-    settings: React.PropTypes.object.isRequired,
-    isActive: React.PropTypes.bool.isRequired
+    statisticService: PropTypes.object.isRequired,
+    settings: PropTypes.object.isRequired,
+    isActive: PropTypes.bool.isRequired
   };
 
   static childContextTypes = {
-    isInActiveView: React.PropTypes.bool
+    isInActiveView: PropTypes.bool
   };
 
   getChildContext() {
@@ -237,7 +238,16 @@ export default class PitchReadingView extends Component {
             <PitchSettingsView settings={this.props.settings} />
             <PitchStatisticView statisticService={this.props.statisticService} settings={this.props.settings} />
           </div>
-          <audio ref="successPlayer" hidden="true" src={successMp3Url} controls preload="auto" autobuffer />
+          <audio
+            ref={c => {
+              this.successPlayer = c;
+            }}
+            hidden="true"
+            src={successMp3Url}
+            controls
+            preload="auto"
+            autobuffer
+          />
         </div>
       </div>
     );
@@ -297,7 +307,7 @@ export default class PitchReadingView extends Component {
   }
 
   playSuccessSound() {
-    this.refs.successPlayer.play();
+    this.successPlayer.play();
   }
 
   onFailure() {

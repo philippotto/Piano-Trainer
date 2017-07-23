@@ -1,5 +1,6 @@
 import Chartist from "Chartist";
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { Tooltip, OverlayTrigger } from "react-bootstrap";
 import _ from "lodash";
 
@@ -8,7 +9,7 @@ import StarAnimation from "./star_animation.js";
 
 export default class RhythmStatisticView extends Component {
   static propTypes = {
-    statisticService: React.PropTypes.object.isRequired
+    statisticService: PropTypes.object.isRequired
   };
 
   constructor(props) {
@@ -66,7 +67,12 @@ export default class RhythmStatisticView extends Component {
 
     return (
       <div className="graph-stats content-box">
-        <div ref="chart" className="semi-transparent ct-chart ct-major-eleventh" />
+        <div
+          ref={c => {
+            this.chart = c;
+          }}
+          className="semi-transparent ct-chart ct-major-eleventh"
+        />
         <div className="row around-xs">
           <div className="col-xs">
             <OverlayTrigger placement="top" overlay={<Tooltip id="avgTime">Your current score</Tooltip>}>
@@ -142,8 +148,8 @@ export default class RhythmStatisticView extends Component {
       }
     };
 
-    if (scoreDevelopmentValues.length > 1) {
-      Chartist.Line(this.refs.chart, data, options);
+    if (this.chart && scoreDevelopmentValues.length > 1) {
+      Chartist.Line(this.chart, data, options);
     }
   }
 }

@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import classNames from "classnames";
 import _ from "lodash";
 
@@ -6,11 +7,11 @@ import RhythmChecker from "../services/rhythm_checker.js";
 
 export default class BeatVisualization extends Component {
   static propTypes = {
-    settings: React.PropTypes.object.isRequired,
-    barDuration: React.PropTypes.number.isRequired,
-    currentRhythm: React.PropTypes.object.isRequired,
-    beatHistory: React.PropTypes.object.isRequired,
-    result: React.PropTypes.object.isRequired
+    settings: PropTypes.object.isRequired,
+    barDuration: PropTypes.number.isRequired,
+    currentRhythm: PropTypes.object.isRequired,
+    beatHistory: PropTypes.object.isRequired,
+    result: PropTypes.object.isRequired
   };
 
   convertTicksToBeatNames(tickTime, tickLength) {

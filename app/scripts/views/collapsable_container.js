@@ -1,14 +1,15 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import classNames from "classnames";
 import _ from "lodash";
 
 export default class BeatVisualization extends Component {
   static propTypes = {
-    children: React.PropTypes.node,
-    collapsed: React.PropTypes.bool.isRequired,
-    maxHeight: React.PropTypes.number,
-    freeze: React.PropTypes.bool,
-    className: React.PropTypes.string
+    children: PropTypes.node,
+    collapsed: PropTypes.bool.isRequired,
+    maxHeight: PropTypes.number,
+    freeze: PropTypes.bool,
+    className: PropTypes.string
   };
 
   componentWillReceiveProps(nextProps) {
