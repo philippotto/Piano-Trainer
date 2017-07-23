@@ -5,7 +5,7 @@ import SettingLine from "./setting_line";
 import AnalyticsService from "../services/analytics_service.js";
 import _ from "lodash";
 
-export default class PitchSettingsView extends Component {
+export default class RythmSettingsView extends Component {
   static propTypes = {
     settings: PropTypes.object
   };

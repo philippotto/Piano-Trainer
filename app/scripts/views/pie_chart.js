@@ -2,7 +2,7 @@ import Chartist from "Chartist";
 import PropTypes from "prop-types";
 import React, { PureComponent } from "react";
 
-export default class LevelView extends PureComponent {
+export default class PieChart extends PureComponent {
   static propTypes = {
     pieParts: PropTypes.array.isRequired
   };

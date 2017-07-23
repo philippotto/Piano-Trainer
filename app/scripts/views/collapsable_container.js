@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 import _ from "lodash";
 
-export default class BeatVisualization extends Component {
+export default class CollapsableContainer extends Component {
   static propTypes = {
     children: PropTypes.node,
     collapsed: PropTypes.bool.isRequired,

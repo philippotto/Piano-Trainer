@@ -6,7 +6,7 @@ import _ from "lodash";
 
 const multiplier = 10;
 
-export default class SettingsView extends Component {
+export default class RangeSettingComponent extends Component {
   static defaultProps = {
     valueToString: _.identity,
     label: ""
