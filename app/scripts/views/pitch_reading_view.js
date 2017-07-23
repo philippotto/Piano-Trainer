@@ -246,7 +246,6 @@ export default class PitchReadingView extends Component {
             src={successMp3Url}
             controls
             preload="auto"
-            autobuffer
           />
         </div>
       </div>
