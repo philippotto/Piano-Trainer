@@ -9,8 +9,7 @@ import CollapsableContainer from "./collapsable_container.js";
 export default class MetronomeView extends Component {
   static propTypes = {
     onMetronomeEnded: PropTypes.func,
-    settings: PropTypes.object.isRequired,
-    statisticService: PropTypes.object.isRequired
+    settings: PropTypes.object.isRequired
   };
 
   constructor(props, context) {

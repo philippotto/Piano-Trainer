@@ -15,7 +15,7 @@ export default class RangeSettingComponent extends Component {
   static propTypes = {
     rangeMin: PropTypes.number.isRequired,
     rangeMax: PropTypes.number.isRequired,
-    values: PropTypes.array,
+    values: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.number), PropTypes.number]),
     onChange: PropTypes.func.isRequired,
     label: PropTypes.string,
     valueToString: PropTypes.func,

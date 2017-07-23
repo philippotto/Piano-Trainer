@@ -36,8 +36,6 @@ export default class NewsLetterForm extends Component {
                       this.email = c;
                     }}
                     className="form-control"
-                    groupClassName="group-class"
-                    labelClassName="label-class"
                   />
                 </div>
               </div>

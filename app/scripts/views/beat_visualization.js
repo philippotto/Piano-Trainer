@@ -10,8 +10,8 @@ export default class BeatVisualization extends Component {
     settings: PropTypes.object.isRequired,
     barDuration: PropTypes.number.isRequired,
     currentRhythm: PropTypes.object.isRequired,
-    beatHistory: PropTypes.object.isRequired,
-    result: PropTypes.object.isRequired
+    beatHistory: PropTypes.array.isRequired,
+    result: PropTypes.object
   };
 
   convertTicksToBeatNames(tickTime, tickLength) {
