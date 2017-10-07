@@ -26,9 +26,7 @@ export default class SettingLine extends Component {
         <div className="col-lg-6 col-md-6 col-sm-6 col-xs-12" style={{ textAlign: "left" }}>
           {this.props.label}
         </div>
-        <div className="settingUI col-lg-6 col-md-6 col-sm-6 col-xs-12">
-          {this.props.children}
-        </div>
+        <div className="settingUI col-lg-6 col-md-6 col-sm-6 col-xs-12">{this.props.children}</div>
       </div>
     );
   }

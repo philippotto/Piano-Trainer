@@ -24,19 +24,19 @@ export default class RhythmStatisticView extends Component {
         unit: "y"
       },
       {
-        amount: Math.floor(seconds % 31536000 / 86400),
+        amount: Math.floor((seconds % 31536000) / 86400),
         unit: "d"
       },
       {
-        amount: Math.floor(seconds % 31536000 % 86400 / 3600),
+        amount: Math.floor(((seconds % 31536000) % 86400) / 3600),
         unit: "h"
       },
       {
-        amount: Math.floor(seconds % 31536000 % 86400 % 3600 / 60),
+        amount: Math.floor((((seconds % 31536000) % 86400) % 3600) / 60),
         unit: "m"
       },
       {
-        amount: seconds % 31536000 % 86400 % 3600 % 60,
+        amount: (((seconds % 31536000) % 86400) % 3600) % 60,
         unit: "s"
       }
     ]

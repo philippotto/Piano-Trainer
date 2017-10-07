@@ -27,11 +27,11 @@ export default class BeatVisualization extends Component {
     const ticks = necessaryBeatNames.slice(tickIndex, tickIndex + tickStepCount);
     return (
       <div className="row center-xs">
-        {ticks.map((beatName, index) =>
+        {ticks.map((beatName, index) => (
           <div className="col-xs" key={index}>
             {beatName}
           </div>
-        )}
+        ))}
       </div>
     );
   }
@@ -53,11 +53,11 @@ export default class BeatVisualization extends Component {
         currentX = x + width;
 
         return [
-          marginLeft > 0
-            ? <div className="beat restBeat" style={{ width: `${marginLeft}%` }} key={"spacer-${index}"}>
-                {beatNamesRest}
-              </div>
-            : null,
+          marginLeft > 0 ? (
+            <div className="beat restBeat" style={{ width: `${marginLeft}%` }} key={"spacer-${index}"}>
+              {beatNamesRest}
+            </div>
+          ) : null,
           <div className={`beat ${color}-beat`} style={{ width: `${width}%` }} key={index}>
             {beatNames}
           </div>
@@ -99,12 +99,8 @@ export default class BeatVisualization extends Component {
     // uniqueId avoids that different beat bars are animated into each other
     return (
       <div key={_.uniqueId()} className={className}>
-        <div className="expectedBeatBar">
-          {expectedBeats}
-        </div>
-        <div className="actualBeatBar">
-          {actualBeats}
-        </div>
+        <div className="expectedBeatBar">{expectedBeats}</div>
+        <div className="actualBeatBar">{actualBeats}</div>
       </div>
     );
   }

@@ -50,26 +50,26 @@ export default class PitchSettingsView extends Component {
     const midiSettings = this.props.settings.midi;
     const midiInputs = midiSettings.inputs.get();
     const isMidiAvailable = midiInputs.length > 0;
-    const deviceSelector = !isMidiAvailable
-      ? null
-      : <SettingLine label="Midi device">
-          <select
-            name="select"
-            onChange={this.onMidiSelectChange.bind(this)}
-            defaultValue={midiSettings.currentInput}
-            ref={c => {
-              this.midiSelect = c;
-            }}
-          >
-            {midiInputs.map((el, index) => {
-              return (
-                <option value={index} key={index}>
-                  Device {index + 1}
-                </option>
-              );
-            })}
-          </select>
-        </SettingLine>;
+    const deviceSelector = !isMidiAvailable ? null : (
+      <SettingLine label="Midi device">
+        <select
+          name="select"
+          onChange={this.onMidiSelectChange.bind(this)}
+          defaultValue={midiSettings.currentInput}
+          ref={c => {
+            this.midiSelect = c;
+          }}
+        >
+          {midiInputs.map((el, index) => {
+            return (
+              <option value={index} key={index}>
+                Device {index + 1}
+              </option>
+            );
+          })}
+        </select>
+      </SettingLine>
+    );
 
     const useAutomaticDifficulty = this.props.settings.useAutomaticDifficulty;
 

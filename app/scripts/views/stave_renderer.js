@@ -85,10 +85,16 @@ class StaveRenderer extends PureComponent {
     this.setCanvasExtent(canvas, width, height, ratio);
 
     const rightHandStave = new Vex.Flow.Stave(10, 0, staveWidth);
-    rightHandStave.addClef("treble").setKeySignature(this.props.keySignature).setContext(ctx);
+    rightHandStave
+      .addClef("treble")
+      .setKeySignature(this.props.keySignature)
+      .setContext(ctx);
 
     const leftHandStave = new Vex.Flow.Stave(10, 80, staveWidth);
-    leftHandStave.addClef("bass").setKeySignature(this.props.keySignature).setContext(ctx);
+    leftHandStave
+      .addClef("bass")
+      .setKeySignature(this.props.keySignature)
+      .setContext(ctx);
 
     this.colorizeKeys();
 

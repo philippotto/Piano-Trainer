@@ -262,17 +262,19 @@ export default class RhythmReadingView extends Component {
     );
 
     const buttons =
-      this.state.phase !== Phases.feedback
-        ? <GameButton label="Start training" shortcutLetter="s" primary onClick={this.nextBar.bind(this)} />
-        : this.state.result.success
-          ? <div>
-              <GameButton label="Repeat this bar" shortcutLetter="r" onClick={this.repeatBar.bind(this)} />
-              <GameButton label="Start next bar" shortcutLetter="s" onClick={this.nextBar.bind(this)} primary />
-            </div>
-          : <div>
-              <GameButton label="Repeat this bar" shortcutLetter="r" onClick={this.repeatBar.bind(this)} primary />
-              <GameButton label="Skip this bar" shortcutLetter="s" onClick={this.nextBar.bind(this)} />
-            </div>;
+      this.state.phase !== Phases.feedback ? (
+        <GameButton label="Start training" shortcutLetter="s" primary onClick={this.nextBar.bind(this)} />
+      ) : this.state.result.success ? (
+        <div>
+          <GameButton label="Repeat this bar" shortcutLetter="r" onClick={this.repeatBar.bind(this)} />
+          <GameButton label="Start next bar" shortcutLetter="s" onClick={this.nextBar.bind(this)} primary />
+        </div>
+      ) : (
+        <div>
+          <GameButton label="Repeat this bar" shortcutLetter="r" onClick={this.repeatBar.bind(this)} primary />
+          <GameButton label="Skip this bar" shortcutLetter="s" onClick={this.nextBar.bind(this)} />
+        </div>
+      );
 
     return (
       <div className={classNames({ trainer: true, trainerHidden2: !this.props.isActive })}>
@@ -296,9 +298,7 @@ export default class RhythmReadingView extends Component {
 
                 <CollapsableContainer collapsed={this.state.phase === Phases.running}>
                   <div className="row center-xs" style={{ marginTop: 20 }}>
-                    <div className="col-xs-12">
-                      {buttons}
-                    </div>
+                    <div className="col-xs-12">{buttons}</div>
                   </div>
                 </CollapsableContainer>
               </div>

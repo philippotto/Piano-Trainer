@@ -65,9 +65,7 @@ export default class LevelView extends Component {
     return (
       <div>
         {content}
-        <div>
-          Current level: {levelIndex + 2}
-        </div>
+        <div>Current level: {levelIndex + 2}</div>
       </div>
     );
   }

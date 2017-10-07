@@ -111,9 +111,7 @@ export default class ClaviatureView extends Component {
     ].map(args => this.renderKey.apply(this, args));
     return (
       <div className={classNames({ "scale noSelect": true, noPointerEvents: this.props.disabled })}>
-        <ol>
-          {keys}
-        </ol>
+        <ol>{keys}</ol>
       </div>
     );
   }

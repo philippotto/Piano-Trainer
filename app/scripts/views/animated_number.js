@@ -12,10 +12,7 @@ export default class AnimatedNumber extends Component {
     const number = this.props.number;
     return (
       <Motion defaultStyle={{ x: 1 }} style={{ x: spring(number) }}>
-        {value =>
-          <span>
-            {formatter ? formatter(value.x) : Math.round(value.x)}
-          </span>}
+        {value => <span>{formatter ? formatter(value.x) : Math.round(value.x)}</span>}
       </Motion>
     );
   }

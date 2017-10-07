@@ -65,9 +65,7 @@ export default class MetronomeView extends Component {
           opacityOut: (this.state.currentMetronomeBeat + 1) % 4 === 0
         })}
       >
-        <h2>
-          {this.state.currentMetronomeBeat + 1}
-        </h2>
+        <h2>{this.state.currentMetronomeBeat + 1}</h2>
       </CollapsableContainer>
     );
   }

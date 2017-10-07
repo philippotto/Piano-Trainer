@@ -64,7 +64,9 @@ class RhythmStatisticService {
   }
 
   getSuccessCount() {
-    return _(this.stats).filter(el => el.success).value().length;
+    return _(this.stats)
+      .filter(el => el.success)
+      .value().length;
   }
 
   getLastScores(n) {
@@ -72,7 +74,10 @@ class RhythmStatisticService {
   }
 
   getLastTimes(n = 10) {
-    return this.stats.filter(el => el.success).map(el => el.time).slice(-n);
+    return this.stats
+      .filter(el => el.success)
+      .map(el => el.time)
+      .slice(-n);
   }
 
   computeAverage(array) {
@@ -88,7 +93,10 @@ class RhythmStatisticService {
   }
 
   getTotalAmountOfBeats() {
-    return _(this.stats).map(el => el.durations).flatten().size();
+    return _(this.stats)
+      .map(el => el.durations)
+      .flatten()
+      .size();
   }
 
   getTotalRhythmTime() {

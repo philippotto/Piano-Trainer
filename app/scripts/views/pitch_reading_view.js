@@ -141,15 +141,15 @@ export default class PitchReadingView extends Component {
     const isMidiAvailable = this.props.settings.midi.inputs.get().length > 0;
     const noErrors = this.state.errorMessage !== null;
     const miniClaviature =
-      isMidiAvailable && noErrors
-        ? null
-        : <ClaviatureView
-            desiredKeys={this.getAllCurrentKeys()}
-            keySignature={this.state.currentKeySignature}
-            successCallback={this.onSuccess.bind(this)}
-            failureCallback={this.onFailure.bind(this)}
-            disabled={!this.state.running}
-          />;
+      isMidiAvailable && noErrors ? null : (
+        <ClaviatureView
+          desiredKeys={this.getAllCurrentKeys()}
+          keySignature={this.state.currentKeySignature}
+          successCallback={this.onSuccess.bind(this)}
+          failureCallback={this.onFailure.bind(this)}
+          disabled={!this.state.running}
+        />
+      );
 
     const startStopButton = (
       <GameButton
@@ -226,9 +226,7 @@ export default class PitchReadingView extends Component {
                       hide: this.state.errorMessage === null
                     })}
                   >
-                    <h3>
-                      {this.state.errorMessage}
-                    </h3>
+                    <h3>{this.state.errorMessage}</h3>
                   </div>
                 </div>
               </CollapsableContainer>
