@@ -22,11 +22,11 @@
     "html-loader": "^0.4.3",
     "lodash": "^4.5.1",
     "prop-types": "^15.5.10",
+    "rc-slider": "^8.3.1",
     "react": "^15.6.1",
     "react-bootstrap": "^0.31.1",
     "react-dom": "^15.6.1",
     "react-motion": "^0.5.0",
-    "react-range-slider-bem": "^0.2.11",
     "vexflow": "^1.2.41"
   },
   "devDependencies": {

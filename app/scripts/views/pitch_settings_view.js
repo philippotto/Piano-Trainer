@@ -89,7 +89,7 @@ export default class PitchSettingsView extends Component {
         <RangeSettingComponent
           rangeMin={50}
           rangeMax={99}
-          values={this.props.settings.automaticDifficulty.accuracyGoal * 100}
+          values={parseInt(this.props.settings.automaticDifficulty.accuracyGoal * 100, 10)}
           onChange={value => accuracyStateChanger(value / 100)}
           valueToString={el => `${el}%`}
           label={"Accuracy goal"}
@@ -97,7 +97,7 @@ export default class PitchSettingsView extends Component {
         <RangeSettingComponent
           rangeMin={10}
           rangeMax={100}
-          values={this.props.settings.automaticDifficulty.newNotesShare * 100}
+          values={parseInt(this.props.settings.automaticDifficulty.newNotesShare * 100, 10)}
           onChange={value => newNotesShareStateChanger(value / 100)}
           valueToString={el => `${el}%`}
           label={"Share of new notes"}
@@ -110,7 +110,10 @@ export default class PitchSettingsView extends Component {
         <RangeSettingComponent
           rangeMin={1}
           rangeMax={5}
-          values={this.props.settings.chordSizeRanges.treble}
+          values={{
+            from: this.props.settings.chordSizeRanges.treble[0],
+            to: this.props.settings.chordSizeRanges.treble[1]
+          }}
           onChange={this.buildStateChanger("chordSizeRanges.treble")}
           label={"Treble notes/chord"}
           disabled={!isMidiAvailable}
@@ -118,7 +121,10 @@ export default class PitchSettingsView extends Component {
         <RangeSettingComponent
           rangeMin={1}
           rangeMax={5}
-          values={this.props.settings.chordSizeRanges.bass}
+          values={{
+            from: this.props.settings.chordSizeRanges.bass[0],
+            to: this.props.settings.chordSizeRanges.bass[1]
+          }}
           onChange={this.buildStateChanger("chordSizeRanges.bass")}
           label={"Bass notes/chord"}
           disabled={!isMidiAvailable}
@@ -126,7 +132,10 @@ export default class PitchSettingsView extends Component {
         <RangeSettingComponent
           rangeMin={0}
           rangeMax={14}
-          values={this.props.settings.keySignature}
+          values={{
+            from: this.props.settings.keySignature[0],
+            to: this.props.settings.keySignature[1]
+          }}
           onChange={this.buildStateChanger("keySignature")}
           valueToString={KeyConverter.keySignatureValueToString}
           label={"Signature"}
