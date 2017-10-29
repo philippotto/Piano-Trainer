@@ -70,25 +70,26 @@ export default class PitchSettingsView extends Component {
           />
           <label htmlFor="try_to_use_midi_checkbox" />
         </SettingLine>
-        <SettingLine label="Midi device">
-          <select
-            name="select"
-            onChange={this.onMidiSelectChange.bind(this)}
-            defaultValue={midiSettings.currentInput}
-            ref={c => {
-              this.midiSelect = c;
-            }}
-            disabled={!tryToUseMidi}
-          >
-            {midiInputs.map((el, index) => {
-              return (
-                <option value={index} key={index}>
-                  Device {index + 1}
-                </option>
-              );
-            })}
-          </select>
-        </SettingLine>
+        {tryToUseMidi ? (
+          <SettingLine label="Midi device">
+            <select
+              name="select"
+              onChange={this.onMidiSelectChange.bind(this)}
+              defaultValue={midiSettings.currentInput}
+              ref={c => {
+                this.midiSelect = c;
+              }}
+            >
+              {midiInputs.map((el, index) => {
+                return (
+                  <option value={index} key={index}>
+                    Device {index + 1}
+                  </option>
+                );
+              })}
+            </select>
+          </SettingLine>
+        ) : null}
       </div>
     );
 
