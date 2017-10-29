@@ -65,8 +65,7 @@
   },
   "scripts": {
     "start": "node server.js",
-    "build":
-      "BABEL_ENV=production webpack --config webpack.config.production.js && node pre-render.js",
+    "build": "BABEL_ENV=production webpack --config webpack.config.production.js && node pre-render.js",
     "lint": "eslint . && prettier --list-different '**/*.{js,jsx,ts,css,less,scss,json}'",
     "test": "karma start --single-run --browsers PhantomJS",
     "pretty": "prettier --write '**/*.{js,jsx,ts,css,less,scss,json}'"
