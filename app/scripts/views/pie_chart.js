@@ -1,24 +1,30 @@
 import Chartist from "Chartist";
-import React, { Component } from "react";
-import PureRenderMixin from "react-addons-pure-render-mixin";
+import PropTypes from "prop-types";
+import React, { PureComponent } from "react";
 
-export default class LevelView extends Component {
+export default class PieChart extends PureComponent {
   static propTypes = {
-    pieParts: React.PropTypes.array.isRequired
+    pieParts: PropTypes.array.isRequired
   };
 
   constructor(props, context) {
     super(props, context);
-    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
   }
 
   render() {
-    return <div ref="chart" className="semi-transparent ct-chart ct-major-eleventh" />;
+    return (
+      <div
+        ref={c => {
+          this.chart = c;
+        }}
+        className="semi-transparent ct-chart ct-major-eleventh"
+      />
+    );
   }
 
   componentDidUpdate() {
     new Chartist.Pie(
-      this.refs.chart,
+      this.chart,
       {
         series: this.props.pieParts
       },

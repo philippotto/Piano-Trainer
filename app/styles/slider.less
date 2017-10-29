@@ -1,0 +1,30 @@
+@import (less) "../../node_modules/rc-slider/assets/index.css";
+
+.rc-slider:not(.rc-slider-disabled) {
+  .rc-slider-rail {
+    background: rgba(0, 0, 0, 0.68);
+    box-shadow: 1px 1px 0.9px rgba(0, 0, 0, 0.3), 0 0 1px hsla(0, 0%, 5%, 0.3);
+  }
+
+  .rc-slider-handle {
+    box-shadow: 0 0 4px #670000;
+    border: 1px solid black;
+  }
+
+  .rc-slider-handle:hover,
+  .rc-slider-handle:active {
+    border-color: #670000;
+    box-shadow: 0 0 8px #670000;
+  }
+
+  .rc-slider-handle:focus {
+    border-color: #670000;
+    box-shadow: 0 0 1px 4px #fa9494;
+  }
+  .rc-slider-track {
+    background: #000;
+  }
+}
+.rc-slider-disabled {
+  background: none;
+}

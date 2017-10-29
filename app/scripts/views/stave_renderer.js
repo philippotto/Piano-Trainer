@@ -1,27 +1,33 @@
 import Vex from "vexflow";
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
+import PropTypes from "prop-types";
 import _ from "lodash";
-import PureRenderMixin from "react-addons-pure-render-mixin";
 
-class StaveRenderer extends Component {
+class StaveRenderer extends PureComponent {
   static defaultProps = {
     staveCount: 2
   };
 
   static propTypes = {
-    keys: React.PropTypes.array,
-    chordIndex: React.PropTypes.number,
-    keySignature: React.PropTypes.string,
-    staveCount: React.PropTypes.number
+    keys: PropTypes.objectOf(PropTypes.array),
+    chordIndex: PropTypes.number,
+    keySignature: PropTypes.string,
+    staveCount: PropTypes.number
   };
 
   constructor(props) {
     super(props);
-    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
   }
 
   render() {
-    return <canvas ref="canvas" id="canvas" />;
+    return (
+      <canvas
+        ref={c => {
+          this.canvas = c;
+        }}
+        id="canvas"
+      />
+    );
   }
 
   componentDidUpdate() {
@@ -60,7 +66,7 @@ class StaveRenderer extends Component {
   }
 
   draw() {
-    const canvas = this.refs.canvas;
+    const canvas = this.canvas;
     this.renderer = new Vex.Flow.Renderer(canvas, Vex.Flow.Renderer.Backends.CANVAS);
     this.ctx = this.renderer.getContext();
 
@@ -79,10 +85,16 @@ class StaveRenderer extends Component {
     this.setCanvasExtent(canvas, width, height, ratio);
 
     const rightHandStave = new Vex.Flow.Stave(10, 0, staveWidth);
-    rightHandStave.addClef("treble").setKeySignature(this.props.keySignature).setContext(ctx);
+    rightHandStave
+      .addClef("treble")
+      .setKeySignature(this.props.keySignature)
+      .setContext(ctx);
 
     const leftHandStave = new Vex.Flow.Stave(10, 80, staveWidth);
-    leftHandStave.addClef("bass").setKeySignature(this.props.keySignature).setContext(ctx);
+    leftHandStave
+      .addClef("bass")
+      .setKeySignature(this.props.keySignature)
+      .setContext(ctx);
 
     this.colorizeKeys();
 

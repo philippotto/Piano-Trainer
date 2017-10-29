@@ -28,7 +28,9 @@ class PitchStatisticService {
     this.stats = localStorage.getItem(localStoragePitchStatsKey);
 
     if (this.stats) {
-      this.stats = JSON.parse(this.stats).map(this.transformDate).map(StatEvolver.evolveToLatestSchema);
+      this.stats = JSON.parse(this.stats)
+        .map(this.transformDate)
+        .map(StatEvolver.evolveToLatestSchema);
     } else {
       this.stats = [];
     }
@@ -45,7 +47,9 @@ class PitchStatisticService {
   }
 
   getSuccessCount() {
-    return _(this.stats).filter(el => el.success).value().length;
+    return _(this.stats)
+      .filter(el => el.success)
+      .value().length;
   }
 
   rateEvent(event) {
@@ -67,7 +71,10 @@ class PitchStatisticService {
   }
 
   getLastTimes(n = 10) {
-    return this.stats.filter(el => el.success).map(el => el.time).slice(-n);
+    return this.stats
+      .filter(el => el.success)
+      .map(el => el.time)
+      .slice(-n);
   }
 
   computeAverage(array) {
@@ -83,11 +90,18 @@ class PitchStatisticService {
   }
 
   getTotalAmountOfChords() {
-    return _(this.stats).filter(el => el.success).map(el => el.keys).size();
+    return _(this.stats)
+      .filter(el => el.success)
+      .map(el => el.keys)
+      .size();
   }
 
   getTotalAmountOfKeys() {
-    return _(this.stats).filter(el => el.success).map(el => el.keys).flatten().size();
+    return _(this.stats)
+      .filter(el => el.success)
+      .map(el => el.keys)
+      .flatten()
+      .size();
   }
 
   getSuccessRate() {

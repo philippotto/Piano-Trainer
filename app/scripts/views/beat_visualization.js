@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import classNames from "classnames";
 import _ from "lodash";
 
@@ -6,11 +7,11 @@ import RhythmChecker from "../services/rhythm_checker.js";
 
 export default class BeatVisualization extends Component {
   static propTypes = {
-    settings: React.PropTypes.object.isRequired,
-    barDuration: React.PropTypes.number.isRequired,
-    currentRhythm: React.PropTypes.object.isRequired,
-    beatHistory: React.PropTypes.object.isRequired,
-    result: React.PropTypes.object.isRequired
+    settings: PropTypes.object.isRequired,
+    barDuration: PropTypes.number.isRequired,
+    currentRhythm: PropTypes.object.isRequired,
+    beatHistory: PropTypes.array.isRequired,
+    result: PropTypes.object
   };
 
   convertTicksToBeatNames(tickTime, tickLength) {
@@ -26,11 +27,11 @@ export default class BeatVisualization extends Component {
     const ticks = necessaryBeatNames.slice(tickIndex, tickIndex + tickStepCount);
     return (
       <div className="row center-xs">
-        {ticks.map((beatName, index) =>
+        {ticks.map((beatName, index) => (
           <div className="col-xs" key={index}>
             {beatName}
           </div>
-        )}
+        ))}
       </div>
     );
   }
@@ -52,11 +53,11 @@ export default class BeatVisualization extends Component {
         currentX = x + width;
 
         return [
-          marginLeft > 0
-            ? <div className="beat restBeat" style={{ width: `${marginLeft}%` }} key={"spacer-${index}"}>
-                {beatNamesRest}
-              </div>
-            : null,
+          marginLeft > 0 ? (
+            <div className="beat restBeat" style={{ width: `${marginLeft}%` }} key={"spacer-${index}"}>
+              {beatNamesRest}
+            </div>
+          ) : null,
           <div className={`beat ${color}-beat`} style={{ width: `${width}%` }} key={index}>
             {beatNames}
           </div>
@@ -98,12 +99,8 @@ export default class BeatVisualization extends Component {
     // uniqueId avoids that different beat bars are animated into each other
     return (
       <div key={_.uniqueId()} className={className}>
-        <div className="expectedBeatBar">
-          {expectedBeats}
-        </div>
-        <div className="actualBeatBar">
-          {actualBeats}
-        </div>
+        <div className="expectedBeatBar">{expectedBeats}</div>
+        <div className="actualBeatBar">{actualBeats}</div>
       </div>
     );
   }

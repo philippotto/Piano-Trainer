@@ -105,13 +105,28 @@ export default class App extends Component {
               </div>
               <div className="row">
                 <div className="col-md-12 col-xs-12">
-                  <a href="http://facebook.com/SheetMusicTutor" target="_blank" className="btn btn-primary">
+                  <a
+                    href="http://facebook.com/SheetMusicTutor"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn btn-primary"
+                  >
                     <i className="fa fa-facebook" />
                   </a>
-                  <a href="http://twitter.com/SheetMusicTutor" target="_blank" className="btn btn-primary">
+                  <a
+                    href="http://twitter.com/SheetMusicTutor"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn btn-primary"
+                  >
                     <i className="fa fa-twitter" />
                   </a>
-                  <a href="http://github.com/philippotto/piano-trainer" target="_blank" className="btn btn-primary">
+                  <a
+                    href="http://github.com/philippotto/piano-trainer"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn btn-primary"
+                  >
                     <i className="fa fa-github" />
                   </a>
                 </div>

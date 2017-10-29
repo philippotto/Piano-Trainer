@@ -1,11 +1,10 @@
-import React, { Component, PropTypes } from "react";
-import RangeSlider from "react-range-slider-bem";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { Range } from "rc-slider";
 import SettingLine from "./setting_line";
 import _ from "lodash";
 
-const multiplier = 10;
-
-export default class SettingsView extends Component {
+export default class RangeSettingComponent extends Component {
   static defaultProps = {
     valueToString: _.identity,
     label: ""
@@ -14,7 +13,13 @@ export default class SettingsView extends Component {
   static propTypes = {
     rangeMin: PropTypes.number.isRequired,
     rangeMax: PropTypes.number.isRequired,
-    values: PropTypes.array,
+    values: PropTypes.oneOfType([
+      PropTypes.shape({
+        from: PropTypes.number,
+        to: PropTypes.number
+      }),
+      PropTypes.number
+    ]).isRequired,
     onChange: PropTypes.func.isRequired,
     label: PropTypes.string,
     valueToString: PropTypes.func,
@@ -23,62 +28,54 @@ export default class SettingsView extends Component {
 
   constructor(props, context) {
     super(props, context);
-    this.receiveValueAsProps(this.props);
-  }
-
-  receiveValueAsProps(props) {
-    let values = _.isArray(props.values) ? props.values : [props.values];
     this.state = {
-      values: values.map(el => el * multiplier)
+      values: this.convertValues(this.props.values)
     };
   }
 
-  componentWillReceiveProps(newProps) {
-    this.receiveValueAsProps(newProps);
+  /**
+   * Converts values recieved as props to expected form for state
+   *
+   * @param {number | {from: number, to: number}} values
+   * @returns {number[]}
+   */
+  convertValues(values) {
+    return typeof values === "object" ? [values.from, values.to] : [values];
   }
 
-  onChange(event, index, values) {
+  componentWillReceiveProps(newProps) {
     this.setState({
-      values: values.map(el => el.value)
+      values: this.convertValues(newProps.values)
     });
   }
 
-  onAfterChange() {
-    if (this.props.disabled) {
-      return;
-    }
-    let newValues = this.state.values.map(this.quantitizeValue).map(el => el / multiplier);
-    this.props.onChange(newValues.length === 1 ? newValues[0] : newValues);
+  onChange(values) {
+    this.setState({
+      values: values
+    });
   }
 
-  quantitizeValue(value) {
-    return Math.round(value / multiplier) * multiplier;
+  onAfterChange(values) {
+    this.props.onChange(values.length === 1 ? values[0] : values);
   }
 
   render() {
-    const upscaledRangeMin = this.props.rangeMin * multiplier;
-    const upscaledRangeMax = this.props.rangeMax * multiplier;
-
-    let renderedRangeValues = this.state.values;
-    let quantitizedValues = this.state.values.map(this.quantitizeValue);
-
-    const downScaledValues = quantitizedValues.map(el => Math.round(el / multiplier));
     const rangeContainerStyle = {
       marginBottom: -2
     };
 
-    const valueLabel = this.props.label + ": " + downScaledValues.map(this.props.valueToString).join(" - ");
+    const valueLabel = this.props.label + ": " + this.state.values.map(this.props.valueToString).join(" - ");
 
     return (
       <SettingLine label={valueLabel}>
         <div style={rangeContainerStyle}>
-          <RangeSlider
-            cursor
-            value={renderedRangeValues}
-            min={upscaledRangeMin}
-            max={upscaledRangeMax}
+          <Range
+            value={this.state.values}
+            min={this.props.rangeMin}
+            max={this.props.rangeMax}
             onChange={this.onChange.bind(this)}
             onAfterChange={this.onAfterChange.bind(this)}
+            allowCross={false}
             disabled={this.props.disabled}
           />
         </div>

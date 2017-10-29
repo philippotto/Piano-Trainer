@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import classNames from "classnames";
 
 import BarGenerator from "../services/bar_generator.js";
@@ -24,9 +25,9 @@ const Phases = {
 
 export default class RhythmReadingView extends Component {
   static propTypes = {
-    settings: React.PropTypes.object.isRequired,
-    statisticService: React.PropTypes.object.isRequired,
-    isActive: React.PropTypes.bool.isRequired
+    settings: PropTypes.object.isRequired,
+    statisticService: PropTypes.object.isRequired,
+    isActive: PropTypes.bool.isRequired
   };
 
   constructor(props, context) {
@@ -42,7 +43,7 @@ export default class RhythmReadingView extends Component {
   }
 
   static childContextTypes = {
-    isInActiveView: React.PropTypes.bool
+    isInActiveView: PropTypes.bool
   };
 
   getChildContext() {
@@ -53,7 +54,7 @@ export default class RhythmReadingView extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (this.state.phase === Phases.running && prevState.phase !== Phases.running) {
-      this.refs.metronome.playMetronome();
+      this.metronome.playMetronome();
     } else {
       console.log("not running");
     }
@@ -98,7 +99,7 @@ export default class RhythmReadingView extends Component {
     // we will add the up event to the beatHistory
     const lastBeat = this.beatHistory.slice(-1)[0];
     if (lastBeat.length === 1) {
-      const firstBarBeatTime = this.refs.metronome.getFirstBarBeatTime();
+      const firstBarBeatTime = this.metronome.getFirstBarBeatTime();
       lastBeat.push(performance.now() - firstBarBeatTime);
     }
   }
@@ -124,7 +125,7 @@ export default class RhythmReadingView extends Component {
           return;
         }
         // protocol beat
-        const firstBarBeatTime = this.refs.metronome.getFirstBarBeatTime();
+        const firstBarBeatTime = this.metronome.getFirstBarBeatTime();
         const newBeatTime = performance.now() - firstBarBeatTime;
         lastSpaceEvent = eventType;
 
@@ -207,8 +208,8 @@ export default class RhythmReadingView extends Component {
         <h3>Welcome to this rhythm training!</h3>
         <p>
           When you start the training, we will count in for 4 beats and afterwards you can tap the given rhythm (either
-          use your 'space' button or your touchscreen). Make sure your speakers are on so that you can hear the
-          metronome.
+          use your &lsquo;space&rsquo; button or your touchscreen). Make sure your speakers are on so that you can hear
+          the metronome.
         </p>
       </CollapsableContainer>
     );
@@ -253,23 +254,27 @@ export default class RhythmReadingView extends Component {
     const metronomeBeat = (
       <MetronomeView
         settings={this.props.settings}
-        ref="metronome"
+        ref={c => {
+          this.metronome = c;
+        }}
         onMetronomeEnded={this.onMetronomeEnded.bind(this)}
       />
     );
 
     const buttons =
-      this.state.phase !== Phases.feedback
-        ? <GameButton label="Start training" shortcutLetter="s" primary onClick={this.nextBar.bind(this)} />
-        : this.state.result.success
-          ? <div>
-              <GameButton label="Repeat this bar" shortcutLetter="r" onClick={this.repeatBar.bind(this)} />
-              <GameButton label="Start next bar" shortcutLetter="s" onClick={this.nextBar.bind(this)} primary />
-            </div>
-          : <div>
-              <GameButton label="Repeat this bar" shortcutLetter="r" onClick={this.repeatBar.bind(this)} primary />
-              <GameButton label="Skip this bar" shortcutLetter="s" onClick={this.nextBar.bind(this)} />
-            </div>;
+      this.state.phase !== Phases.feedback ? (
+        <GameButton label="Start training" shortcutLetter="s" primary onClick={this.nextBar.bind(this)} />
+      ) : this.state.result.success ? (
+        <div>
+          <GameButton label="Repeat this bar" shortcutLetter="r" onClick={this.repeatBar.bind(this)} />
+          <GameButton label="Start next bar" shortcutLetter="s" onClick={this.nextBar.bind(this)} primary />
+        </div>
+      ) : (
+        <div>
+          <GameButton label="Repeat this bar" shortcutLetter="r" onClick={this.repeatBar.bind(this)} primary />
+          <GameButton label="Skip this bar" shortcutLetter="s" onClick={this.nextBar.bind(this)} />
+        </div>
+      );
 
     return (
       <div className={classNames({ trainer: true, trainerHidden2: !this.props.isActive })}>
@@ -293,9 +298,7 @@ export default class RhythmReadingView extends Component {
 
                 <CollapsableContainer collapsed={this.state.phase === Phases.running}>
                   <div className="row center-xs" style={{ marginTop: 20 }}>
-                    <div className="col-xs-12">
-                      {buttons}
-                    </div>
+                    <div className="col-xs-12">{buttons}</div>
                   </div>
                 </CollapsableContainer>
               </div>

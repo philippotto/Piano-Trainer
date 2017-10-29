@@ -1,11 +1,12 @@
 import _ from "lodash";
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import LevelService from "../services/level_service.js";
 import PieChart from "../views/pie_chart.js";
 
 export default class LevelView extends Component {
   static propTypes = {
-    statisticService: React.PropTypes.object.isRequired
+    statisticService: PropTypes.object.isRequired
   };
 
   render() {
@@ -64,9 +65,7 @@ export default class LevelView extends Component {
     return (
       <div>
         {content}
-        <div>
-          Current level: {levelIndex + 2}
-        </div>
+        <div>Current level: {levelIndex + 2}</div>
       </div>
     );
   }

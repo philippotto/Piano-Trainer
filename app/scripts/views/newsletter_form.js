@@ -5,7 +5,7 @@ export default class NewsLetterForm extends Component {
     // This avoids that global keyhandlers for keyboard navigation are triggered
     // when email input is used.
     const dontPropagate = evt => evt.stopPropagation();
-    const email = this.refs.email;
+    const email = this.email;
     email.addEventListener("keypress", dontPropagate);
     email.addEventListener("keyup", dontPropagate);
     email.addEventListener("keydown", dontPropagate);
@@ -32,10 +32,10 @@ export default class NewsLetterForm extends Component {
                     name="EMAIL"
                     id="mce-EMAIL"
                     placeholder="your@email.com"
-                    ref="email"
+                    ref={c => {
+                      this.email = c;
+                    }}
                     className="form-control"
-                    groupClassName="group-class"
-                    labelClassName="label-class"
                   />
                 </div>
               </div>
