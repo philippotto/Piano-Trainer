@@ -1,0 +1,6 @@
+node_modules/
+bower_components/
+dist/
+package-lock.json
+# npm install will reformat package.json which can conflict with prettier
+package.json

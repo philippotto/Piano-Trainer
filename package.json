@@ -70,6 +70,6 @@
       "BABEL_ENV=production webpack --config webpack.config.production.js && node pre-render.js",
     "lint": "eslint .",
     "test": "karma start --single-run --browsers PhantomJS",
-    "pretty": "prettier --write \"app/scripts/**/*.js\""
+    "pretty": "prettier --write '**/*.{js,jsx,ts,css,less,scss,json}'"
   }
 }
