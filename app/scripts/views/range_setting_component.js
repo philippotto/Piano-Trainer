@@ -34,7 +34,7 @@ export default class RangeSettingComponent extends Component {
   }
 
   /**
-   * Converts values recieved as props to expected form for state
+   * Converts values received as props to expected form for state
    *
    * @param {number | {from: number, to: number}} values
    * @returns {number[]}

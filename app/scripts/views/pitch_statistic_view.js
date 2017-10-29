@@ -1,4 +1,4 @@
-import Chartist from "Chartist";
+import Chartist from "chartist";
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Tooltip, OverlayTrigger } from "react-bootstrap";

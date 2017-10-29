@@ -89,7 +89,7 @@ export default class PitchSettingsView extends Component {
         <RangeSettingComponent
           rangeMin={50}
           rangeMax={99}
-          values={parseInt(this.props.settings.automaticDifficulty.accuracyGoal * 100, 10)}
+          values={Math.floor(this.props.settings.automaticDifficulty.accuracyGoal * 100)}
           onChange={value => accuracyStateChanger(value / 100)}
           valueToString={el => `${el}%`}
           label={"Accuracy goal"}
@@ -97,7 +97,7 @@ export default class PitchSettingsView extends Component {
         <RangeSettingComponent
           rangeMin={10}
           rangeMax={100}
-          values={parseInt(this.props.settings.automaticDifficulty.newNotesShare * 100, 10)}
+          values={Math.floor(this.props.settings.automaticDifficulty.newNotesShare * 100)}
           onChange={value => newNotesShareStateChanger(value / 100)}
           valueToString={el => `${el}%`}
           label={"Share of new notes"}

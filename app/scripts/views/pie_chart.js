@@ -1,4 +1,4 @@
-import Chartist from "Chartist";
+import Chartist from "chartist";
 import PropTypes from "prop-types";
 import React, { PureComponent } from "react";
 
