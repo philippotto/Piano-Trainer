@@ -148,10 +148,7 @@ export default {
     return ["treble", "bass"].map(clef => _.random.apply(_, settings.chordSizeRanges[clef]));
   },
 
-  generateBars: function(settings, level) {
-    const isMidiAvailable = settings.midi.inputs.get().length > 0;
-    const onePerTime = !isMidiAvailable;
-
+  generateBars: function(settings, level, onePerTime) {
     const [trebleNotes, bassNotes] = _.unzip(
       _.range(0, options.chordsPerBar).map(() => {
         const generatePossibleNotes = clef => {

@@ -28,7 +28,7 @@ export default class CollapsableContainer extends Component {
       }),
     ]).join(" ");
 
-    const maxHeight = this.props.maxHeight || 300;
+    const maxHeight = this.props.maxHeight || 500;
     const style = collapsed ? {} : { maxHeight };
     const children =
       collapsed && this.props.freeze && this.oldChildren ? this.oldChildren : this.props.children;

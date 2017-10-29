@@ -37,8 +37,8 @@ export default class PitchReadingView extends Component {
     this.midiService = new MidiService({
       successCallback: this.onSuccess.bind(this),
       failureCallback: this.onFailure.bind(this),
-      errorCallback: this.onError.bind(this),
-      errorResolveCallback: this.onErrorResolve.bind(this),
+      errorCallback: this.onMidiError.bind(this),
+      errorResolveCallback: this.onMidiErrorResolve.bind(this),
     });
     this.startDate = new Date();
     this.midiService.setDesiredKeys(this.getAllCurrentKeys(), this.state.currentKeySignature);
@@ -106,7 +106,15 @@ export default class PitchReadingView extends Component {
   generateNewBars(settings) {
     const levelIndex = LevelService.getLevelOfUser(this.props.statisticService.getAllEvents()) + 1;
     const level = LevelService.getLevelByIndex(levelIndex);
-    return BarGenerator.generateBars(settings, settings.useAutomaticDifficulty ? level : null);
+
+    const { isMidiAvailable } = this.getMidiInfo();
+    const onePerTime = !isMidiAvailable;
+
+    return BarGenerator.generateBars(
+      settings,
+      settings.useAutomaticDifficulty ? level : null,
+      onePerTime,
+    );
   }
 
   generateNewBarState() {
@@ -120,7 +128,7 @@ export default class PitchReadingView extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      errorMessage: null,
+      midiErrorMessage: null,
       running: false,
       ...this.generateNewBarState(),
     };
@@ -132,16 +140,30 @@ export default class PitchReadingView extends Component {
     this.startDate = new Date();
   }
 
+  getMidiInfo() {
+    const tryToUseMidi = this.props.settings.tryToUseMidi;
+    const isMidiAvailable = this.props.settings.midi.inputs.get().length > 0;
+    const useMidi = tryToUseMidi && isMidiAvailable;
+    const noMidiErrors = !this.state ? true : this.state.midiErrorMessage == null;
+
+    return {
+      tryToUseMidi,
+      isMidiAvailable,
+      useMidi,
+      noMidiErrors,
+    };
+  }
+
   render() {
     const claviatureContainerClasses = classNames({
       "content-box": true,
       "claviature-container": true,
     });
 
-    const isMidiAvailable = this.props.settings.midi.inputs.get().length > 0;
-    const noErrors = this.state.errorMessage !== null;
+    const { tryToUseMidi, isMidiAvailable, useMidi, noMidiErrors } = this.getMidiInfo();
+
     const miniClaviature =
-      isMidiAvailable && noErrors ? null : (
+      useMidi && noMidiErrors ? null : (
         <ClaviatureView
           desiredKeys={this.getAllCurrentKeys()}
           keySignature={this.state.currentKeySignature}
@@ -176,15 +198,15 @@ export default class PitchReadingView extends Component {
             welcomeText: true,
           })}
         >
-          <h3>Welcome to this pitch training!</h3>
+          <h3>Welcome to pitch training!</h3>
           <p>
             {"When you hit Start, notes will be displayed in the stave above. "}
-            {isMidiAvailable
+            {useMidi
               ? "Since we found a connected piano, you can use it to play the notes. "
               : "Just use the mini claviature below to play the notes. "}
             {"Don't worry about the rhythm or speed for now."}
           </p>
-          {isMidiAvailable ? null : midiSetUpText}
+          {tryToUseMidi && !isMidiAvailable ? midiSetUpText : null}
         </div>
       </CollapsableContainer>
     );
@@ -193,6 +215,8 @@ export default class PitchReadingView extends Component {
       treble: [],
       bass: [],
     };
+
+    const hideMidiError = !tryToUseMidi || noMidiErrors;
 
     return (
       <div className={classNames({ trainer: true, trainerHidden1: !this.props.isActive })}>
@@ -217,16 +241,16 @@ export default class PitchReadingView extends Component {
                   </div>
                 </div>
               </div>
-              <CollapsableContainer collapsed={!miniClaviature}>
+              <CollapsableContainer collapsed={!miniClaviature && hideMidiError}>
                 <div className={claviatureContainerClasses}>
                   {miniClaviature}
                   <div
                     className={classNames({
                       message: true,
-                      hide: this.state.errorMessage === null,
+                      hide: hideMidiError,
                     })}
                   >
-                    <h3>{this.state.errorMessage}</h3>
+                    <h3>{this.state.midiErrorMessage}</h3>
                   </div>
                 </div>
               </CollapsableContainer>
@@ -257,13 +281,13 @@ export default class PitchReadingView extends Component {
     this.midiService.setDesiredKeys(this.getAllCurrentKeys(), this.state.currentKeySignature);
   }
 
-  onError(msg) {
+  onMidiError(msg) {
     console.error.apply(console, arguments);
-    this.setState({ errorMessage: msg });
+    this.setState({ midiErrorMessage: msg });
   }
 
-  onErrorResolve() {
-    this.setState({ errorMessage: null });
+  onMidiErrorResolve() {
+    this.setState({ midiErrorMessage: null });
   }
 
   getAllCurrentKeys() {

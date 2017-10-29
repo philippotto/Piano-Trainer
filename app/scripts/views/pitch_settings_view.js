@@ -57,25 +57,39 @@ export default class PitchSettingsView extends Component {
     const midiSettings = this.props.settings.midi;
     const midiInputs = midiSettings.inputs.get();
     const isMidiAvailable = midiInputs.length > 0;
+    const tryToUseMidi = this.props.settings.tryToUseMidi;
     const deviceSelector = !isMidiAvailable ? null : (
-      <SettingLine label="Midi device">
-        <select
-          name="select"
-          onChange={this.onMidiSelectChange.bind(this)}
-          defaultValue={midiSettings.currentInput}
-          ref={c => {
-            this.midiSelect = c;
-          }}
-        >
-          {midiInputs.map((el, index) => {
-            return (
-              <option value={index} key={index}>
-                Device {index + 1}
-              </option>
-            );
-          })}
-        </select>
-      </SettingLine>
+      <div>
+        <SettingLine className="setting_checkbox" label="Use Midi:">
+          <input
+            type="checkbox"
+            checked={tryToUseMidi}
+            id="try_to_use_midi_checkbox"
+            name="check"
+            onChange={this.buildCheckboxStateChanger("tryToUseMidi")}
+          />
+          <label htmlFor="try_to_use_midi_checkbox" />
+        </SettingLine>
+        <SettingLine label="Midi device">
+          <select
+            name="select"
+            onChange={this.onMidiSelectChange.bind(this)}
+            defaultValue={midiSettings.currentInput}
+            ref={c => {
+              this.midiSelect = c;
+            }}
+            disabled={!tryToUseMidi}
+          >
+            {midiInputs.map((el, index) => {
+              return (
+                <option value={index} key={index}>
+                  Device {index + 1}
+                </option>
+              );
+            })}
+          </select>
+        </SettingLine>
+      </div>
     );
 
     const useAutomaticDifficulty = this.props.settings.useAutomaticDifficulty;

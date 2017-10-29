@@ -15,6 +15,7 @@ let defaultSettings = {
     },
     keySignature: [7, 7],
     useAccidentals: false,
+    tryToUseMidi: true,
     midi: {
       inputs: Freezer.createLeaf([]),
       activeInputIndex: 0,

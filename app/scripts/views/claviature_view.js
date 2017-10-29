@@ -114,9 +114,15 @@ export default class ClaviatureView extends Component {
       ["a#", "A# B♭", "black"],
       ["b", "B", "white"],
     ].map(args => this.renderKey.apply(this, args));
+
     return (
-      <div className={classNames({ "scale noSelect": true, noPointerEvents: this.props.disabled })}>
-        <ol>{keys}</ol>
+      <div>
+        <div
+          className={classNames({ "scale noSelect": true, noPointerEvents: this.props.disabled })}
+        >
+          <ol>{keys}</ol>
+        </div>
+        Click on the keys of the claviature or use your keyboard to hit notes!
       </div>
     );
   }

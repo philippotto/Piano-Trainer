@@ -214,7 +214,7 @@ export default class RhythmReadingView extends Component {
   render() {
     const welcomeText = (
       <CollapsableContainer collapsed={this.state.phase !== Phases.welcome}>
-        <h3>Welcome to this rhythm training!</h3>
+        <h3>Welcome to rhythm training!</h3>
         <p>
           When you start the training, we will count in for 4 beats and afterwards you can tap the
           given rhythm (either use your &lsquo;space&rsquo; button or your touchscreen). Make sure
