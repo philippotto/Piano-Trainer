@@ -9,34 +9,34 @@ const levelGroups = [
     base: {
       clef: "treble",
       signature: "C",
-      accidentals: false
+      accidentals: false,
     },
     sublevels: [
       r("c/4", "e/4"),
       r("f/4", "a/4"),
       r("b/4", "d/5"),
       r("e/5", "g/5"),
-      r("a/5", "c/6")
+      r("a/5", "c/6"),
 
       // very high and very low end should also go here
-    ]
+    ],
   },
   {
     base: {
       clef: "bass",
       signature: "C",
-      accidentals: false
+      accidentals: false,
     },
     sublevels: [
       r("c/2", "e/2"),
       r("f/2", "a/2"),
       r("b/2", "d/3"),
       r("e/3", "g/3"),
-      r("a/3", "c/4")
+      r("a/3", "c/4"),
 
       // very high and very low end should also go here
-    ]
-  }
+    ],
+  },
 ];
 
 const Levels = _.flatMap(levelGroups, levelGroup => {
@@ -44,8 +44,8 @@ const Levels = _.flatMap(levelGroups, levelGroup => {
     const level = _.assign({}, levelGroup.base, {
       keys: {
         treble: levelGroup.base.clef === "treble" ? sublevel : [],
-        bass: levelGroup.base.clef === "bass" ? sublevel : []
-      }
+        bass: levelGroup.base.clef === "bass" ? sublevel : [],
+      },
     });
     delete level.clef;
     return level;
@@ -67,7 +67,7 @@ const LevelService = {
           return keys[optClef];
         }
         return [].concat(keys.treble, keys.bass);
-      })
+      }),
     );
   },
   getLevelOfUser(events) {
@@ -103,15 +103,17 @@ const LevelService = {
     optThresholds = optThresholds || {
       amount: thresholdSettings.amount,
       accuracy: thresholdSettings.accuracyGoal,
-      time: thresholdSettings.timeGoal
+      time: thresholdSettings.timeGoal,
     };
 
-    const filteredEvents = eventsToAssess.filter(event => event.keys.some(this.levelContainsKey.bind(this, level)));
+    const filteredEvents = eventsToAssess.filter(event =>
+      event.keys.some(this.levelContainsKey.bind(this, level)),
+    );
     const unfoldedEvents = _.flatMap(filteredEvents, event => {
       return event.keys.map(key => {
         const subEvent = {
           ...event,
-          key
+          key,
         };
         delete subEvent.keys;
         return subEvent;
@@ -142,17 +144,17 @@ const LevelService = {
           eventsLength,
           time,
           accuracy,
-          thresholds: optThresholds
-        }
+          thresholds: optThresholds,
+        },
       };
     });
     const goodEnoughPartition = _.partition(evaluation, el => el.isGoodEnough);
     return {
       goodEnoughKeys: goodEnoughPartition[0],
       notGoodEnoughKeys: goodEnoughPartition[1],
-      isInLevel: goodEnoughPartition[1].length === 0 && evaluation.length > 0
+      isInLevel: goodEnoughPartition[1].length === 0 && evaluation.length > 0,
     };
-  }
+  },
 };
 
 export default LevelService;

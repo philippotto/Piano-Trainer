@@ -9,7 +9,7 @@ export default class CollapsableContainer extends Component {
     collapsed: PropTypes.bool.isRequired,
     maxHeight: PropTypes.number,
     freeze: PropTypes.bool,
-    className: PropTypes.string
+    className: PropTypes.string,
   };
 
   componentWillReceiveProps(nextProps) {
@@ -24,13 +24,14 @@ export default class CollapsableContainer extends Component {
       this.props.className,
       classNames({
         collapsed,
-        transition: true
-      })
+        transition: true,
+      }),
     ]).join(" ");
 
     const maxHeight = this.props.maxHeight || 300;
     const style = collapsed ? {} : { maxHeight };
-    const children = collapsed && this.props.freeze && this.oldChildren ? this.oldChildren : this.props.children;
+    const children =
+      collapsed && this.props.freeze && this.oldChildren ? this.oldChildren : this.props.children;
 
     return (
       <div className={className} style={style}>

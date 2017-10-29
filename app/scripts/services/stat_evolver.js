@@ -15,10 +15,10 @@ const evolutions = [
       statObj.keySignature = "C";
     }
     return statObj;
-  }
+  },
 ];
 
 export default {
   runEvolution: (statObj, index) => evolutions[index](statObj),
-  evolveToLatestSchema: statObj => _.flow(...evolutions)(statObj)
+  evolveToLatestSchema: statObj => _.flow(...evolutions)(statObj),
 };

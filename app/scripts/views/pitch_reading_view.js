@@ -20,16 +20,16 @@ export default class PitchReadingView extends Component {
   static propTypes = {
     statisticService: PropTypes.object.isRequired,
     settings: PropTypes.object.isRequired,
-    isActive: PropTypes.bool.isRequired
+    isActive: PropTypes.bool.isRequired,
   };
 
   static childContextTypes = {
-    isInActiveView: PropTypes.bool
+    isInActiveView: PropTypes.bool,
   };
 
   getChildContext() {
     return {
-      isInActiveView: this.props.isActive
+      isInActiveView: this.props.isActive,
     };
   }
 
@@ -38,7 +38,7 @@ export default class PitchReadingView extends Component {
       successCallback: this.onSuccess.bind(this),
       failureCallback: this.onFailure.bind(this),
       errorCallback: this.onError.bind(this),
-      errorResolveCallback: this.onErrorResolve.bind(this)
+      errorResolveCallback: this.onErrorResolve.bind(this),
     });
     this.startDate = new Date();
     this.midiService.setDesiredKeys(this.getAllCurrentKeys(), this.state.currentKeySignature);
@@ -80,7 +80,7 @@ export default class PitchReadingView extends Component {
       let shouldRegenerateAll = checkIfSomePropChanged(prevSettings, nextSettings, [
         "useAccidentals",
         "useAutomaticDifficulty",
-        "automaticDifficulty.newNotesShare"
+        "automaticDifficulty.newNotesShare",
       ]);
 
       if (
@@ -97,7 +97,7 @@ export default class PitchReadingView extends Component {
       this.setState({
         currentChordIndex: 0,
         currentKeys: newCurrentKeys,
-        currentKeySignature: keySignature
+        currentKeySignature: keySignature,
       });
       this.startDate = new Date();
     }
@@ -113,7 +113,7 @@ export default class PitchReadingView extends Component {
     return {
       currentChordIndex: 0,
       currentKeys: this.generateNewBars(this.props.settings),
-      currentKeySignature: BarGenerator.generateKeySignature(this.props.settings)
+      currentKeySignature: BarGenerator.generateKeySignature(this.props.settings),
     };
   }
 
@@ -122,7 +122,7 @@ export default class PitchReadingView extends Component {
     this.state = {
       errorMessage: null,
       running: false,
-      ...this.generateNewBarState()
+      ...this.generateNewBarState(),
     };
   }
 
@@ -135,7 +135,7 @@ export default class PitchReadingView extends Component {
   render() {
     const claviatureContainerClasses = classNames({
       "content-box": true,
-      "claviature-container": true
+      "claviature-container": true,
     });
 
     const isMidiAvailable = this.props.settings.midi.inputs.get().length > 0;
@@ -173,7 +173,7 @@ export default class PitchReadingView extends Component {
       <CollapsableContainer collapsed={this.state.running}>
         <div
           className={classNames({
-            welcomeText: true
+            welcomeText: true,
           })}
         >
           <h3>Welcome to this pitch training!</h3>
@@ -191,7 +191,7 @@ export default class PitchReadingView extends Component {
 
     const emptyKeySet = {
       treble: [],
-      bass: []
+      bass: [],
     };
 
     return (
@@ -208,7 +208,7 @@ export default class PitchReadingView extends Component {
 
                 <div
                   className={classNames({
-                    "row center-xs": true
+                    "row center-xs": true,
                   })}
                 >
                   <div className="col-xs-12">
@@ -223,7 +223,7 @@ export default class PitchReadingView extends Component {
                   <div
                     className={classNames({
                       message: true,
-                      hide: this.state.errorMessage === null
+                      hide: this.state.errorMessage === null,
                     })}
                   >
                     <h3>{this.state.errorMessage}</h3>
@@ -234,7 +234,10 @@ export default class PitchReadingView extends Component {
           </div>
           <div className="col-lg-4 col-md-12 col-sm-12 col-xs-12 rightColumn">
             <PitchSettingsView settings={this.props.settings} />
-            <PitchStatisticView statisticService={this.props.statisticService} settings={this.props.settings} />
+            <PitchStatisticView
+              statisticService={this.props.statisticService}
+              settings={this.props.settings}
+            />
           </div>
           <audio
             ref={c => {
@@ -270,8 +273,8 @@ export default class PitchReadingView extends Component {
           const note = this.state.currentKeys[clef][this.state.currentChordIndex];
           // Ignore rests
           return note.noteType !== "r" ? note.getKeys() : null;
-        })
-      )
+        }),
+      ),
     );
   }
 
@@ -283,7 +286,7 @@ export default class PitchReadingView extends Component {
       success: true,
       keys: this.getAllCurrentKeys(),
       keySignature: this.state.currentKeySignature,
-      time: new Date() - this.startDate
+      time: new Date() - this.startDate,
     };
     this.startDate = new Date();
 
@@ -291,11 +294,11 @@ export default class PitchReadingView extends Component {
 
     if (this.state.currentChordIndex + 1 >= this.state.currentKeys.treble.length) {
       this.setState({
-        ...this.generateNewBarState()
+        ...this.generateNewBarState(),
       });
     } else {
       this.setState({
-        currentChordIndex: this.state.currentChordIndex + 1
+        currentChordIndex: this.state.currentChordIndex + 1,
       });
     }
 
@@ -316,7 +319,7 @@ export default class PitchReadingView extends Component {
       success: false,
       keys: this.getAllCurrentKeys(),
       time: new Date() - this.startDate,
-      keySignature: this.state.currentKeySignature
+      keySignature: this.state.currentKeySignature,
     });
     AnalyticsService.sendEvent("PitchReading", "failure");
   }

@@ -9,7 +9,7 @@ import AnalyticsService from "../services/analytics_service.js";
 
 export default class PitchSettingsView extends Component {
   static propTypes = {
-    settings: PropTypes.object
+    settings: PropTypes.object,
   };
 
   constructor(props, context) {
@@ -25,13 +25,20 @@ export default class PitchSettingsView extends Component {
       } else {
         // if stateKey points to a primitive, we cannot use reset
         const keys = stateKey.split(".");
-        const parentToChange = _.reduce(keys.slice(0, -1), (acc, key) => acc[key], this.props.settings);
+        const parentToChange = _.reduce(
+          keys.slice(0, -1),
+          (acc, key) => acc[key],
+          this.props.settings,
+        );
         parentToChange.set({
-          [keys.slice(-1)[0]]: newValue
+          [keys.slice(-1)[0]]: newValue,
         });
       }
 
-      AnalyticsService.sendEvent("PitchReading-Settings", stateKey + " - " + JSON.stringify(newValue));
+      AnalyticsService.sendEvent(
+        "PitchReading-Settings",
+        stateKey + " - " + JSON.stringify(newValue),
+      );
     };
   }
 
@@ -112,7 +119,7 @@ export default class PitchSettingsView extends Component {
           rangeMax={5}
           values={{
             from: this.props.settings.chordSizeRanges.treble[0],
-            to: this.props.settings.chordSizeRanges.treble[1]
+            to: this.props.settings.chordSizeRanges.treble[1],
           }}
           onChange={this.buildStateChanger("chordSizeRanges.treble")}
           label={"Treble notes/chord"}
@@ -123,7 +130,7 @@ export default class PitchSettingsView extends Component {
           rangeMax={5}
           values={{
             from: this.props.settings.chordSizeRanges.bass[0],
-            to: this.props.settings.chordSizeRanges.bass[1]
+            to: this.props.settings.chordSizeRanges.bass[1],
           }}
           onChange={this.buildStateChanger("chordSizeRanges.bass")}
           label={"Bass notes/chord"}
@@ -134,7 +141,7 @@ export default class PitchSettingsView extends Component {
           rangeMax={14}
           values={{
             from: this.props.settings.keySignature[0],
-            to: this.props.settings.keySignature[1]
+            to: this.props.settings.keySignature[1],
           }}
           onChange={this.buildStateChanger("keySignature")}
           valueToString={KeyConverter.keySignatureValueToString}

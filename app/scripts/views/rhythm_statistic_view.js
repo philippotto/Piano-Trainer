@@ -9,7 +9,7 @@ import StarAnimation from "./star_animation.js";
 
 export default class RhythmStatisticView extends Component {
   static propTypes = {
-    statisticService: PropTypes.object.isRequired
+    statisticService: PropTypes.object.isRequired,
   };
 
   constructor(props) {
@@ -21,24 +21,24 @@ export default class RhythmStatisticView extends Component {
     return [
       {
         amount: Math.floor(seconds / 31536000),
-        unit: "y"
+        unit: "y",
       },
       {
         amount: Math.floor((seconds % 31536000) / 86400),
-        unit: "d"
+        unit: "d",
       },
       {
         amount: Math.floor(((seconds % 31536000) % 86400) / 3600),
-        unit: "h"
+        unit: "h",
       },
       {
         amount: Math.floor((((seconds % 31536000) % 86400) % 3600) / 60),
-        unit: "m"
+        unit: "m",
       },
       {
         amount: (((seconds % 31536000) % 86400) % 3600) % 60,
-        unit: "s"
-      }
+        unit: "s",
+      },
     ]
       .filter(el => el.amount !== 0)
       .map(el => `${Math.ceil(el.amount)} ${el.unit}`)
@@ -75,7 +75,10 @@ export default class RhythmStatisticView extends Component {
         />
         <div className="row around-xs">
           <div className="col-xs">
-            <OverlayTrigger placement="top" overlay={<Tooltip id="avgTime">Your current score</Tooltip>}>
+            <OverlayTrigger
+              placement="top"
+              overlay={<Tooltip id="avgTime">Your current score</Tooltip>}
+            >
               <span className="stat-detail">
                 <StarAnimation number={statistics.getCurrentScore()} />
                 <AnimatedNumber number={statistics.getCurrentScore()} />
@@ -83,10 +86,16 @@ export default class RhythmStatisticView extends Component {
             </OverlayTrigger>
           </div>
           <div className="col-xs">
-            <OverlayTrigger placement="top" overlay={<Tooltip id="avgTime">Total time you played rhythms</Tooltip>}>
+            <OverlayTrigger
+              placement="top"
+              overlay={<Tooltip id="avgTime">Total time you played rhythms</Tooltip>}
+            >
               <span className="stat-detail">
                 <i className="fa fa-clock-o" />
-                <AnimatedNumber number={statistics.getTotalRhythmTime()} formatter={this.getHumanReadableTime} />
+                <AnimatedNumber
+                  number={statistics.getTotalRhythmTime()}
+                  formatter={this.getHumanReadableTime}
+                />
               </span>
             </OverlayTrigger>
           </div>
@@ -104,7 +113,10 @@ export default class RhythmStatisticView extends Component {
             </OverlayTrigger>
           </div>
           <div className="col-xs">
-            <OverlayTrigger placement="top" overlay={<Tooltip id="successRate">Success rate</Tooltip>}>
+            <OverlayTrigger
+              placement="top"
+              overlay={<Tooltip id="successRate">Success rate</Tooltip>}
+            >
               <span className="stat-detail">
                 <i className="fa fa-trophy" />
                 <AnimatedNumber number={statistics.getSuccessRate() * 100} />
@@ -131,7 +143,7 @@ export default class RhythmStatisticView extends Component {
 
     const data = {
       labels: [],
-      series: [scoreDevelopmentValues]
+      series: [scoreDevelopmentValues],
     };
 
     const options = {
@@ -139,13 +151,13 @@ export default class RhythmStatisticView extends Component {
       lineSmooth: false,
       axisX: {
         showGrid: false,
-        showLabel: false
+        showLabel: false,
       },
       axisY: {
         labelInterpolationFnc: function(value) {
           return value;
-        }
-      }
+        },
+      },
     };
 
     if (this.chart && scoreDevelopmentValues.length > 1) {

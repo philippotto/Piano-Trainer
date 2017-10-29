@@ -27,13 +27,20 @@ describe("KeyConverter", function() {
   });
 
   it("gets scales for an arbitrary base", function() {
-    const cScale = KeyConverter.getScaleKeysForBase("c/4").map(KeyConverter.getKeyStringForKeyNumber);
+    const cScale = KeyConverter.getScaleKeysForBase("c/4").map(
+      KeyConverter.getKeyStringForKeyNumber,
+    );
     expect(cScale).toEqual(["c/4", "d/4", "e/4", "f/4", "g/4", "a/4", "b/4"]);
 
-    const fSharpScale = KeyConverter.getScaleKeysForBase("f#/4").map(KeyConverter.getKeyStringForKeyNumber);
+    const fSharpScale = KeyConverter.getScaleKeysForBase("f#/4").map(
+      KeyConverter.getKeyStringForKeyNumber,
+    );
 
     const expectedFSharpScale = ["f#/4", "g#/4", "a#/4", "b/4", "c#/5", "d#/5", "e#/5"];
-    const normalizedFSharpScale = expectedFSharpScale.map(KeyConverter.getCanonicalKeyString, KeyConverter);
+    const normalizedFSharpScale = expectedFSharpScale.map(
+      KeyConverter.getCanonicalKeyString,
+      KeyConverter,
+    );
 
     expect(fSharpScale).toEqual(normalizedFSharpScale);
   });

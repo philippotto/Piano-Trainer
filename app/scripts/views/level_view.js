@@ -6,7 +6,7 @@ import PieChart from "../views/pie_chart.js";
 
 export default class LevelView extends Component {
   static propTypes = {
-    statisticService: PropTypes.object.isRequired
+    statisticService: PropTypes.object.isRequired,
   };
 
   render() {
@@ -20,8 +20,8 @@ export default class LevelView extends Component {
       const evaluation = LevelService.assessLevel(events, nextLevel);
 
       const goodEnoughProgress =
-        evaluation.goodEnoughKeys.length / (evaluation.goodEnoughKeys.length + evaluation.notGoodEnoughKeys.length) ||
-        0;
+        evaluation.goodEnoughKeys.length /
+          (evaluation.goodEnoughKeys.length + evaluation.notGoodEnoughKeys.length) || 0;
 
       const notGoodEnoughEvaluations = _.flatten(
         evaluation.notGoodEnoughKeys.map(keyEvaluation => {
@@ -30,14 +30,26 @@ export default class LevelView extends Component {
 
           // if you are slower than 30s, it is still considered as 30s
           const longestTimeThreshold = 30000;
-          const clampedTime = _.clamp(evaluationDetails.time, evaluationThresholds.time, longestTimeThreshold);
+          const clampedTime = _.clamp(
+            evaluationDetails.time,
+            evaluationThresholds.time,
+            longestTimeThreshold,
+          );
 
           const timeProgress =
-            1 - (clampedTime - evaluationThresholds.time) / (longestTimeThreshold - evaluationThresholds.time);
-          const accuracyProgress = Math.min(1, evaluationDetails.accuracy / evaluationThresholds.accuracy);
-          const amountProgress = Math.min(1, evaluationDetails.eventsLength / evaluationThresholds.amount);
+            1 -
+            (clampedTime - evaluationThresholds.time) /
+              (longestTimeThreshold - evaluationThresholds.time);
+          const accuracyProgress = Math.min(
+            1,
+            evaluationDetails.accuracy / evaluationThresholds.accuracy,
+          );
+          const amountProgress = Math.min(
+            1,
+            evaluationDetails.eventsLength / evaluationThresholds.amount,
+          );
           return [timeProgress, accuracyProgress, amountProgress].map(el => el / 3);
-        })
+        }),
       ).map(el => el / evaluation.notGoodEnoughKeys.length * (1 - goodEnoughProgress));
 
       const pieParts = [_.sum([goodEnoughProgress].concat(notGoodEnoughEvaluations))];
@@ -56,7 +68,10 @@ export default class LevelView extends Component {
       content = (
         <div>
           <h4>Congratulations! You finished the final level!</h4>
-          <p>You may want to increase your goals in the settings pane or switch to the manual training mode.</p>
+          <p>
+            You may want to increase your goals in the settings pane or switch to the manual
+            training mode.
+          </p>
         </div>
       );
     }

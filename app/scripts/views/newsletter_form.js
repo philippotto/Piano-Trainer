@@ -45,7 +45,12 @@ export default class NewsLetterForm extends Component {
                   <div className="response" id="mce-success-response" style={{ display: "none" }} />
                 </div>
                 <div style={{ position: "absolute", left: -5000 }} aria-hidden="true">
-                  <input type="text" name="b_dffafd7c2c0f11a555541b5a4_83959ba82c" tabIndex="-1" value="" />
+                  <input
+                    type="text"
+                    name="b_dffafd7c2c0f11a555541b5a4_83959ba82c"
+                    tabIndex="-1"
+                    value=""
+                  />
                 </div>
                 <div className="clear">
                   <input

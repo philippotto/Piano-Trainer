@@ -5,14 +5,14 @@ import _ from "lodash";
 
 class StaveRenderer extends PureComponent {
   static defaultProps = {
-    staveCount: 2
+    staveCount: 2,
   };
 
   static propTypes = {
     keys: PropTypes.objectOf(PropTypes.array),
     chordIndex: PropTypes.number,
     keySignature: PropTypes.string,
-    staveCount: PropTypes.number
+    staveCount: PropTypes.number,
   };
 
   constructor(props) {
@@ -70,7 +70,8 @@ class StaveRenderer extends PureComponent {
     this.renderer = new Vex.Flow.Renderer(canvas, Vex.Flow.Renderer.Backends.CANVAS);
     this.ctx = this.renderer.getContext();
 
-    const windowWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+    const windowWidth =
+      window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
 
     const widthThreshold = 600;
     const margin = 20;

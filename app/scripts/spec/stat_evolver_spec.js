@@ -10,14 +10,14 @@ describe("StatEvolver", function() {
       "time": 14622,
       "date":"2016-03-01T23:59:04.462Z",
       "formattedDate":"2016-02-01"
-    }`)
+    }`),
     ),
     {
       success: true,
       keys: ["f/4", "e/3", "b/3", "d/3"],
       time: 14622,
       date: new Date("2016-03-01T23:59:04.462Z"),
-      version: 1
+      version: 1,
     },
     {
       success: true,
@@ -25,8 +25,8 @@ describe("StatEvolver", function() {
       time: 14622,
       date: new Date("2016-03-01T23:59:04.462Z"),
       version: 2,
-      keySignature: "C"
-    }
+      keySignature: "C",
+    },
   ];
 
   it("transforms from version 0 to 1", function() {

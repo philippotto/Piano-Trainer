@@ -7,11 +7,11 @@ export default class GameButton extends Component {
     label: PropTypes.string.isRequired,
     onClick: PropTypes.func.isRequired,
     primary: PropTypes.bool,
-    shortcutLetter: PropTypes.string
+    shortcutLetter: PropTypes.string,
   };
 
   static contextTypes = {
-    isInActiveView: PropTypes.bool
+    isInActiveView: PropTypes.bool,
   };
 
   componentDidMount() {
@@ -46,7 +46,11 @@ export default class GameButton extends Component {
     ) : null;
 
     return (
-      <Button onClick={this.props.onClick} bsStyle={this.props.primary ? "success" : "default"} className="gameButton">
+      <Button
+        onClick={this.props.onClick}
+        bsStyle={this.props.primary ? "success" : "default"}
+        className="gameButton"
+      >
         <span className="gameButton-label">{this.props.label}</span>
         <span className="subtext">{subtext}</span>
       </Button>

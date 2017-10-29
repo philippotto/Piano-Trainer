@@ -7,7 +7,7 @@ import _ from "lodash";
 
 export default class RythmSettingsView extends Component {
   static propTypes = {
-    settings: PropTypes.object
+    settings: PropTypes.object,
   };
 
   constructor(props, context) {
@@ -23,13 +23,20 @@ export default class RythmSettingsView extends Component {
       } else {
         // if stateKey points to a primitive, we cannot use reset
         const keys = stateKey.split(".");
-        const parentToChange = _.reduce(keys.slice(0, -1), (acc, key) => acc[key], this.props.settings);
+        const parentToChange = _.reduce(
+          keys.slice(0, -1),
+          (acc, key) => acc[key],
+          this.props.settings,
+        );
         parentToChange.set({
-          [keys.slice(-1)[0]]: newValue
+          [keys.slice(-1)[0]]: newValue,
         });
       }
 
-      AnalyticsService.sendEvent("RhythmReading-Settings", stateKey + " - " + JSON.stringify(newValue));
+      AnalyticsService.sendEvent(
+        "RhythmReading-Settings",
+        stateKey + " - " + JSON.stringify(newValue),
+      );
     };
   }
 

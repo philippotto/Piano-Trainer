@@ -9,13 +9,13 @@ import CollapsableContainer from "./collapsable_container.js";
 export default class MetronomeView extends Component {
   static propTypes = {
     onMetronomeEnded: PropTypes.func,
-    settings: PropTypes.object.isRequired
+    settings: PropTypes.object.isRequired,
   };
 
   constructor(props, context) {
     super(props, context);
     this.state = {
-      currentMetronomeBeat: -1
+      currentMetronomeBeat: -1,
     };
   }
 
@@ -36,7 +36,8 @@ export default class MetronomeView extends Component {
     // playing time.
     const magicPercentileOfAudibleBeat = 0.33;
     // this is the first beat of the actual bar
-    this.firstBarBeatTime = startTime + 4 * beatLength + metronomeSoundLength * magicPercentileOfAudibleBeat;
+    this.firstBarBeatTime =
+      startTime + 4 * beatLength + metronomeSoundLength * magicPercentileOfAudibleBeat;
 
     _.range(beatAmount + 1).map(beatIndex => {
       const beatTime = startTime + beatIndex * beatLength;
@@ -47,7 +48,7 @@ export default class MetronomeView extends Component {
       }
       setTimeout(() => {
         this.setState({
-          currentMetronomeBeat: beatIndex < 4 ? beatIndex : -1
+          currentMetronomeBeat: beatIndex < 4 ? beatIndex : -1,
         });
 
         if (beatIndex === beatAmount) {
@@ -62,7 +63,7 @@ export default class MetronomeView extends Component {
       <CollapsableContainer
         collapsed={this.state.currentMetronomeBeat === -1}
         className={classNames({
-          opacityOut: (this.state.currentMetronomeBeat + 1) % 4 === 0
+          opacityOut: (this.state.currentMetronomeBeat + 1) % 4 === 0,
         })}
       >
         <h2>{this.state.currentMetronomeBeat + 1}</h2>

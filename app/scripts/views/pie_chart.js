@@ -4,7 +4,7 @@ import React, { PureComponent } from "react";
 
 export default class PieChart extends PureComponent {
   static propTypes = {
-    pieParts: PropTypes.array.isRequired
+    pieParts: PropTypes.array.isRequired,
   };
 
   constructor(props, context) {
@@ -26,15 +26,15 @@ export default class PieChart extends PureComponent {
     new Chartist.Pie(
       this.chart,
       {
-        series: this.props.pieParts
+        series: this.props.pieParts,
       },
       {
         donut: true,
         donutWidth: 30,
         startAngle: 0,
         total: 1,
-        showLabel: false
-      }
+        showLabel: false,
+      },
     );
   }
 }

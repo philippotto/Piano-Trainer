@@ -17,7 +17,7 @@ function loadMp3() {
       },
       function(e) {
         console.error("Error with decoding audio data" + e.err);
-      }
+      },
     );
   };
 
@@ -40,5 +40,5 @@ export default {
   },
   stop: function(source) {
     source.stop(0);
-  }
+  },
 };

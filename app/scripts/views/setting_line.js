@@ -3,13 +3,13 @@ import PropTypes from "prop-types";
 
 export default class SettingLine extends Component {
   static defaultProps = {
-    label: ""
+    label: "",
   };
 
   static propTypes = {
     children: PropTypes.node,
     label: PropTypes.string,
-    className: PropTypes.string
+    className: PropTypes.string,
   };
 
   constructor(props, context) {

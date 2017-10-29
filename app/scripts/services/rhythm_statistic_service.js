@@ -110,8 +110,8 @@ class RhythmStatisticService {
         _.sum(event.durations.map(el => Math.abs(el))),
         10e5 / Math.pow(event.barDuration, 2),
         event.liveBeatBars ? 0.5 : 1,
-        event.liveBeatBars && event.labelBeats ? 0.5 : 1
-      ].reduce((a, b) => a * b, 1)
+        event.liveBeatBars && event.labelBeats ? 0.5 : 1,
+      ].reduce((a, b) => a * b, 1),
     );
   }
 
@@ -130,7 +130,7 @@ class RhythmStatisticService {
         return [
           el.date.getUTCFullYear(),
           ("0" + el.date.getMonth()).slice(-2),
-          ("0" + el.date.getDate()).slice(-2)
+          ("0" + el.date.getDate()).slice(-2),
         ].join("-");
       })
       .map((aDay, formattedDate) => {

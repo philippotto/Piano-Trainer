@@ -9,7 +9,7 @@ export default {
       hitType: "event",
       eventCategory,
       eventAction,
-      eventValue
+      eventValue,
     });
-  }
+  },
 };

@@ -115,13 +115,13 @@ export default class MidiService {
 
     getMidiSettings().set({
       inputs: Freezer.createLeaf(inputs),
-      activeInputIndex: 0
+      activeInputIndex: 0,
     });
 
     AppFreezer.on("input:changed", newIndex => {
       const midiSettings = getMidiSettings();
       midiSettings.set({
-        activeInputIndex: newIndex
+        activeInputIndex: newIndex,
       });
       this.unlistenToInputs(midiSettings.inputs.get());
       this.listenToInput(midiSettings.inputs.get()[newIndex]);

@@ -60,8 +60,8 @@ class PitchStatisticService {
           event.success ? 10 : -0.1,
           event.keys.length,
           10e6 / Math.pow(event.time, 2),
-          KeyConverter.rateKeySignatureDifficulty(event.keySignature)
-        ].reduce((a, b) => a * b, 1)
+          KeyConverter.rateKeySignatureDifficulty(event.keySignature),
+        ].reduce((a, b) => a * b, 1),
       )
     );
   }
@@ -124,7 +124,7 @@ class PitchStatisticService {
         return [
           el.date.getUTCFullYear(),
           ("0" + el.date.getMonth()).slice(-2),
-          ("0" + el.date.getDate()).slice(-2)
+          ("0" + el.date.getDate()).slice(-2),
         ].join("-");
       })
       .map((aDay, formattedDate) => {

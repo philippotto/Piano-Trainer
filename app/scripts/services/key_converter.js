@@ -18,10 +18,26 @@ const keySignatureOffsets = {
   Ab: ["b", "e", "a", "d"],
   Db: ["b", "e", "a", "d", "g"],
   Gb: ["b", "e", "a", "d", "g", "c"],
-  Cb: ["b", "e", "a", "d", "g", "c", "f"]
+  Cb: ["b", "e", "a", "d", "g", "c", "f"],
 };
 
-const keySignatures = ["C#", "F#", "B", "E", "A", "D", "G", "C", "F", "Bb", "Eb", "Ab", "Db", "Gb", "Cb"];
+const keySignatures = [
+  "C#",
+  "F#",
+  "B",
+  "E",
+  "A",
+  "D",
+  "G",
+  "C",
+  "F",
+  "Bb",
+  "Eb",
+  "Ab",
+  "Db",
+  "Gb",
+  "Cb",
+];
 const octaveNotes = ["c", "c#", "d", "d#", "e", "f", "f#", "g", "g#", "a", "a#", "b"];
 
 const keyMap = initializeKeyMap();
@@ -137,7 +153,8 @@ const KeyConverter = {
     [keyString, flatDifference] = stripKey(keyString, "b");
     [keyString, sharpDifference] = stripKey(keyString, "#");
 
-    const keyNumber = KeyConverter.getKeyNumberForCanonicalKeyString(keyString) + sharpDifference - flatDifference;
+    const keyNumber =
+      KeyConverter.getKeyNumberForCanonicalKeyString(keyString) + sharpDifference - flatDifference;
 
     return KeyConverter.getKeyStringForKeyNumber(keyNumber);
   },
@@ -175,7 +192,7 @@ const KeyConverter = {
       .map(KeyConverter.getNoteFromKeyString);
 
     return _.difference(octaveNotes, cScaleNotes);
-  }
+  },
 };
 
 export default KeyConverter;

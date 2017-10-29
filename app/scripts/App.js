@@ -20,13 +20,13 @@ export default class App extends Component {
     super(props, context);
     this.state = {
       activeGame: "pitch",
-      showPrivacyPolicy: false
+      showPrivacyPolicy: false,
     };
   }
 
   selectGame(newGame) {
     this.setState({
-      activeGame: newGame
+      activeGame: newGame,
     });
 
     AnalyticsService.sendEvent("GameSelection", newGame);
@@ -87,7 +87,10 @@ export default class App extends Component {
               </div>
               <div className="row">
                 <div className="col-md-12 col-xs-12">
-                  <p>Sheet Music Tutor is still under development. Be first to find out when it gets updates.</p>
+                  <p>
+                    Sheet Music Tutor is still under development. Be first to find out when it gets
+                    updates.
+                  </p>
                 </div>
               </div>
               <NewsletterForm />
@@ -100,7 +103,10 @@ export default class App extends Component {
               </div>
               <div className="row">
                 <div className="col-md-12 col-xs-12">
-                  <p>Follow us on social media to stay up to date on new features or to give us feedback.</p>
+                  <p>
+                    Follow us on social media to stay up to date on new features or to give us
+                    feedback.
+                  </p>
                 </div>
               </div>
               <div className="row">

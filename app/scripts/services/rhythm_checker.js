@@ -67,14 +67,14 @@ export default {
 
     if (givenTimes.length > expectedTimes.length) {
       beatEvaluations = beatEvaluations.concat(
-        givenTimes.slice(expectedTimes.length).map(() => ({ superfluous: true, correct: false }))
+        givenTimes.slice(expectedTimes.length).map(() => ({ superfluous: true, correct: false })),
       );
     }
 
     return {
       beatEvaluations,
       missesBeat,
-      success: beatEvaluations.every(el => el.correct) && !missesBeat
+      success: beatEvaluations.every(el => el.correct) && !missesBeat,
     };
   },
 
@@ -87,5 +87,5 @@ export default {
       shortestNote = 16;
     }
     return shortestNote;
-  }
+  },
 };

@@ -7,7 +7,7 @@ import _ from "lodash";
 export default class RangeSettingComponent extends Component {
   static defaultProps = {
     valueToString: _.identity,
-    label: ""
+    label: "",
   };
 
   static propTypes = {
@@ -16,20 +16,20 @@ export default class RangeSettingComponent extends Component {
     values: PropTypes.oneOfType([
       PropTypes.shape({
         from: PropTypes.number,
-        to: PropTypes.number
+        to: PropTypes.number,
       }),
-      PropTypes.number
+      PropTypes.number,
     ]).isRequired,
     onChange: PropTypes.func.isRequired,
     label: PropTypes.string,
     valueToString: PropTypes.func,
-    disabled: PropTypes.bool
+    disabled: PropTypes.bool,
   };
 
   constructor(props, context) {
     super(props, context);
     this.state = {
-      values: this.convertValues(this.props.values)
+      values: this.convertValues(this.props.values),
     };
   }
 
@@ -45,13 +45,13 @@ export default class RangeSettingComponent extends Component {
 
   componentWillReceiveProps(newProps) {
     this.setState({
-      values: this.convertValues(newProps.values)
+      values: this.convertValues(newProps.values),
     });
   }
 
   onChange(values) {
     this.setState({
-      values: values
+      values: values,
     });
   }
 
@@ -61,10 +61,11 @@ export default class RangeSettingComponent extends Component {
 
   render() {
     const rangeContainerStyle = {
-      marginBottom: -2
+      marginBottom: -2,
     };
 
-    const valueLabel = this.props.label + ": " + this.state.values.map(this.props.valueToString).join(" - ");
+    const valueLabel =
+      this.props.label + ": " + this.state.values.map(this.props.valueToString).join(" - ");
 
     return (
       <SettingLine label={valueLabel}>

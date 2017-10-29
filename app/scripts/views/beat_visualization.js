@@ -11,7 +11,7 @@ export default class BeatVisualization extends Component {
     barDuration: PropTypes.number.isRequired,
     currentRhythm: PropTypes.object.isRequired,
     beatHistory: PropTypes.array.isRequired,
-    result: PropTypes.object
+    result: PropTypes.object,
   };
 
   convertTicksToBeatNames(tickTime, tickLength) {
@@ -19,10 +19,29 @@ export default class BeatVisualization extends Component {
     // round to fix non-integers due to numerical imprecision
     const tickIndex = Math.round(tickTime / tickTimeToIndexFactor);
     const tickStepCount = Math.round(tickLength / tickTimeToIndexFactor);
-    const allBeatNames = ["1", "e", "&", "a", "2", "e", "&", "a", "3", "e", "&", "a", "4", "e", "&", "a"];
+    const allBeatNames = [
+      "1",
+      "e",
+      "&",
+      "a",
+      "2",
+      "e",
+      "&",
+      "a",
+      "3",
+      "e",
+      "&",
+      "a",
+      "4",
+      "e",
+      "&",
+      "a",
+    ];
 
     const necessaryNameFraction = 16 / RhythmChecker.getShortestNote(this.props.settings);
-    const necessaryBeatNames = allBeatNames.filter((el, index) => index % necessaryNameFraction === 0);
+    const necessaryBeatNames = allBeatNames.filter(
+      (el, index) => index % necessaryNameFraction === 0,
+    );
 
     const ticks = necessaryBeatNames.slice(tickIndex, tickIndex + tickStepCount);
     return (
@@ -54,13 +73,17 @@ export default class BeatVisualization extends Component {
 
         return [
           marginLeft > 0 ? (
-            <div className="beat restBeat" style={{ width: `${marginLeft}%` }} key={"spacer-${index}"}>
+            <div
+              className="beat restBeat"
+              style={{ width: `${marginLeft}%` }}
+              key={"spacer-${index}"}
+            >
               {beatNamesRest}
             </div>
           ) : null,
           <div className={`beat ${color}-beat`} style={{ width: `${width}%` }} key={index}>
             {beatNames}
-          </div>
+          </div>,
         ];
       };
 
@@ -72,7 +95,10 @@ export default class BeatVisualization extends Component {
         return _.flatten(createBeat(a, width, getColor(index), index));
       });
     };
-    const expectedTimes = RhythmChecker.convertDurationsToTimes(this.props.currentRhythm.durations, barDuration);
+    const expectedTimes = RhythmChecker.convertDurationsToTimes(
+      this.props.currentRhythm.durations,
+      barDuration,
+    );
 
     const expectedBeats = drawBeats(expectedTimes, _.constant("gray"), true);
 
@@ -88,12 +114,12 @@ export default class BeatVisualization extends Component {
         }
         return result.beatEvaluations[index].correct ? "green" : "red";
       },
-      false
+      false,
     );
 
     const className = classNames({
       "beat-container": true,
-      thin: !this.props.settings.labelBeats
+      thin: !this.props.settings.labelBeats,
     });
 
     // uniqueId avoids that different beat bars are animated into each other

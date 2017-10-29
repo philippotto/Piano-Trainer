@@ -20,14 +20,14 @@ const keydown = "keydown";
 const Phases = {
   welcome: "welcome",
   running: "running",
-  feedback: "feedback"
+  feedback: "feedback",
 };
 
 export default class RhythmReadingView extends Component {
   static propTypes = {
     settings: PropTypes.object.isRequired,
     statisticService: PropTypes.object.isRequired,
-    isActive: PropTypes.bool.isRequired
+    isActive: PropTypes.bool.isRequired,
   };
 
   constructor(props, context) {
@@ -36,19 +36,19 @@ export default class RhythmReadingView extends Component {
       errorMessage: null,
       result: null,
       currentRhythm: BarGenerator.generateEmptyRhythmBar(),
-      phase: Phases.welcome
+      phase: Phases.welcome,
     };
     this.beatHistory = [];
     this.keyHandlers = {};
   }
 
   static childContextTypes = {
-    isInActiveView: PropTypes.bool
+    isInActiveView: PropTypes.bool,
   };
 
   getChildContext() {
     return {
-      isInActiveView: this.props.isActive
+      isInActiveView: this.props.isActive,
     };
   }
 
@@ -63,7 +63,10 @@ export default class RhythmReadingView extends Component {
   onMetronomeEnded() {
     const settings = this.props.settings;
     const barDuration = settings.barDuration;
-    const expectedTimes = RhythmChecker.convertDurationsToTimes(this.state.currentRhythm.durations, barDuration);
+    const expectedTimes = RhythmChecker.convertDurationsToTimes(
+      this.state.currentRhythm.durations,
+      barDuration,
+    );
     this.fixBeatHistory();
 
     const result = RhythmChecker.compare(expectedTimes, this.beatHistory, settings);
@@ -73,12 +76,12 @@ export default class RhythmReadingView extends Component {
       durations: this.state.currentRhythm.durations,
       barDuration,
       liveBeatBars: settings.liveBeatBars,
-      labelBeats: settings.labelBeats
+      labelBeats: settings.labelBeats,
     });
 
     this.setState({
       phase: Phases.feedback,
-      result: result
+      result: result,
     });
 
     AnalyticsService.sendEvent("RhythmReading-Result", result.success);
@@ -154,7 +157,10 @@ export default class RhythmReadingView extends Component {
     [keydown, keyup].forEach(eventType => {
       this.keyHandlers[eventType] = keyHandler.bind(null, eventType);
       document.addEventListener(eventType, this.keyHandlers[eventType]);
-      document.addEventListener(eventType === keydown ? "touchstart" : "touchend", this.keyHandlers[eventType]);
+      document.addEventListener(
+        eventType === keydown ? "touchstart" : "touchend",
+        this.keyHandlers[eventType],
+      );
     });
 
     this.keyHandlers.contextmenu = event => {
@@ -170,7 +176,10 @@ export default class RhythmReadingView extends Component {
   componentWillUnmount() {
     [keydown, keyup].forEach(eventType => {
       document.removeEventListener(eventType, this.keyHandlers[eventType]);
-      document.removeEventListener(eventType === keydown ? "touchstart" : "touchend", this.keyHandlers[eventType]);
+      document.removeEventListener(
+        eventType === keydown ? "touchstart" : "touchend",
+        this.keyHandlers[eventType],
+      );
     });
     document.removeEventListener("contextmenu", this.keyHandlers.contextmenu);
   }
@@ -183,7 +192,7 @@ export default class RhythmReadingView extends Component {
     this.beatHistory = [];
     this.setState({
       phase: Phases.running,
-      result: null
+      result: null,
     });
   }
 
@@ -198,7 +207,7 @@ export default class RhythmReadingView extends Component {
     this.setState({
       phase: Phases.running,
       result: null,
-      currentRhythm: newRhythm
+      currentRhythm: newRhythm,
     });
   }
 
@@ -207,9 +216,9 @@ export default class RhythmReadingView extends Component {
       <CollapsableContainer collapsed={this.state.phase !== Phases.welcome}>
         <h3>Welcome to this rhythm training!</h3>
         <p>
-          When you start the training, we will count in for 4 beats and afterwards you can tap the given rhythm (either
-          use your &lsquo;space&rsquo; button or your touchscreen). Make sure your speakers are on so that you can hear
-          the metronome.
+          When you start the training, we will count in for 4 beats and afterwards you can tap the
+          given rhythm (either use your &lsquo;space&rsquo; button or your touchscreen). Make sure
+          your speakers are on so that you can hear the metronome.
         </p>
       </CollapsableContainer>
     );
@@ -263,15 +272,34 @@ export default class RhythmReadingView extends Component {
 
     const buttons =
       this.state.phase !== Phases.feedback ? (
-        <GameButton label="Start training" shortcutLetter="s" primary onClick={this.nextBar.bind(this)} />
+        <GameButton
+          label="Start training"
+          shortcutLetter="s"
+          primary
+          onClick={this.nextBar.bind(this)}
+        />
       ) : this.state.result.success ? (
         <div>
-          <GameButton label="Repeat this bar" shortcutLetter="r" onClick={this.repeatBar.bind(this)} />
-          <GameButton label="Start next bar" shortcutLetter="s" onClick={this.nextBar.bind(this)} primary />
+          <GameButton
+            label="Repeat this bar"
+            shortcutLetter="r"
+            onClick={this.repeatBar.bind(this)}
+          />
+          <GameButton
+            label="Start next bar"
+            shortcutLetter="s"
+            onClick={this.nextBar.bind(this)}
+            primary
+          />
         </div>
       ) : (
         <div>
-          <GameButton label="Repeat this bar" shortcutLetter="r" onClick={this.repeatBar.bind(this)} primary />
+          <GameButton
+            label="Repeat this bar"
+            shortcutLetter="r"
+            onClick={this.repeatBar.bind(this)}
+            primary
+          />
           <GameButton label="Skip this bar" shortcutLetter="s" onClick={this.nextBar.bind(this)} />
         </div>
       );

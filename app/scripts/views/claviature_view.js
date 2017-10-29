@@ -9,19 +9,19 @@ export default class ClaviatureView extends Component {
     keySignature: PropTypes.string,
     successCallback: PropTypes.func,
     failureCallback: PropTypes.func,
-    disabled: PropTypes.bool
+    disabled: PropTypes.bool,
   };
 
   constructor(props, context) {
     super(props, context);
     this.state = {
       // The key which is currently "clicked". Only used for keyboard navigation.
-      activeKey: null
+      activeKey: null,
     };
   }
 
   static contextTypes = {
-    isInActiveView: PropTypes.bool
+    isInActiveView: PropTypes.bool,
   };
 
   isNoteCorrect(noteName) {
@@ -49,18 +49,18 @@ export default class ClaviatureView extends Component {
       }
       if (eventType === "keydown") {
         this.setState({
-          activeKey: noteName
+          activeKey: noteName,
         });
       } else {
         this.setState({
-          activeKey: null
+          activeKey: null,
         });
         this.onClick(noteName);
       }
     };
     this.keyHandlers = {
       keydown: keyHandler.bind(this, "keydown"),
-      keyup: keyHandler.bind(this, "keyup")
+      keyup: keyHandler.bind(this, "keyup"),
     };
     document.addEventListener("keydown", this.keyHandlers.keydown);
     document.addEventListener("keyup", this.keyHandlers.keyup);
@@ -85,10 +85,15 @@ export default class ClaviatureView extends Component {
     const className = classNames({
       "black-note": color === "black",
       green: this.isNoteCorrect(keyName),
-      active: keyName === this.state.activeKey
+      active: keyName === this.state.activeKey,
     });
     return (
-      <li ref={keyName} key={keyName} className={className} onClick={this.onClick.bind(this, keyName)}>
+      <li
+        ref={keyName}
+        key={keyName}
+        className={className}
+        onClick={this.onClick.bind(this, keyName)}
+      >
         {keyLabel}
       </li>
     );
@@ -107,7 +112,7 @@ export default class ClaviatureView extends Component {
       ["g#", "G# A♭", "black"],
       ["a", "A", "white"],
       ["a#", "A# B♭", "black"],
-      ["b", "B", "white"]
+      ["b", "B", "white"],
     ].map(args => this.renderKey.apply(this, args));
     return (
       <div className={classNames({ "scale noSelect": true, noPointerEvents: this.props.disabled })}>

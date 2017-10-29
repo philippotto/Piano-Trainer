@@ -25,7 +25,7 @@ describe("RhythmChecker", function() {
     const settings1 = {
       barDuration: 3000,
       eighthNotes: true,
-      sixteenthNotes: false
+      sixteenthNotes: false,
     };
     const result1 = RhythmChecker.compare(expectedTimes, givenTimesCorrect, settings1);
 
