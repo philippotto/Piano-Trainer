@@ -66,6 +66,7 @@
     "start": "node server.js",
     "build": "BABEL_ENV=production ./node_modules/.bin/webpack --config webpack.config.production.js",
     "lint": "./node_modules/.bin/eslint .",
-    "test": "node_modules/karma/bin/karma start --single-run --browsers PhantomJS"
+    "test": "node_modules/karma/bin/karma start --single-run --browsers PhantomJS",
+    "pretty": "node_modules/.bin/prettier --write --config .prettierrc \"app/scripts/**/*.js\""
   }
 }
