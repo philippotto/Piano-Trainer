@@ -47,45 +47,45 @@ module.exports = {
   output: {
     path: path.join(__dirname, "dist/Piano-Trainer"),
     filename: "bundle.js",
-    publicPath: "./"
+    publicPath: "./",
   },
   resolve: {
-    extensions: ["", ".js"]
+    extensions: ["", ".js"],
   },
   resolveLoader: {
-    root: path.join(__dirname, "node_modules")
+    root: path.join(__dirname, "node_modules"),
   },
   devtool: "source-map",
   plugins: [
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.DefinePlugin({
       "process.env": {
-        NODE_ENV: JSON.stringify("production")
-      }
+        NODE_ENV: JSON.stringify("production"),
+      },
     }),
     new webpack.optimize.UglifyJsPlugin({
       compress: {
-        warnings: false
-      }
-    })
+        warnings: false,
+      },
+    }),
   ],
   module: {
     loaders: [
       {
         test: /\.jsx?$/,
         loaders: ["babel"],
-        include: path.join(__dirname, "app", "scripts")
+        include: path.join(__dirname, "app", "scripts"),
       },
       {
         test: /\.less$/,
-        loader: "style!css!less"
+        loader: "style!css!less",
       },
       {
         test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-        loader: "url-loader?limit=10000&minetype=application/font-woff"
+        loader: "url-loader?limit=10000&minetype=application/font-woff",
       },
       { test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: "file-loader" },
-      { test: /\.html/, loader: "file?name=[name].[ext]" }
-    ]
-  }
+      { test: /\.html/, loader: "file?name=[name].[ext]" },
+    ],
+  },
 };

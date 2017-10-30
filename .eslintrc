@@ -112,7 +112,6 @@
     "no-plusplus": 0
   },
   "plugins": [
-    "prettier",
     "react"
   ],
   "extends": ["plugin:react/recommended"]

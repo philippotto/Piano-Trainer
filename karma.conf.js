@@ -20,18 +20,18 @@ module.exports = function(config) {
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
       // add webpack as preprocessor
-      "scripts/spec/*.js": ["webpack", "sourcemap"]
+      "scripts/spec/*.js": ["webpack", "sourcemap"],
     },
 
     webpack: {
       devtool: "inline-source-map",
-      module: webpackConfig.module
+      module: webpackConfig.module,
     },
 
     webpackMiddleware: {
       // webpack-dev-middleware configuration
       // i. e.
-      noInfo: true
+      noInfo: true,
     },
 
     // test results reporter to use
@@ -58,6 +58,6 @@ module.exports = function(config) {
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
-    singleRun: false
+    singleRun: false,
   });
 };
