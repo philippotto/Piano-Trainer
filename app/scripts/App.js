@@ -6,6 +6,7 @@ import React, { Component } from "react";
 import PitchReadingView from "./views/pitch_reading_view";
 import RhythmReadingView from "./views/rhythm_reading_view";
 import PrivacyPolicyModal from "./views/privacy_policy_modal";
+import ImpressumModal from "./views/impressum_modal";
 import NewsletterForm from "./views/newsletter_form";
 import PitchStatisticService from "./services/pitch_statistic_service.js";
 import RhythmStatisticService from "./services/rhythm_statistic_service.js";
@@ -21,6 +22,7 @@ export default class App extends Component {
     this.state = {
       activeGame: "pitch",
       showPrivacyPolicy: false,
+      showImpressum: false,
     };
   }
 
@@ -144,10 +146,18 @@ export default class App extends Component {
           <a href="#" onClick={() => this.setState({ showPrivacyPolicy: true })}>
             Privacy Policy
           </a>
+          &nbsp;|&nbsp;
+          <a href="#" onClick={() => this.setState({ showImpressum: true })}>
+            Impressum
+          </a>
           &nbsp;|&nbsp; &copy; {new Date().getFullYear()}
           <PrivacyPolicyModal
             show={this.state.showPrivacyPolicy}
             onHide={() => this.setState({ showPrivacyPolicy: false })}
+          />
+          <ImpressumModal
+            show={this.state.showImpressum}
+            onHide={() => this.setState({ showImpressum: false })}
           />
         </footer>
       </div>
