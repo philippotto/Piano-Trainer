@@ -29,6 +29,8 @@ After connecting your MIDI device to your computer, it may be necessary to resta
 Additionally, make sure that no other software is reading from the device.
 Finally: Just visit the GitHub hosted [Piano-Trainer](http://philippotto.github.io/Piano-Trainer/).
 
+## How to contribute
+
 If you want to run SheetMusicTutor locally, checkout the repository and execute `npm install` and `npm start` within the folder.
 
 ## License
