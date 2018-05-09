@@ -20,6 +20,7 @@ let defaultSettings = {
       inputs: Freezer.createLeaf([]),
       activeInputIndex: 0,
     },
+    noteRange: [0, 127],
   },
   rhythmReading: {
     barDuration: 3000,

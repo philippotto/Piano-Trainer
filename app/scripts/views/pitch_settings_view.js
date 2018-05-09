@@ -92,6 +92,22 @@ export default class PitchSettingsView extends Component {
         ) : null}
       </div>
     );
+    const noteRangeSelector = !isMidiAvailable ? null : (
+      <div>
+        <RangeSettingComponent
+          rangeMin={0}
+          rangeMax={127}
+          values={{
+            from: this.props.settings.noteRange[0],
+            to: this.props.settings.noteRange[1],
+          }}
+          onChange={this.buildStateChanger("noteRange")}
+          //valueToString={KeyConverter.noteRangeValueToString}
+          label={"Note range"}
+          disabled={!isMidiAvailable}
+        />
+      </div>
+    );
 
     const useAutomaticDifficulty = this.props.settings.useAutomaticDifficulty;
 
@@ -169,6 +185,7 @@ export default class PitchSettingsView extends Component {
       <div className="settings content-box">
         <h3 style={{ marginTop: -5 }}>Settings</h3>
         {deviceSelector}
+        {noteRangeSelector}
         <SettingLine className="setting_checkbox" label="Automatic difficulty:">
           <input
             type="checkbox"

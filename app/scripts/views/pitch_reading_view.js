@@ -73,6 +73,8 @@ export default class PitchReadingView extends Component {
     if (nextSettings !== prevSettings) {
       const nextChordSizeRanges = nextSettings.chordSizeRanges;
       const chordSizeRanges = prevSettings.chordSizeRanges;
+      const nextNoteRange = nextSettings.noteRange;
+      const noteRange = prevSettings.noteRange;
 
       let newCurrentKeys = this.state.currentKeys;
       let keySignature = this.state.currentKeySignature;
@@ -86,7 +88,8 @@ export default class PitchReadingView extends Component {
       if (
         shouldRegenerateAll ||
         nextChordSizeRanges.treble !== chordSizeRanges.treble ||
-        nextChordSizeRanges.bass !== chordSizeRanges.bass
+        nextChordSizeRanges.bass !== chordSizeRanges.bass ||
+        nextNoteRange !== noteRange
       ) {
         newCurrentKeys = this.generateNewBars(nextSettings);
       }
