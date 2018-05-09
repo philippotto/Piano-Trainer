@@ -95,14 +95,14 @@ export default class PitchSettingsView extends Component {
     const noteRangeSelector = !isMidiAvailable ? null : (
       <div>
         <RangeSettingComponent
-          rangeMin={0}
-          rangeMax={127}
+          rangeMin={36} // C2
+          rangeMax={83} // B5
           values={{
             from: this.props.settings.noteRange[0],
             to: this.props.settings.noteRange[1],
           }}
           onChange={this.buildStateChanger("noteRange")}
-          //valueToString={KeyConverter.noteRangeValueToString}
+          valueToString={KeyConverter.getKeyStringForKeyNumber}
           label={"Note range"}
           disabled={!isMidiAvailable}
         />
