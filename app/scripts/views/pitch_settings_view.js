@@ -130,7 +130,7 @@ export default class PitchSettingsView extends Component {
     const manualDifficultySection = (
       <div>
         <RangeSettingComponent
-          rangeMin={1}
+          rangeMin={0}
           rangeMax={5}
           values={{
             from: this.props.settings.chordSizeRanges.treble[0],
@@ -141,7 +141,7 @@ export default class PitchSettingsView extends Component {
           disabled={!isMidiAvailable}
         />
         <RangeSettingComponent
-          rangeMin={1}
+          rangeMin={0}
           rangeMax={5}
           values={{
             from: this.props.settings.chordSizeRanges.bass[0],
