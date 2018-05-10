@@ -35,4 +35,4 @@ If you want to run SheetMusicTutor locally, checkout the repository and execute 
 
 ## License
 
-MIT © Philipp Otto
+MIT © Philipp Otto, Google LLC
