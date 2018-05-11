@@ -148,7 +148,7 @@ export default {
     return ["treble", "bass"].map(clef => _.random.apply(_, settings.chordSizeRanges[clef]));
   },
 
-  generateBars: function(settings, level, onePerTime) {
+  generateBars: function(settings, keySignature, level, onePerTime) {
     const [trebleNotes, bassNotes] = _.unzip(
       _.range(0, options.chordsPerBar).map(() => {
         const generatePossibleNotes = clef => {
@@ -158,8 +158,14 @@ export default {
               old: LevelService.getAllNotesUntilLevelIndex(level.index, clef),
             };
           }
-          const levels = clef === "treble" ? [4, 5] : [2, 3];
-          return _.flatten(levels.map(noteLevel => baseNotes.map(el => el + "/" + noteLevel)));
+          const midiNotesInClef = clef === "treble" ?
+            _.range(60 /* C4 */, 84/* C6 */) : _.range(36 /* C2 */, 60/* C6 */);
+          const midiNotesInKeyRange = _.filter(midiNotesInClef,
+            k => k >= settings.noteRange[0] && k <= settings.noteRange[1]);
+          // TODO(rofer): filter by key signature here
+          const midiNotesInKey = _.filter(midiNotesInKeyRange, k => true);
+          return midiNotesInKey.map(KeyConverter.getKeyStringForKeyNumber);
+          //return _.flatten(levels.map(noteLevel => baseNotes.map(el => el + "/" + noteLevel)));
         };
 
         const [possibleTrebleNotes, possibleBassNotes] = [
