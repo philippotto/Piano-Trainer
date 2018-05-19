@@ -78,7 +78,8 @@ const KeyConverter = {
     const keyArray = _.values(keyMap);
     return keyArray
       .slice(keyArray.indexOf(keyA), keyArray.indexOf(keyB) + 1)
-      .filter(el => includeAccidentals || !this.hasAccidental(el));
+      .filter(el => includeAccidentals || !this.hasAccidental(el))
+      .map(this.getKeyNumberForCanonicalKeyString);
   },
 
   hasAccidental: function(keyString) {
