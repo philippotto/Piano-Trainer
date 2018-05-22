@@ -164,7 +164,6 @@ export default {
             _.range(60 /* C4 */, 84/* C6 */) : _.range(36 /* C2 */, 60/* C6 */);
           const midiNotesInKeyRange = _.filter(midiNotesInClef,
             k => k >= settings.noteRange[0] && k <= settings.noteRange[1]);
-          // TODO(rofer): filter by key signature here
           const keySignatureOffset = 
             KeyConverter.getKeyNumberForCanonicalKeyString(keySignature.toLowerCase() + "/1") - 24 /* C1 */;
           console.log("Key Signature: ", keySignature, keySignatureOffset);
@@ -186,8 +185,10 @@ export default {
         // if length === 0 then amounts cannot be more than 0
 
         return [
-          this.generateNotesForBeat(settings, "treble", trebleAmount, possibleTrebleNotes),
-          this.generateNotesForBeat(settings, "bass", bassAmount, possibleBassNotes),
+          this.generateNotesForBeat(settings, "treble", trebleAmount, possibleTrebleNotes,
+            keySignature),
+          this.generateNotesForBeat(settings, "bass", bassAmount, possibleBassNotes,
+            keySignature),
         ];
       }),
     );
@@ -239,7 +240,7 @@ export default {
   },
 
   // Returns notes as Vex Flow StaveNotes
-  generateNotesForBeat(settings, clef, amount, possibleNotes) {
+  generateNotesForBeat(settings, clef, amount, possibleNotes, keySignature) {
     let randomNoteSet = this.generateNoteSet(settings, amount, possibleNotes);
 
     if (amount === 0 || randomNoteSet.length === 0) {
@@ -255,14 +256,11 @@ export default {
       randomNoteSet = this.generateNoteSet(settings, amount, possibleNotes);
     }
 
-    // TODO(rofer): Fix handling of non-C major notes.
-    // Right now in the key of F Major Bb gets converted to A# and then
-    // rendered as A rather than B.
     const staveChord = new Vex.Flow.StaveNote({
       clef: clef,
       keys: randomNoteSet.sort((keyA, keyB) => {
         return (keyA - keyB);
-      }).map(KeyConverter.getKeyStringForKeyNumber),
+      }).map(x => KeyConverter.getKeyStringForKeyNumberWithSignature(x, keySignature)),
       duration: `${options.chordsPerBar}`,
     });
 
