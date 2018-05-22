@@ -39,6 +39,23 @@ const keySignatures = [
   "Cb",
 ];
 const octaveNotes = ["c", "c#", "d", "d#", "e", "f", "f#", "g", "g#", "a", "a#", "b"];
+const keysInKeySignature = {
+  "Cb": ["c", "db", "d", "eb", "fb", "f", "gb", "g", "ab", "a", "bb", "cb"],
+  "Gb": ["c", "db", "d", "eb", "e", "f", "gb", "g", "ab", "a", "bb", "cb"],
+  "Db": ["c", "db", "d", "eb", "e", "f", "gb", "g", "ab", "a", "bb", "b"],
+  "Ab": ["c", "db", "d", "eb", "e", "f", "f#", "g", "ab", "a", "bb", "b"],
+  "Eb": ["c", "c#", "d", "eb", "e", "f", "f#", "g", "ab", "a", "bb", "b"],
+  "Bb": ["c", "c#", "d", "eb", "e", "f", "f#", "g", "g#", "a", "bb", "b"],
+  "F": ["c", "c#", "d", "d#", "e", "f", "f#", "g", "g#", "a", "bb", "b"],
+  "C": ["c", "c#", "d", "d#", "e", "f", "f#", "g", "g#", "a", "a#", "b"],
+  "G": ["c", "c#", "d", "d#", "e", "f", "f#", "g", "g#", "a", "a#", "b"],
+  "D": ["c", "c#", "d", "d#", "e", "f", "f#", "g", "g#", "a", "a#", "b"],
+  "A": ["c", "c#", "d", "d#", "e", "f", "f#", "g", "g#", "a", "a#", "b"],
+  "E": ["c", "c#", "d", "d#", "e", "f", "f#", "g", "g#", "a", "a#", "b"],
+  "B": ["c", "c#", "d", "d#", "e", "f", "f#", "g", "g#", "a", "a#", "b"],
+  "F#": ["c", "c#", "d", "d#", "e", "e#", "f#", "g", "g#", "a", "a#", "b"],
+  "C#": ["b#", "c#", "d", "d#", "e", "e#", "f#", "g", "g#", "a", "a#", "b"],
+}
 
 const keyMap = initializeKeyMap();
 
@@ -78,7 +95,8 @@ const KeyConverter = {
     const keyArray = _.values(keyMap);
     return keyArray
       .slice(keyArray.indexOf(keyA), keyArray.indexOf(keyB) + 1)
-      .filter(el => includeAccidentals || !this.hasAccidental(el));
+      .filter(el => includeAccidentals || !this.hasAccidental(el))
+      .map(this.getKeyNumberForCanonicalKeyString);
   },
 
   hasAccidental: function(keyString) {
@@ -161,6 +179,10 @@ const KeyConverter = {
 
   getKeyStringForKeyNumber: function(number) {
     return keyMap[number + ""];
+  },
+  getKeyStringForKeyNumberWithSignature: function(number, keySignature) {
+    const keyName = keysInKeySignature[keySignature][number % 12];
+    return keyName + "/" + (Math.floor(number / 12) - 1);
   },
 
   keySignatureValueToString: function(value) {

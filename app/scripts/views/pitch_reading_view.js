@@ -73,6 +73,8 @@ export default class PitchReadingView extends Component {
     if (nextSettings !== prevSettings) {
       const nextChordSizeRanges = nextSettings.chordSizeRanges;
       const chordSizeRanges = prevSettings.chordSizeRanges;
+      const nextNoteRange = nextSettings.noteRange;
+      const noteRange = prevSettings.noteRange;
 
       let newCurrentKeys = this.state.currentKeys;
       let keySignature = this.state.currentKeySignature;
@@ -86,12 +88,12 @@ export default class PitchReadingView extends Component {
       if (
         shouldRegenerateAll ||
         nextChordSizeRanges.treble !== chordSizeRanges.treble ||
-        nextChordSizeRanges.bass !== chordSizeRanges.bass
+        nextChordSizeRanges.bass !== chordSizeRanges.bass ||
+        !_.isEqual(prevSettings.keySignature, nextSettings.keySignature) ||
+        nextNoteRange !== noteRange
       ) {
-        newCurrentKeys = this.generateNewBars(nextSettings);
-      }
-      if (shouldRegenerateAll || !_.isEqual(prevSettings.keySignature, nextSettings.keySignature)) {
         keySignature = BarGenerator.generateKeySignature(nextSettings);
+        newCurrentKeys = this.generateNewBars(nextSettings, keySignature);
       }
 
       this.setState({
@@ -103,7 +105,7 @@ export default class PitchReadingView extends Component {
     }
   }
 
-  generateNewBars(settings) {
+  generateNewBars(settings, keySignature) {
     const levelIndex = LevelService.getLevelOfUser(this.props.statisticService.getAllEvents()) + 1;
     const level = LevelService.getLevelByIndex(levelIndex);
 
@@ -112,16 +114,18 @@ export default class PitchReadingView extends Component {
 
     return BarGenerator.generateBars(
       settings,
+      keySignature,
       settings.useAutomaticDifficulty ? level : null,
       onePerTime,
     );
   }
 
   generateNewBarState() {
+    const keySignature = BarGenerator.generateKeySignature(this.props.settings);
     return {
       currentChordIndex: 0,
-      currentKeys: this.generateNewBars(this.props.settings),
-      currentKeySignature: BarGenerator.generateKeySignature(this.props.settings),
+      currentKeySignature: keySignature,
+      currentKeys: this.generateNewBars(this.props.settings, keySignature),
     };
   }
 

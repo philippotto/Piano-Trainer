@@ -148,18 +148,27 @@ export default {
     return ["treble", "bass"].map(clef => _.random.apply(_, settings.chordSizeRanges[clef]));
   },
 
-  generateBars: function(settings, level, onePerTime) {
+  generateBars: function(settings, keySignature, level, onePerTime) {
     const [trebleNotes, bassNotes] = _.unzip(
       _.range(0, options.chordsPerBar).map(() => {
         const generatePossibleNotes = clef => {
           if (level) {
             return {
-              new: level.keys[clef],
-              old: LevelService.getAllNotesUntilLevelIndex(level.index, clef),
+              new: _.filter(level.keys[clef],
+                k => k >= settings.noteRange[0] && k <= settings.noteRange[1]),
+              old: _.filter(LevelService.getAllNotesUntilLevelIndex(level.index, clef),
+                k => k >= settings.noteRange[0] && k <= settings.noteRange[1]),
             };
           }
-          const levels = clef === "treble" ? [4, 5] : [2, 3];
-          return _.flatten(levels.map(noteLevel => baseNotes.map(el => el + "/" + noteLevel)));
+          const midiNotesInClef = clef === "treble" ?
+            _.range(60 /* C4 */, 84/* C6 */) : _.range(36 /* C2 */, 60/* C6 */);
+          const midiNotesInKeyRange = _.filter(midiNotesInClef,
+            k => k >= settings.noteRange[0] && k <= settings.noteRange[1]);
+          const keySignatureOffset = 
+            KeyConverter.getKeyNumberForCanonicalKeyString(keySignature.toLowerCase() + "/1") - 24 /* C1 */;
+          const midiNotesInKey = _.filter(midiNotesInKeyRange, 
+            k => _.some([0,2,4,5,7,9,11], x => x === (k - keySignatureOffset) % 12));
+          return midiNotesInKey;
         };
 
         const [possibleTrebleNotes, possibleBassNotes] = [
@@ -173,8 +182,10 @@ export default {
         // if length === 0 then amounts cannot be more than 0
 
         return [
-          this.generateNotesForBeat(settings, "treble", trebleAmount, possibleTrebleNotes),
-          this.generateNotesForBeat(settings, "bass", bassAmount, possibleBassNotes),
+          this.generateNotesForBeat(settings, "treble", trebleAmount, possibleTrebleNotes,
+            keySignature),
+          this.generateNotesForBeat(settings, "bass", bassAmount, possibleBassNotes,
+            keySignature),
         ];
       }),
     );
@@ -187,11 +198,18 @@ export default {
 
   generateNoteSet: function(settings, amount, _possibleNotes) {
     if (_.isArray(_possibleNotes)) {
+      if (_possibleNotes.length === 0) {
+        return [];
+      }
       const possibleNotes = _.clone(_possibleNotes);
 
       return _.times(amount, () => {
         return sampleWithoutReplacement(possibleNotes);
       });
+    }
+
+    if (_possibleNotes.new.length === 0 && _possibleNotes.old.length === 0) {
+      return [];
     }
 
     const newPossibleNotes = _.clone(_possibleNotes.new);
@@ -211,15 +229,18 @@ export default {
     });
   },
 
-  ensureInterval: function(keyStrings) {
-    const keyNumbers = keyStrings.map(keyString => {
-      return KeyConverter.getKeyNumberForKeyString(keyString, "C");
-    });
-    return options.maximumInterval >= _.max(keyNumbers) - _.min(keyNumbers);
+  ensureInterval: function(keyNums) {
+    if (keyNums.length < 1) {
+      debugger; // If we don't drop to the debugger this will lead to an infinite loop.
+    }
+    return options.maximumInterval >= _.max(keyNums) - _.min(keyNums);
   },
 
-  generateNotesForBeat(settings, clef, amount, possibleNotes) {
-    if (amount === 0) {
+  // Returns notes as Vex Flow StaveNotes
+  generateNotesForBeat(settings, clef, amount, possibleNotes, keySignature) {
+    let randomNoteSet = this.generateNoteSet(settings, amount, possibleNotes);
+
+    if (amount === 0 || randomNoteSet.length === 0) {
       const rest = new Vex.Flow.StaveNote({
         clef: clef,
         keys: [clef === "treble" ? "a/4" : "c/3"],
@@ -228,7 +249,6 @@ export default {
       return rest;
     }
 
-    let randomNoteSet = this.generateNoteSet(settings, amount, possibleNotes);
     while (!this.ensureInterval(randomNoteSet)) {
       randomNoteSet = this.generateNoteSet(settings, amount, possibleNotes);
     }
@@ -236,19 +256,17 @@ export default {
     const staveChord = new Vex.Flow.StaveNote({
       clef: clef,
       keys: randomNoteSet.sort((keyA, keyB) => {
-        return (
-          KeyConverter.getKeyNumberForKeyString(keyA, "C") -
-          KeyConverter.getKeyNumberForKeyString(keyB, "C")
-        );
-      }),
+        return (keyA - keyB);
+      }).map(x => KeyConverter.getKeyStringForKeyNumberWithSignature(x, keySignature)),
       duration: `${options.chordsPerBar}`,
     });
 
-    randomNoteSet.forEach(({ note, modifier }, index) => {
-      if (modifier) {
-        staveChord.addAccidental(index, new Vex.Flow.Accidental(modifier));
-      }
-    });
+    // TODO(rofer): Figure out the right way to add accidentals back in
+    //randomNoteSet.forEach(({ note, modifier }, index) => {
+    //  if (modifier) {
+    //    staveChord.addAccidental(index, new Vex.Flow.Accidental(modifier));
+    //  }
+    //});
 
     return staveChord;
   },
