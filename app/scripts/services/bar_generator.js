@@ -166,11 +166,8 @@ export default {
             k => k >= settings.noteRange[0] && k <= settings.noteRange[1]);
           const keySignatureOffset = 
             KeyConverter.getKeyNumberForCanonicalKeyString(keySignature.toLowerCase() + "/1") - 24 /* C1 */;
-          console.log("Key Signature: ", keySignature, keySignatureOffset);
           const midiNotesInKey = _.filter(midiNotesInKeyRange, 
             k => _.some([0,2,4,5,7,9,11], x => x === (k - keySignatureOffset) % 12));
-          console.log("midiNotesInKey: ", midiNotesInKey);
-          console.log(midiNotesInKeyRange.map(k => (k - keySignatureOffset) % 12));
           return midiNotesInKey;
         };
 
